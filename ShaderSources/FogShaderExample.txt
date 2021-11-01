@@ -1,0 +1,100 @@
+
+
+float FogExp(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = -Re.z;
+return clamp( 1.0 / exp(d * gl_Fog.density), 0.0, 1.0);
+}
+
+float FogExp2(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = Re.z;
+return clamp( 1.0 / exp(d * d * gl_Fog.density * gl_Fog.density ), 0.0, 1.0);
+}
+
+float FogEyePlane(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = -Re.z;
+return clamp((d - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
+}
+
+float FogEyeAbsolute(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = abs(Re.z);
+return clamp((d - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
+}
+
+float FogEyeRadial(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = length(Re);
+return clamp((d - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
+}
+
+void main()
+{
+gl_Position = ftransform();
+gl_FogCoord = FogEyePlane(gl_ModelViewMatrix * gl_Vertex);
+}
+
+Fragment program:
+
+void main()
+{
+vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+gl_FragColor = mix(color, gl_Fog.color, gl_FogCoord);
+}
+
+--------------------------------------------------
+
+
+
+    There is also a gl_FogFragCoord. Never tried it.
+    The gl_FogCoord built in is an input to the vertex shader, you should not be able to write to it. The GLSL spec defines gl_FogCoord like so:
+
+attribute float gl_FogCoord;
+
+and gl_FogFragCoord like this:
+
+varying float gl_FogFragCoord;
+
+You need to compute the fog coordinate in your vertex shader and output it to gl_FogFragCoord, like so:
+
+vec4 eyePos = gl_ModelViewMatrix * gl_Vertex;
+gl_FogFragCoord = abs(eyePos.z/eyePos.w);
+
+Then in your fragment shader you would use the fog coordinate to compute a fog factor which you use to lerp between the fog color and your fragment color:
+
+float fogFactor = 1.0;
+
+if (fogMode == FogExp)
+    fogFactor = exp(-gl_Fog.density * gl_FogFragCoord);
+else if (fogMode == FogExp2)
+    fogFactor = exp(-pow((gl_Fog.density * gl_FogFragCoord), 2.0));
+else if (fogMode == FogLinear)
+    fogFactor = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
+
+fogFactor = clamp(fogFactor, 0.0, 1.0);
+
+gl_FragColor = mix(gl_Fog.color, gl_Color, fogFactor);
+
+imported_execom_rt
+Senior Member
+Oct 2004
+
+Also you must be very very cautious when using fog and GLSL.
+ATI implementation is quite buggy (even in Cat 4.10).
+Basically, you can end up with a ‘GL vertex shader will in software - unsupported language element used’.
+
+This is what i found by doing some tests.
+imported_execom_rt
+Senior Member
+Oct 2004
+
+An addition : It’s simple, when you enable fog glEnable(GL_FOG), GLSL will work in software on ATI. End of story.
+
+

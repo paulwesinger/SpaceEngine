@@ -1,0 +1,50 @@
+
+float FogExp(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = -Re.z;
+return clamp( 1.0 / exp(d * gl_Fog.density), 0.0, 1.0);
+}
+
+float FogExp2(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = Re.z;
+return clamp( 1.0 / exp(d * d * gl_Fog.density * gl_Fog.density ), 0.0, 1.0);
+}
+
+float FogEyePlane(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = -Re.z;
+return clamp((d - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
+}
+
+float FogEyeAbsolute(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = abs(Re.z);
+return clamp((d - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
+}
+
+float FogEyeRadial(vec4 Rh)
+{
+vec4 Re = Rh / Rh.w;
+float d = length(Re);
+return clamp((d - gl_Fog.start) * gl_Fog.scale, 0.0, 1.0);
+}
+
+void main()
+{
+gl_Position = ftransform();
+gl_FogCoord = FogEyePlane(gl_ModelViewMatrix * gl_Vertex);
+}
+
+Fragment program:
+
+void main()
+{
+vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+gl_FragColor = mix(color, gl_Fog.color, gl_FogCoord);
+}
+
