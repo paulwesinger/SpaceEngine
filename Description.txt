@@ -1,0 +1,27 @@
+-----------------------
+Klassen Ablaufdiagramme
+-----------------------
+
+class TextEdit
+    -> Child von Base2D
+    ->Argumente: Grösse, Position, Farbe für Label, Farbe für TextRender, Cursor positionierung zeichenweise in texteditfenster
+    ->TextRender klasse für Textedit
+    ->TextRender klasse für Label
+    ->Eingabe mit ok oder CR
+    ->abruch mit mit ESC
+    ->membervar für alten text, member var für neuen text. wird bei ok zum alten text.
+
+    ->child class für Alphanummeric  ????
+
+
+----------------------------------------------------------------------------------------
+
+Wichtig : OzEngine dient nur zur visualisierung, objekte mit eigenen edithor erstellen!
+
+	Einlesen der daten über einen projektpfad, so wie in conf die objekte drin sind,
+	muß die structure vorhanden sein.
+
+    Buttons undMenüleiste für steuerung ausbauen !!
+
+
+

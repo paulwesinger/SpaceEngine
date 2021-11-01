@@ -1,0 +1,13 @@
+Image: ../SpaceEngine/images/darkgray.png
+PositionX: 120
+PositionY: 500
+SizeX: 120
+SizeY: 20
+Enable: 0
+BGRed: 1.0
+BGGreen: 1.0
+BGBlue: 1.0
+TextColorRed: 0.0
+TextColorGreen 0.0
+TextColorBlue: 0.0
+
