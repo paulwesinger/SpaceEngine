@@ -17,6 +17,7 @@ SOURCES += \
         buttons/button.cpp \
         camera/camera.cpp \
         checkbox/checkbox.cpp \
+        cockpit/cockpit.cpp \
         colors/colorscheme.cpp \
         controllcontainer/controllcontainer.cpp \
         cube/colorcube.cpp \
@@ -186,6 +187,7 @@ HEADERS += \
     buttons/button.h \
     camera/camera.h \
     checkbox/checkbox.h \
+    cockpit/cockpit.h \
     colors/colorscheme.h \
     controllcontainer/controllcontainer.h \
     cube/colorcube.h \

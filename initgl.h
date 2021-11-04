@@ -43,6 +43,7 @@
 #include "textedit/textedit.h"
 #include "buttons/button.h"
 #include "lights/light.h"
+#include "cockpit/cockpit.h"
 
 const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
 const std::string SPACE = " ";
@@ -154,6 +155,11 @@ protected:
     TextRender * textrender;
     TextRender * _Frames;
     light * ambientLight = nullptr;
+
+    // Cockpit:
+    Cockpit * cockpit;
+
+
     // Liste für 3D objekte
     std::vector<BaseObject*> list3D;
 
@@ -168,11 +174,13 @@ protected:
     MOUSE _Mouse;
     float MouseResX;
     float MouseResY;
-
+/*
     irrklang::ISoundEngine * soundengine;
     irrklang::ISoundEngine * soundengine1;
     irrklang::ISoundEngine * soundengine2;
     irrklang::ISoundEngine * soundengine3;
+
+    */
 
     irrklang::ISound       * _Sound;
     bool _HasSound;

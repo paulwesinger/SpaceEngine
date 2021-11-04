@@ -226,6 +226,8 @@ void CColorCube::Draw(Camera * cam) {
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+
+
     glEnable(GL_BLEND);
     // Locate uniforms in shader
     mv_location = glGetUniformLocation(currentShader, "mv_matrix");
@@ -283,8 +285,8 @@ void CColorCube::Draw(Camera * cam) {
         glUniform3f(lightcolorlocation,c.x,c.y,c.z);
     }
     else {
-        glm::vec3 lightpos = vec3(-10.0,2.0,-5.0);
-        glm::vec3 lightcolor = glm::vec3( 0.0,1.0,0.0);
+        glm::vec3 lightpos = vec3(0.0,0.0,0.0);
+        glm::vec3 lightcolor = glm::vec3( 1.0,1.0,1.0);
         glUniform3f(lightlocation,lightpos.x,lightpos.y,lightpos.z);
         glUniform3f(lightcolorlocation,lightcolor.x,lightcolor.y,lightcolor.z);
     }

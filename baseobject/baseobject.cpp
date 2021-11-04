@@ -54,6 +54,7 @@ void BaseObject::init( ) {
 
     _DrawMode = GL_TRIANGLE_STRIP;
     _HasAnimation = false;
+    _Light = nullptr;
 }
 
 void BaseObject::Draw(Camera * cam){}

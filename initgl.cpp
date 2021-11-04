@@ -42,7 +42,8 @@ InitGL::InitGL (const std::string titel){
     base2d  = NULL;
    // land = nullptr;
 
-   // cockpit = NULL;
+    cockpit = nullptr;
+
     textrender = NULL;
    // soundengine = NULL;
     projection = nullptr;
@@ -73,8 +74,8 @@ InitGL::~InitGL() {
     // Alten Videomode wiederherstellen
     SDL_SetWindowDisplayMode(window,&DesktopDisplayMode);
 
-    if (soundengine)
-        soundengine->drop();
+//    if (soundengine)
+//        soundengine->drop();
 
     safeDelete(sphere1);
     safeDelete(lightSource);
@@ -547,7 +548,7 @@ void InitGL::InitEngineObject() {
     //----------------------------------------
     ambientLight = new light;
     ambientLight->setColor(glm::vec3(1.0,1.0,1.0));
-    ambientLight->setPos(glm::vec3(0.0,100.0,0.0));
+    ambientLight->setPos(glm::vec3(0.0,20.0,0.0));
 
 
     loginfo("Erstelle Standard Ambientes Licht ","InitGL::InitEngineObjects");
@@ -567,8 +568,6 @@ void InitGL::InitEngineObject() {
     faces.push_back("../SpaceEngine/skybox/desert/desert_bk.tga");
     skybox -> Load(faces);
     loginfo("Erstelle Skybox ........Done","InitGL::InitEngineObject");
-
-
 
     //================================
     // Init 2D Objects
@@ -590,13 +589,10 @@ void InitGL::InitEngineObject() {
     textrender->SetHasTexture(true);
     textrender->SetAlignRight(false);
 
-
-
     loginfo("Erstelle Shaders........");
     InitShaders();
     loginfo("..... done all");
     loginfo("============================");
-
 
     //========================================
     // Init 3D Objects
@@ -639,6 +635,15 @@ void InitGL::InitEngineObject() {
     else
         logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
+
+
+    loginfo("--------------------------------------------");
+    loginfo("Erstelle Cokpit ","InitGL::InitEngineObjects");
+    loginfo("--------------------------------------------");
+
+    cockpit = new Cockpit(projection->GetPerspective());
+
+    cockpit->setMesh(sphere1);
 
     loginfo("Done 3D Objects .............");
 }
@@ -703,27 +708,24 @@ void InitGL::stopAnimation() {
 }
 
 bool InitGL::initSoundMachine() {
-    soundengine = irrklang::createIrrKlangDevice();
-    if (soundengine) {
-
-
-
-        irrklang::vec3df position(23,70,200);
+  //  soundengine = irrklang::createIrrKlangDevice();
+  //  if (soundengine) {
+ //       irrklang::vec3df position(23,70,200);
 
         // start the sound paused:
 
 
-        if (_Sound)
-        {
+//        if (_Sound)
+//        {
 
           //irrklang::vec3df velPerSecond(0,0,0);    // only relevant for doppler effects
-           _Sound ->setVolume( 100);
-           //_Sound->setMinDistance(30.0f); // a loud sound
-           _Sound->setIsPaused(true); // unpause the sound
-           return true;
-        }
-        return false;
-    }
+ //          _Sound ->setVolume( 100);
+          //_Sound->setMinDistance(30.0f); // a loud sound
+//           _Sound->setIsPaused(true); // unpause the sound
+//           return true;
+//        }
+//        return false;
+//    }
     return false;
 }
 void InitGL::Run() {
@@ -850,24 +852,28 @@ void InitGL::Run() {
            }
 
 
-           case KEY_A: camera->MoveLeft(elapsed); break;
+           case KEY_A:{
+               camera->MoveLeft(elapsed);
+               cockpit->setPosition(camera);
+               break;
+           }
            case KEY_Left : camera->YawCameraLeft(elapsed); break;
 
-           case KEY_D: camera->MoveRight(elapsed);break;
+           case KEY_D: camera->MoveRight(elapsed); cockpit->setPosition(camera); break;
            case KEY_Right: camera->YawCameraRight(elapsed); break;
 
 
-           case KEY_E: camera->MoveForward(elapsed); break;
+           case KEY_E: camera->MoveForward(elapsed); cockpit->setPosition(camera); break;
            case KEY_Up: camera->PitchCameraUp(elapsed); break; break;
 
-           case KEY_S:camera->MoveBackward(elapsed);break;
+           case KEY_S:camera->MoveBackward(elapsed); cockpit->setPosition(camera);break;
            case KEY_Down: camera ->PitchCameraDown(elapsed); break;
 
            case KEY_Q: stopAnimation(); break;
 
            // Shader select
-           case KEY_C: _CurrentShader = ShaderType::COLOR_SHADER;           _ShaderChanged = true;  break;
-           case KEY_T: _CurrentShader = ShaderType::TEXTURE_SHADER;         _ShaderChanged = true;  break;
+           case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;        _ShaderChanged = true;  break;
+           case KEY_T   : _CurrentShader = ShaderType::TEXTURE_SHADER;      _ShaderChanged = true;  break;
            case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;        _ShaderChanged = true;  break;
            case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;  _ShaderChanged = true;  break;
            case KEY_F11: {
@@ -877,7 +883,7 @@ void InitGL::Run() {
            // ORtho oder perspective mode:
            case KEY_O : {
                // Hier sollte eine Objectliste durchlaufen werden ,
-               // bei allen objecten jetzt projection auf orho setzen
+               // bei allen objecten jetzt projection auf ortho setzen
                // Hier setzte ich mal alle 3 per "Hand"
            ////    cube->SetProjection(projection->GetOrtho(), true);
            ////    cube2->SetProjection(projection->GetOrtho(), true);
@@ -937,13 +943,14 @@ void InitGL::Run() {
        dummy = vec3(0.0,0.2,0.0);
 //       sphere1->SetProjection(projection->GetPerspective());
 
-       sphere1->setActiveShader(TEXTURE_SHADER);
+     /*  sphere1->setActiveShader(TEXTURE_SHADER);
        if (_Animate && sphere1->HasAnimation() ) {
             sphere1->SetFirstTranslate(true);
             sphere1 ->StepRotate(dummy);
        }
        sphere1->Draw(camera);
-
+*/
+       cockpit->getCockpitMesch()->Draw(camera);
 
        //meshObject
         dummy = vec3(1.0,0.0,0.0);
@@ -961,7 +968,6 @@ void InitGL::Run() {
         if (_Animate && lightSource->HasAnimation() )
             lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));    //dummy);
 
-
         lightSource->Draw(camera);
 
         // ===================================
@@ -973,6 +979,8 @@ void InitGL::Run() {
                 for (unsigned int i=0;i < list3D.size(); i++ )
                     list3D[i]->setActiveShader(_CurrentShader);
             }
+            if (cockpit != nullptr)
+                cockpit->setShader(_CurrentShader);
             _ShaderChanged = false;
         }
 
