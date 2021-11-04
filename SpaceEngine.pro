@@ -1,13 +1,14 @@
 QT -= gui
 
-CONFIG += c++14 console
+CONFIG += c++14
 CONFIG -= app_bundle
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-unix:LIBS += -L /usr/lib64 -L/usr/lib64/GL -lGL -lSDL2 -lGLEW -lSDL2_image -lfreetype -L/usr/lib64/irrklang -lIrrKlang
+unix:LIBS += -L /usr/lib64 -L/usr/lib64/GL -L/usr/lib64/irrklang -lGL -lSDL2 -lGLEW -lSDL2_image -lfreetype
+#-lIrrKlang
 
 SOURCES += \
         3DLoader/load3ds.cpp \

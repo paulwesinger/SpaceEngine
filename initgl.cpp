@@ -979,9 +979,6 @@ void InitGL::Run() {
                 for (unsigned int i=0;i < list3D.size(); i++ )
                     list3D[i]->setActiveShader(_CurrentShader);
             }
-            if (cockpit != nullptr)
-                cockpit->setShader(_CurrentShader);
-            _ShaderChanged = false;
         }
 
         if (! list3D.empty() ) {
