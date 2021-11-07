@@ -258,6 +258,7 @@ void InitGL::InitShaders() {
     shader->AttachCustomShader(cubeshaderprog_tex,fs_Tex);
     shader->CreateCustomProgram(cubeshaderprog_tex);
 
+
     // Shader für lightning
     loginfo("Erstelle Cube Lightning Shader ..............done");
     v_source ="../SpaceEngine/ShaderSources/cubevertexnormalshader.vex";
@@ -968,6 +969,8 @@ void InitGL::Run() {
        }
        sphere1->Draw(camera);
 */
+       cockpit->getCockpitMesch()->SetFirstTranslate(true);
+       cockpit->getCockpitMesch()->StepRotate(glm::vec3(1.0,1.0,1.0));
        cockpit->getCockpitMesch()->Draw(camera);
 
        //meshObject
@@ -979,9 +982,9 @@ void InitGL::Run() {
       //  me->Draw(camera, currentShader);
 
 
-        lightSource->SetColor(glm::vec4(1.0,1.0,1.0,1.0));
-        lightSource->setActiveShader(TEXTURE_SHADER);
-        lightSource->SetProjection(projection->GetPerspective());
+      //  lightSource->SetColor(glm::vec4(1.0,1.0,1.0,1.0));
+      //  lightSource->setActiveShader(TEXTURE_SHADER);
+      //  lightSource->SetProjection(projection->GetPerspective());
         lightSource->SetFirstTranslate(true);
         if (_Animate && lightSource->HasAnimation() )
             lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));    //dummy);

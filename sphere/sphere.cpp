@@ -223,7 +223,7 @@ void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
         }
         else {
            glm::mat4 mvp =  GetProjection() * cam ->GetView() *  Model;
-           glUniformMatrix4fv(currentShader, 1, GL_FALSE, glm::value_ptr(mvp));
+           glUniformMatrix4fv(matrix_location, 1, GL_FALSE, glm::value_ptr(mvp));
         }
 
         // -----------------------------------------
