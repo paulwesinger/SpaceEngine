@@ -1,15 +1,15 @@
 QT -= gui
 
-CONFIG += c++14
+CONFIG += c++14 console
 CONFIG -= app_bundle
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-unix:LIBS += -L /usr/lib64 -L/usr/lib64/GL -L/usr/lib64/irrklang -lGL -lSDL2 -lGLEW -lSDL2_image -lfreetype
+unix:LIBS += -L /usr/lib64 -L/usr/lib64/GL -lGL -lSDL2 -lGLEW -lSDL2_image -lfreetype
 #-lIrrKlang
-
+#-L/usr/lib64/irrklang
 SOURCES += \
         3DLoader/load3ds.cpp \
         Animate/animate.cpp \
@@ -199,27 +199,6 @@ HEADERS += \
     fileutils/fileutil.h \
     functions.h \
     imageloader/loadimage.h \
-    include/ik_ESoundEngineOptions.h \
-    include/ik_ESoundOutputDrivers.h \
-    include/ik_EStreamModes.h \
-    include/ik_IAudioRecorder.h \
-    include/ik_IAudioStream.h \
-    include/ik_IAudioStreamLoader.h \
-    include/ik_IFileFactory.h \
-    include/ik_IFileReader.h \
-    include/ik_IRefCounted.h \
-    include/ik_ISound.h \
-    include/ik_ISoundDeviceList.h \
-    include/ik_ISoundEffectControl.h \
-    include/ik_ISoundEngine.h \
-    include/ik_ISoundMixedOutputReceiver.h \
-    include/ik_ISoundSource.h \
-    include/ik_ISoundStopEventReceiver.h \
-    include/ik_IVirtualRefCounted.h \
-    include/ik_SAudioStreamFormat.h \
-    include/ik_irrKlangTypes.h \
-    include/ik_vec3d.h \
-    include/irrKlang.h \
     initgl.h \
     landscape/landscape.h \
     lights/light.h \

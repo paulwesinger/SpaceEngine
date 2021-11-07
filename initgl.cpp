@@ -626,7 +626,9 @@ void InitGL::InitEngineObject() {
     //-----------------------------------------
     loginfo("Erstelle LichtQuelle als weisse sphere....","InitGL::InitEngineObjects");
     lightSource = new CSphere(ambientLight->getPos(),glm::vec4(1.0,1.0,1.0,1.0),projection->GetPerspective(),18,(GLfloat)2.0,shader );
-    lightSource->SetColor(glm::vec4(1.0,1.0,1.0,0.8));
+
+
+    //lightSource->SetColor(glm::vec4(1.0,1.0,1.0,0.8));
     //Texture loading
     cubeimages.clear();
     texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
@@ -635,6 +637,22 @@ void InitGL::InitEngineObject() {
     else
         logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
+
+
+
+
+    sphere1->initShader(COLOR_SHADER,cubeshaderprog_color);
+    sphere1->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
+    sphere1->initShader(LIGHT_SHADER, cubeshaderprog_normals);
+    sphere1->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    sphere1->setActiveShader(LIGHT_SHADER);
+    sphere1->addLight(ambientLight);
+
+    lightSource->initShader(COLOR_SHADER,cubeshaderprog_color);
+    lightSource->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
+    lightSource->initShader(LIGHT_SHADER, cubeshaderprog_normals);
+    lightSource->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    lightSource->setActiveShader(LIGHT_SHADER);
 
 
     loginfo("--------------------------------------------");

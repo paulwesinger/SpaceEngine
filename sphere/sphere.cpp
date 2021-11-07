@@ -79,7 +79,6 @@ CSphere::CSphere() :
    float near= 0.1f ;
    float far = 100.0f;
    glm::mat4 pro = perspective(radians,aspect,near,far); //Standard
- //  SetProjection(pro);
    setUp();
 }
 
@@ -164,7 +163,7 @@ CSphere::~CSphere() {
     glDeleteVertexArrays(1, &_Vao);
     glDeleteBuffers(1, &_VertexBuffer);
     //glDeleteBuffers(1, &index_buffer);
-    glDeleteProgram(shaderprogram);
+ //   glDeleteProgram(shaderprogram);
 }
 
 void CSphere::SetColor(vec4 color) {
@@ -173,15 +172,31 @@ void CSphere::SetColor(vec4 color) {
 //virtuale MEthoden
 void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
 
-    glUseProgram(shaderprogram);
-    mv_location     = glGetUniformLocation(shaderprogram,"mv");
-    color_location  = glGetUniformLocation(shaderprogram,"changecolor");
+    //glUseProgram(shaderprogram);
+    glEnable(GL_DEPTH_TEST);
+    glUseProgram(currentShader);
 
+    // Locate uniforms in shader
+    int matrix_location = glGetUniformLocation(currentShader, "mv_matrix");
+    int projectionloc = glGetUniformLocation(currentShader,"projection");
+    int viewloc = glGetUniformLocation(currentShader,"view");
+
+    //color_location = glGetUniformLocation(shaderprogram,"triangleColor");
+    int ortho_location;// = glGetUniformLocation(currentShader,"orthomatrix");
+
+    // Model  Lightning
+    int modellocation = glGetUniformLocation(currentShader,"model");
+    int lightlocation = glGetUniformLocation(currentShader,"lightpos");
+    int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
+
+
+    //mv_location     = glGetUniformLocation(shaderprogram,"mv");
+    //color_location  = glGetUniformLocation(shaderprogram,"changecolor");
     glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
 
     glm::mat4 Model(1);
 
-        if (  GetFirstTranslate() ) {
+    if (  GetFirstTranslate() ) {
 
         Model = glm::translate(Model,GetTranslate());
         //printf ( "Cube::Draw glm::translate :  %f, %f ,%f \n",GetTranslate().x,GetTranslate().y,GetTranslate().z);
@@ -197,9 +212,43 @@ void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
         Model = glm::translate(Model,GetTranslate());
     }
 
-    glm::mat4 mvp = GetProjection() * cam->GetView() * Model;
-    glUniformMatrix4fv(mv_location, 1, GL_FALSE, glm::value_ptr(mvp));
+    //Model = glm::scale(Model,GetScale());
 
+
+
+        if (_IsOrtho) {
+            glm::mat4 view = glm::lookAt(vec3(0.0f,0.0f,0.1f),glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::mat4 mvp =  GetProjection() * view * Model;
+            glUniformMatrix4fv(ortho_location, 1, GL_FALSE, glm::value_ptr(mvp));
+        }
+        else {
+           glm::mat4 mvp =  GetProjection() * cam ->GetView() *  Model;
+           glUniformMatrix4fv(currentShader, 1, GL_FALSE, glm::value_ptr(mvp));
+        }
+
+        // -----------------------------------------
+        // Lightning
+        // -----------------------------------------
+        glUniformMatrix4fv(modellocation, 1, GL_FALSE, glm::value_ptr(Model));
+
+        if ( _Light != nullptr) {
+            glm::vec3 c =   _Light->getColor();
+            glm::vec3 p =   _Light->getPos();
+            glUniform3f(lightlocation,p.x,p.y,p.z);
+            glUniform3f(lightcolorlocation,c.x,c.y,c.z);
+        }
+        else {
+            glm::vec3 lightpos = vec3(-10.0,2.0,-5.0);
+            glm::vec3 lightcolor = glm::vec3( 0.0,1.0,0.0);
+            glUniform3f(lightlocation,lightpos.x,lightpos.y,lightpos.z);
+            glUniform3f(lightcolorlocation,lightcolor.x,lightcolor.y,lightcolor.z);
+        }
+
+    //glm::mat4 mvp = GetProjection() * cam->GetView() * Model;
+    //glUniformMatrix4fv(mv_location, 1, GL_FALSE, glm::value_ptr(mvp));
+
+    glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
+    glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));
 
     glFrontFace(GL_CW);
 
@@ -282,7 +331,7 @@ void CSphere::calcNew() {
     // Nordpol ins array für vertexbuffer eintragen
     // structure für Texture Nordpol:
     vt.vector = npol;
-    vt.color = color;
+    vt.color = glm::normalize(vt.vector);   //color;
     vt.tex   = glm::vec2(0.5,1.0);
 
     //structure für Color Nordpol
@@ -313,13 +362,16 @@ void CSphere::calcNew() {
         if ( laengenwinkel < 0.0f )
             laengenwinkel += 360.0f;
 
-        laengengrad.x = mPoint.x;///meridianPoints.at(i).x;
+        laengengrad.x = mPoint.x;//meridianPoints.at(i).x;
         laengengrad.y = mPoint.y;//meridianPoints.at(i).y;
         laengengrad.z = 0.0;
 
         // structure für Texture Sphere
         vt.vector = laengengrad;
-        vt.color = color;
+
+        // missbrauch von color für normalen vector...
+        vt.color = glm::normalize(vt.vector);
+
         texU = 0.0f;
         texV = (i+1) * texCoordV;
         vt.tex   = glm::vec2(texU,texV);
@@ -352,7 +404,7 @@ void CSphere::calcNew() {
              texU = j * texCoordU;
 
              vt.vector = breitengrad;
-             vt.color = color;
+             vt.color = glm::normalize(vt.vector);
 
              if ( j ==   _CountPoints * 2 - 1  )
                 vt.tex = glm::vec2(1.0,1.0);
@@ -372,7 +424,7 @@ void CSphere::calcNew() {
     }
     // "Südpol"
     vt.vector = glm::vec3(0.0, -(_Radius),0.0) ;
-    vt.color = color;
+    vt.color = glm::normalize(vt.vector);
     vt.tex = glm::vec2(0.5,0.0);
     //structure für Colorsphere Südpol
     vc.vector = laengengrad;
@@ -386,7 +438,7 @@ void CSphere::calcNew() {
 
 
 void CSphere::calc(GLfloat * v) {
-
+/*
 // Erstmal NordPol festlegen
 glm::vec3 npol = glm::vec3(0.0,_Radius ,0.0);
 float winkel_laenge = 180.0f / (_CountPoints -1 ) ;
@@ -466,14 +518,15 @@ for (int i = 0; i < _CountPoints - 2; i++) {
     Add2GPU(v, index, GetColor().x, GetColor().y, GetColor().z);
     Add2GPU(v, index, glm::vec2(0.5,0.0));
     countVertex++;
+    */
 }
 void CSphere::setUp() {
 
     int vs,fs;
 
-    vs = shader->compileVertexShader(vs_source);
-    fs = shader->compileFragmentShader(fs_source);
-    shaderprogram = shader->CreateProgram(vs,fs);
+   // vs = shader->compileVertexShader(vs_source);
+   // fs = shader->compileFragmentShader(fs_source);
+   // shaderprogram = shader->CreateProgram(vs,fs);
 
     calcNew();
 
@@ -490,10 +543,10 @@ void CSphere::setUp() {
 
 
     // Vertex
-    glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 8*sizeof(float),(void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT, GL_TRUE, 8*sizeof(float),(void*)0);
     glEnableVertexAttribArray(0);
     //Color
-    glVertexAttribPointer(1,3,GL_FLOAT, GL_FALSE, 8*sizeof(float),(void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1,3,GL_FLOAT, GL_TRUE, 8*sizeof(float),(void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     // Texture
     glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(float), (void*)(6 *sizeof(float)));

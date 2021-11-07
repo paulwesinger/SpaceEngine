@@ -276,7 +276,7 @@ void CCube::Draw(Camera * cam) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     // Locate uniforms in shader
-    mv_location = glGetUniformLocation(currentShader, "mv_matrix");
+    int matrix_location = glGetUniformLocation(currentShader, "mv_matrix");
     int projectionloc = glGetUniformLocation(currentShader,"projection");
     int viewloc = glGetUniformLocation(currentShader,"view");
 
@@ -319,7 +319,7 @@ void CCube::Draw(Camera * cam) {
     }
     else {
        glm::mat4 mvp =  GetProjection() * cam ->GetView() *  Model;
-       glUniformMatrix4fv(mv_location, 1, GL_FALSE, glm::value_ptr(mvp));
+       glUniformMatrix4fv(matrix_location, 1, GL_FALSE, glm::value_ptr(mvp));
     }
 
     // -----------------------------------------

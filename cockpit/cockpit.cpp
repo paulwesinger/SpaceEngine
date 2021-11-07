@@ -15,7 +15,7 @@ void Cockpit::init() {
     //  Front->StepTranslate(transFront); //.x,transFront.y,transFront.z);
     Front->SetHasTextures(true);
     std::vector<std::string> list;
-    std::string s = "../SpaceEngine/images/world.png";
+    std::string s = "images/world.png";
     list.push_back(s);
     Front->addTexture(list,"cockpit:init");
     Front->scaleX(2.0);

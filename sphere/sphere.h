@@ -63,9 +63,6 @@ private:
     GLuint shaderprogram;
     int countVertex;
 
-
-
-
     Shader * shader;
     GLfloat _Radius;
     int _CountPoints;

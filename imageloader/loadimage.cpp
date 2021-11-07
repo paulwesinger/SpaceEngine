@@ -12,7 +12,7 @@ SDL_Surface * CLoadImage::getSurface(string  path,string obj){
 
     SDL_Surface * surf = IMG_Load( path.c_str() );
     if ( surf ) {
-      //  loginfo("Succes:  Image " + path + " loaded",obj);
+        loginfo("Succes:  Image " + path + " loaded",obj);
         return surf;
     }
     else {

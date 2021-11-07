@@ -40,10 +40,8 @@ private:
 
     GLuint          position_buffer;
     GLuint          index_buffer;
-    GLint           mv_location;
     GLint           ortho_location;
     GLint           color_location; // Farbe im vertex Shader
-    GLint           viewlocation;   // viewmatreix für orhomode
     int             vs ;
     int             fs;
     Shader *        shader;
