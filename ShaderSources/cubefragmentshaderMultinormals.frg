@@ -56,7 +56,7 @@ void main(void) {
    float diff = max(dot(normal_out,lightDir),0.0);
    vec3 diffuse = diff * lightcolor;
 
-    vec4 texcolor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 1.0);
+    vec4 texcolor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.8);
     FragColor = texcolor * (vec4(diffuse,1.0) + vec4(ambient,1.0));
 
 }

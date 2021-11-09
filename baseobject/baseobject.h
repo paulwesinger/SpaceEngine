@@ -80,6 +80,7 @@ protected:
                 perspectiveColorShader,
                 lightshader,
                 lightcolorshader,
+                lighttextureshader,
                 currentShader;
 
     // This vectors holds the current translation,rotation,scale

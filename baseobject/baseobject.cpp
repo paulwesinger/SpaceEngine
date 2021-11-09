@@ -120,6 +120,7 @@ void BaseObject::initShader(ShaderType s, GLuint prog) {
         case TEXTURE_SHADER:        perspectiveTextureShader = prog; break;
         case LIGHT_SHADER:          lightshader = prog; break;
         case LIGHT_COLOR_SHADER:    lightcolorshader = prog; break;
+        case LIGHT_TEXTURE_SHADER: lighttextureshader = prog; break;
     default:
             perspectiveColorShader = prog;
     }
@@ -132,6 +133,7 @@ void BaseObject::setActiveShader(ShaderType t){
         case TEXTURE_SHADER     : currentShader = perspectiveTextureShader; break;
         case LIGHT_SHADER       : currentShader = lightshader; break;
         case LIGHT_COLOR_SHADER : currentShader = lightcolorshader; break;
+        case LIGHT_TEXTURE_SHADER   :  currentShader = lighttextureshader;break;
     }
 }
  // Transormatioons

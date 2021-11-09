@@ -283,6 +283,19 @@ void InitGL::InitShaders() {
     shader->AttachCustomShader(cubeshaderprog_color_normal,fscn);
     shader->CreateCustomProgram(cubeshaderprog_color_normal);
 
+    // Shader für Texture lightning
+    loginfo("Erstelle Lightning Shader ..............done");
+    v_source ="../SpaceEngine/ShaderSources/cubevertexnormalshader.vex";
+    vsn = shader ->compileVertexShaderFromFile(v_source,filestream);
+    //Fragment Shader Color
+    v_source ="../SpaceEngine/ShaderSources/FragmentTextureLightShader.frg";
+    fsn = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    shader->CreateCustomShader(lighttexture_shader);
+    shader->AttachCustomShader(lighttexture_shader,vsn);
+    shader->AttachCustomShader(lighttexture_shader,fsn);
+    shader->CreateCustomProgram(lighttexture_shader);
+
+
     glDetachShader(cubeshaderprog_color,vs);
     glDetachShader(cubeshaderprog_color,vscn);
     glDetachShader(cubeshaderprog_color,fscn);
@@ -291,6 +304,9 @@ void InitGL::InitShaders() {
 
     glDetachShader(cubeshaderprog_normals,fsn);
     glDetachShader(cubeshaderprog_normals,vsn);
+
+    glDetachShader(lighttexture_shader,fsn);
+    glDetachShader(lighttexture_shader,vsn);
 
 
     // =======================================================================
@@ -893,6 +909,7 @@ void InitGL::Run() {
            // Shader select
            case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;        _ShaderChanged = true;  break;
            case KEY_T   : _CurrentShader = ShaderType::TEXTURE_SHADER;      _ShaderChanged = true;  break;
+           case KEY_F8  : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER; _ShaderChanged = true; break;
            case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;        _ShaderChanged = true;  break;
            case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;  _ShaderChanged = true;  break;
            case KEY_F11: {
@@ -1000,6 +1017,8 @@ void InitGL::Run() {
                 for (unsigned int i=0;i < list3D.size(); i++ )
                     list3D[i]->setActiveShader(_CurrentShader);
             }
+            lightSource->setActiveShader(_CurrentShader);
+            cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
         }
 
         if (! list3D.empty() ) {
