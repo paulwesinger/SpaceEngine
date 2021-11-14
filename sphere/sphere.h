@@ -73,6 +73,7 @@ private:
     std::vector<sVertexTexture> vertsTexture;
     std::vector<sVertexColor> vertsColor;
     void calcNew();
+    void calcStrip();
 };
 
 

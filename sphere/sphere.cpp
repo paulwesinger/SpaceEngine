@@ -262,18 +262,20 @@ void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
     glBindTexture(GL_TEXTURE_2D, _Textures[0]);
 
 
-    glPointSize(2.0f);
+ //   glPointSize(2.0f);
     // Alle indices binden:
     // Nordpol
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Ebo_npol);
-    glDrawElements( GL_TRIANGLE_FAN, /*_CountPoints * 2 + 1 */ northPol.size()  , GL_UNSIGNED_SHORT, 0);
+   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Ebo_npol);
+   // glDrawElements( GL_TRIANGLE_FAN, /*_CountPoints * 2 + 1 */ northPol.size()  , GL_UNSIGNED_SHORT, 0);
 
     // Südpol
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Ebo_spol);
-    glDrawElements(GL_TRIANGLE_FAN, /*_CountPoints * 2 + 1*/ southPol.size(), GL_UNSIGNED_SHORT, 0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Ebo_spol);
+    //glDrawElements(GL_TRIANGLE_FAN, /*_CountPoints * 2 + 1*/ southPol.size(), GL_UNSIGNED_SHORT, 0);
 
     // Body
 
+    glPointSize(8);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_BodyPoints);
     glDrawElements(_DrawMode,body.size(),GL_UNSIGNED_SHORT,0);
 
@@ -314,6 +316,161 @@ void CSphere::Add2GPU(float* v, int &index, glm::vec2 vec) {
     index +=2;
 }
 
+void CSphere::calcStrip() {
+    // Erstmal NordPol festlegen
+    glm::vec3 npol = glm::vec3(0.0,_Radius ,0.0);
+    float winkel_laenge = 180.0f / (_CountPoints ) ;
+    float winkel_breite = 360.0f / ((_CountPoints  * 2)); // ((_CountPoints  * 2) - 1)
+    float laengenwinkel = 90.0f - winkel_laenge;
+    float breitenwinkel = winkel_breite;
+
+    sVertexTexture vt;   // Structure für Texture Sphere
+    sVertexColor   vc;   // Structure für Color Sphere
+
+    // glm::vec3 color = glm::vec3(GetColor().x, GetColor().y, GetColor().z);
+    // Nordpol ins array für vertexbuffer eintragen
+    // structure für Texture Nordpol:
+    vt.vector = npol;
+    vt.color = glm::normalize(vt.vector);   //color;
+    vt.tex   = glm::vec2(0.5,1.0);
+
+    //structure für Color Nordpol
+    vc.vector = npol;
+    vc.color  = npol;
+
+//    vertsTexture.push_back(vt);
+//    vertsColor.push_back(vc);
+
+    //--------------------------------------------------------------
+    // jetzt den Body : Hilfsvariablen
+    //--------------------------------------------------------------
+    glm::vec3 laengengrad;
+    glm::vec3 breitengrad;
+
+    float texCoordU = 1.0f / ((_CountPoints * 2)) ;
+    float texCoordV = 1.0f / (_CountPoints);
+    float texU;
+    float texV;
+
+    for (int i = 0; i < (_CountPoints * 2); i++){
+
+
+        laengengrad.x = 0.0f; //winkel_breite * static_cast<float>(i);
+        laengengrad.y = _Radius;
+        laengengrad.z = 0.0f;
+        vt.vector = laengengrad;
+        glm::vec2 lPoint;
+
+        calccircle(laengengrad.x,breitenwinkel,lPoint);
+
+        // missbrauch von color für normalen vector...
+        vt.color = glm::normalize(vt.vector);
+
+        texU = i * texCoordU;
+        texV = 0.0f;
+        vt.tex   = glm::vec2(texU,texV);
+
+        //structure für Color
+        vc.vector = laengengrad;
+        vc.color = glm::normalize(vc.vector);
+
+        vertsTexture.push_back(vt);
+        vertsColor.push_back(vc);
+    }
+
+
+    for (int i = 1; i < _CountPoints; i++) {
+
+        glm::vec2 mPoint;
+        calccircle(_Radius, laengenwinkel, mPoint);
+
+        laengenwinkel -= winkel_laenge;
+        if ( laengenwinkel < 0.0f )
+            laengenwinkel += 360.0f;
+
+        laengengrad.x = mPoint.x;//meridianPoints.at(i).x;
+        laengengrad.y = mPoint.y;//meridianPoints.at(i).y;
+        laengengrad.z = 0.0;
+
+        // structure für Texture Sphere
+        vt.vector = laengengrad;
+
+        // missbrauch von color für normalen vector...
+        vt.color = glm::normalize(vt.vector);
+
+        texU = 0.0f;
+        texV = static_cast<float>(i) * texCoordV;
+        vt.tex   = glm::vec2(texU,texV);
+
+        //structure für Color
+        vc.vector = laengengrad;
+        vc.color = glm::normalize(vc.vector);
+
+        vertsTexture.push_back(vt);
+        vertsColor.push_back(vc);
+
+        // ========================================================
+        // Jetzt den Breitengrad für jeden längengrad punkt rechnen
+        // diesmal CountPoints * 2 -1
+        //---------------------------------------------------------
+        for (int j = 0; j < _CountPoints * 2; j++) {
+            // sehne  :
+            glm::vec2 lPoint;
+
+             calccircle(laengengrad.x,breitenwinkel,lPoint);
+
+             breitenwinkel += winkel_breite;
+
+             // Man könnte das ganze auch gleich direkt in das array fürden GPU Mem schreiben
+             // .. ist aber so leichter zu lesen
+             breitengrad.x = lPoint.x;//latitudePoints.at(j).x;
+             breitengrad.y = laengengrad.y;
+             breitengrad.z = lPoint.y;//latitudePoints.at(j).y;
+             // Texture , diesmal nur u koordinate , v bleibt erstmal
+             texU = static_cast<float>(j) * texCoordU;
+
+             vt.vector = breitengrad;
+             vt.color = glm::normalize(vt.vector);
+
+             if ( j ==   _CountPoints * 2 )
+                vt.tex = glm::vec2(1.0,1.0);
+             else
+                vt.tex = glm::vec2(texU,texV);
+
+             //structure für Color Nordpol
+             vc.vector = laengengrad;
+             vc.color =glm::normalize(vt.vector);
+
+             vertsTexture.push_back(vt);
+             vertsColor.push_back(vc);
+        }
+
+        breitenwinkel = winkel_breite;
+
+    }
+    // "Südpol"
+    for (int i = 0; i < (_CountPoints * 2); i++){
+
+        laengengrad.x = 0.0f; //laengengrad.x = winkel_breite * static_cast<float>(i);
+        laengengrad.y = -_Radius;
+        laengengrad.z = 0.0f;
+        vt.vector = laengengrad;
+
+        // missbrauch von color für normalen vector...
+        vt.color = glm::normalize(vt.vector);
+
+        texU = static_cast<float>(i) * texCoordU;
+        texV = 1.0;
+        vt.tex   = glm::vec2(texU,texV);
+
+        //structure für Color
+        vc.vector = laengengrad;
+        vc.color = glm::normalize(vc.vector);
+
+        vertsTexture.push_back(vt);
+        vertsColor.push_back(vc);
+    }
+}
 
 void CSphere::calcNew() {
     // Erstmal NordPol festlegen
@@ -522,13 +679,12 @@ for (int i = 0; i < _CountPoints - 2; i++) {
 }
 void CSphere::setUp() {
 
-    int vs,fs;
-
    // vs = shader->compileVertexShader(vs_source);
    // fs = shader->compileFragmentShader(fs_source);
    // shaderprogram = shader->CreateProgram(vs,fs);
 
-    calcNew();
+    //calcNew();
+    calcStrip();
 
     // Neu mit std::vector
     glGenVertexArrays(1,&_Vao);
@@ -552,42 +708,44 @@ void CSphere::setUp() {
     glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(float), (void*)(6 *sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    for (GLushort i = 0; i < _CountPoints * 2 + 1; i ++) {
-        northPol.push_back(i);
-    }
+   // for (GLushort i = 0; i < _CountPoints * 2 + 1; i ++) {
+    //    northPol.push_back(i);
+    //}
 
 
     // und in den buffer...
-    glGenBuffers(1,&_Ebo_npol);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo_npol);
-    glBufferData (GL_ELEMENT_ARRAY_BUFFER,
-                  northPol.size() * sizeof (GLushort),
-                  &northPol[0],
-                  GL_DYNAMIC_DRAW);
+   // glGenBuffers(1,&_Ebo_npol);
+   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo_npol);
+   // glBufferData (GL_ELEMENT_ARRAY_BUFFER,
+   //               northPol.size() * sizeof (GLushort),
+   //               &northPol[0],
+   //               GL_DYNAMIC_DRAW);
 
     // -------------------------------------
     // Sphere body
     //--------------------------------------
     int x = 0;
-    int step = _CountPoints * 2 ;
+    int step = _CountPoints * 2;
     int hlp = step;
 
-    int i, j,count = 0;
+    int i, j;
 
-    for (j = 0; j < _CountPoints - 3; j++) {  // -3
+    for (j = 0; j < _CountPoints; j++) {  // -3
 
         for (i= 0; i < hlp; i++){
-            body.push_back(i + 1 + x);
-            body.push_back(i+x+step+1);
+            //body.push_back(i + 1 + x);
+            //body.push_back(i+x+step+1);
+            body.push_back(i + x);
+            body.push_back(i + x + step);
 
         }
         // CountPoints* 2 * y + x....
 
-        body.push_back( 1+x);  // _CountPoints * 2 * j + 1);
-        body.push_back( 1+x+step);//_CountPoints * 2 * j + step +1);
+    //    body.push_back( 1+x);  // _CountPoints * 2 * j + 1);
+    //    body.push_back( 1+x+step);//_CountPoints * 2 * j + step +1);
 
-         x += step;
-        count = x;
+        hlp = step;
+        x += step;
     }
 
     //-------------------------
@@ -606,12 +764,12 @@ void CSphere::setUp() {
         southPol.push_back(i + 216 );
     }
    */
-    southPol.push_back(bodypoints + 1);
+  //  southPol.push_back(bodypoints + 1);
 
 
-    for (GLushort i = _CountPoints * 2; i > 0;  i --) {
-        southPol.push_back(i + (bodypoints - countPointsLatitude) );
-    }
+   // for (GLushort i = _CountPoints * 2; i > 0;  i --) {
+   //     southPol.push_back(i + (bodypoints - countPointsLatitude) );
+   // }
 
 
 
@@ -623,12 +781,12 @@ void CSphere::setUp() {
                         GL_STATIC_DRAW);
     //glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indicesEBO.size() * sizeof(<data type>), &m_indicesEBO[0], GL_STATIC_DRAW);
 
-    glGenBuffers(1,&_Ebo_spol);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo_spol);
-    glBufferData (GL_ELEMENT_ARRAY_BUFFER,
-                  southPol.size() * sizeof (GLushort),
-                  &southPol[0],
-                  GL_DYNAMIC_DRAW);
+ //   glGenBuffers(1,&_Ebo_spol);
+ //   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo_spol);
+ //   glBufferData (GL_ELEMENT_ARRAY_BUFFER,
+ //                 southPol.size() * sizeof (GLushort),
+ //                 &southPol[0],
+ //                 GL_DYNAMIC_DRAW);
 
     // Alles reseten
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
