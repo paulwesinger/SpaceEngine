@@ -66,6 +66,8 @@ DISTFILES += \
     Meshes/spaceship.3ds \
     README.md \
     ShaderSources/FogShaderExample.txt \
+    ShaderSources/FragmentTextureLightShader.frg \
+    ShaderSources/VertexTextureLightShader.vex \
     ShaderSources/colorshader.frg \
     ShaderSources/cubefragmentshaderMulti.frg \
     ShaderSources/cubefragmentshaderMultinormals.frg \

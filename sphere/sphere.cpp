@@ -317,7 +317,109 @@ void CSphere::Add2GPU(float* v, int &index, glm::vec2 vec) {
 }
 
 void CSphere::calcStrip() {
-    // Erstmal NordPol festlegen
+
+    glm::vec3 meridianPoint;
+    glm::vec3 breitengradpoint;
+
+    float winkelmeridian     = 180.0f / _CountPoints;
+    float winkelbreitengrad  = 360.0f / (_CountPoints*2);
+    float stepTexS           = 1.0f / (_CountPoints *2);  // waagrechte
+    float stepTexT           = 1.0f / _CountPoints;       // Senkrechte
+    float currentAngle       = 90.0f;
+
+    int i,j;
+    sVertexTexture vt;   // Structure für Texture Sphere
+    sVertexColor   vc;
+
+    for (i=0; i<_CountPoints*2;i++){
+        meridianPoint.x = 0.0f;
+        meridianPoint.y = _Radius;
+        meridianPoint.z = 0.0f;
+
+        vt.vector = meridianPoint;
+        vt.color  = glm::normalize(vt.vector);
+
+        if (i ==  (_CountPoints*2) -1)
+            vt.tex.s = 1.0;
+         else
+            vt.tex.s = static_cast<float>(i) * stepTexS;
+        vt.tex.t = 1.0;
+
+        vc.vector  = meridianPoint;
+        vertsTexture.push_back(vt);
+        vertsColor.push_back(vc);
+
+    }
+
+
+    //---------------------------------------------
+    // Body
+    //---------------------------------------------
+    for (i =1; i<_CountPoints-1; i++){
+
+        currentAngle -= winkelmeridian;
+
+        glm::vec2 mPoint;
+        calccircle(_Radius, currentAngle, mPoint);
+        meridianPoint.x = mPoint.x;
+        meridianPoint.y = mPoint.y;
+        meridianPoint.z = 0.0f;
+
+        vt.vector = meridianPoint;
+        vt.color  = glm::normalize(vt.vector);
+        vt.tex.s = 0.0f;
+        vt.tex.t = static_cast<float>(i) * stepTexT;
+
+        vc.vector  = meridianPoint;
+        vertsTexture.push_back(vt);
+        vertsColor.push_back(vc);
+
+        for (j=1; j < (_CountPoints*2); j++) {
+
+            glm::vec2 lPoint;
+            calccircle(meridianPoint.x, static_cast<float>(j)* winkelbreitengrad,lPoint);
+
+             // Man könnte das ganze auch gleich direkt in das array fürden GPU Mem schreiben
+             // .. ist aber so leichter zu lesen
+             breitengradpoint.x = lPoint.x;//latitudePoints.at(j).x;
+             breitengradpoint.y = meridianPoint.y;
+             breitengradpoint.z = lPoint.y;//latitudePoints.at(j).y;
+             // Texture , diesmal nur u koordinate , v bleibt erstmal
+             vt.tex.s = static_cast<float>(j) * stepTexS;
+             vt.tex.t = static_cast<float>(i) * stepTexT;
+
+             vt.vector = breitengradpoint;
+             vt.color = glm::normalize(vt.vector);
+
+             vc.vector = breitengradpoint;
+             vertsTexture.push_back(vt);
+             vertsColor.push_back(vc);
+        }
+    }
+
+    for (i=0; i<_CountPoints*2;i++){
+        meridianPoint.x = 0.0f;
+        meridianPoint.y = - _Radius;
+        meridianPoint.z = 0.0f;
+
+        vt.vector = meridianPoint;
+        vt.color  = glm::normalize(vt.vector);
+        vt.tex.s = static_cast<float>(i) * stepTexS;
+        vt.tex.t = 1.0;
+
+        vc.vector  = meridianPoint;
+        vertsTexture.push_back(vt);
+        vertsColor.push_back(vc);
+
+    }
+
+
+
+
+
+
+    //---------------------------------------------------------------------------------
+   /*
     glm::vec3 npol = glm::vec3(0.0,_Radius ,0.0);
     float winkel_laenge = 180.0f / (_CountPoints ) ;
     float winkel_breite = 360.0f / ((_CountPoints  * 2)); // ((_CountPoints  * 2) - 1)
@@ -347,8 +449,8 @@ void CSphere::calcStrip() {
     glm::vec3 laengengrad;
     glm::vec3 breitengrad;
 
-    float texCoordU = 1.0f / ((_CountPoints * 2)) ;
-    float texCoordV = 1.0f / (_CountPoints);
+    float texCoordU = 1.0f / ((_CountPoints * 2)-1) ;
+    float texCoordV = 1.0f / ((_CountPoints)-1);
     float texU;
     float texV;
 
@@ -378,6 +480,21 @@ void CSphere::calcStrip() {
         vertsColor.push_back(vc);
     }
 
+
+    laengengrad.x = 0.0f; //winkel_breite * static_cast<float>(i);
+    laengengrad.y = _Radius;
+    laengengrad.z = 0.0f;
+    vt.vector = laengengrad;
+    vt.color = glm::normalize(vt.vector);
+
+    vc.vector = laengengrad;
+    vc.color = glm::normalize(vc.vector);
+
+    texU = 1.0;
+    texV = 0.0f;
+
+    vertsTexture.push_back(vt);
+    vertsColor.push_back(vc);
 
     for (int i = 1; i < _CountPoints; i++) {
 
@@ -418,9 +535,7 @@ void CSphere::calcStrip() {
             glm::vec2 lPoint;
 
              calccircle(laengengrad.x,breitenwinkel,lPoint);
-
              breitenwinkel += winkel_breite;
-
              // Man könnte das ganze auch gleich direkt in das array fürden GPU Mem schreiben
              // .. ist aber so leichter zu lesen
              breitengrad.x = lPoint.x;//latitudePoints.at(j).x;
@@ -470,6 +585,8 @@ void CSphere::calcStrip() {
         vertsTexture.push_back(vt);
         vertsColor.push_back(vc);
     }
+
+    */
 }
 
 void CSphere::calcNew() {
@@ -708,70 +825,23 @@ void CSphere::setUp() {
     glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(float), (void*)(6 *sizeof(float)));
     glEnableVertexAttribArray(2);
 
-   // for (GLushort i = 0; i < _CountPoints * 2 + 1; i ++) {
-    //    northPol.push_back(i);
-    //}
-
-
-    // und in den buffer...
-   // glGenBuffers(1,&_Ebo_npol);
-   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo_npol);
-   // glBufferData (GL_ELEMENT_ARRAY_BUFFER,
-   //               northPol.size() * sizeof (GLushort),
-   //               &northPol[0],
-   //               GL_DYNAMIC_DRAW);
-
     // -------------------------------------
     // Sphere body
     //--------------------------------------
     int x = 0;
-    int step = _CountPoints * 2;
-    int hlp = step;
+    int step = (_CountPoints * 2);
 
     int i, j;
 
     for (j = 0; j < _CountPoints; j++) {  // -3
 
-        for (i= 0; i < hlp; i++){
-            //body.push_back(i + 1 + x);
-            //body.push_back(i+x+step+1);
+        for (i= 0; i < step; i++){
             body.push_back(i + x);
             body.push_back(i + x + step);
-
         }
-        // CountPoints* 2 * y + x....
 
-    //    body.push_back( 1+x);  // _CountPoints * 2 * j + 1);
-    //    body.push_back( 1+x+step);//_CountPoints * 2 * j + step +1);
-
-        hlp = step;
         x += step;
     }
-
-    //-------------------------
-    // Southpol: negate winding
-    //-------------------------
-
-    int countPointsMeridian = _CountPoints - 2;
-    int countPointsLatitude = _CountPoints * 2;
-    int bodypoints = countPointsLatitude * countPointsMeridian;
-
-
-    /*   Muster zur berechnung
-    southPol.push_back(241);
-
-    for (GLushort i = _CountPoints * 2; i > 0;  i --) {
-        southPol.push_back(i + 216 );
-    }
-   */
-  //  southPol.push_back(bodypoints + 1);
-
-
-   // for (GLushort i = _CountPoints * 2; i > 0;  i --) {
-   //     southPol.push_back(i + (bodypoints - countPointsLatitude) );
-   // }
-
-
 
     glGenBuffers(1,&_BodyPoints);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_BodyPoints);
@@ -779,14 +849,6 @@ void CSphere::setUp() {
                         body.size() * sizeof(GLushort),
                         &body[0],
                         GL_STATIC_DRAW);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indicesEBO.size() * sizeof(<data type>), &m_indicesEBO[0], GL_STATIC_DRAW);
-
- //   glGenBuffers(1,&_Ebo_spol);
- //   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo_spol);
- //   glBufferData (GL_ELEMENT_ARRAY_BUFFER,
- //                 southPol.size() * sizeof (GLushort),
- //                 &southPol[0],
- //                 GL_DYNAMIC_DRAW);
 
     // Alles reseten
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);

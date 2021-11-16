@@ -285,7 +285,7 @@ void InitGL::InitShaders() {
 
     // Shader für Texture lightning
     loginfo("Erstelle Lightning Shader ..............done");
-    v_source ="../SpaceEngine/ShaderSources/cubevertexnormalshader.vex";
+    v_source ="../SpaceEngine/ShaderSources/VertexTextureLightShader.vex";
     vsn = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/FragmentTextureLightShader.frg";
@@ -987,7 +987,8 @@ void InitGL::Run() {
        sphere1->Draw(camera);
 */
        cockpit->getCockpitMesch()->SetFirstTranslate(true);
-       cockpit->getCockpitMesch()->StepRotate(glm::vec3(1.0,1.0,1.0));
+       if (_Animate)
+            cockpit->getCockpitMesch()->StepRotate(glm::vec3(0.0,0.5,0.0));
        cockpit->getCockpitMesch()->Draw(camera);
 
        //meshObject
