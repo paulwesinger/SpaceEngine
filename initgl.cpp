@@ -804,7 +804,7 @@ void InitGL::Run() {
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
 
-
+    float yaw = 0.0f;
     while ( ! quit) {
 
         elapsed = tickend - tickstart;
@@ -889,19 +889,49 @@ void InitGL::Run() {
 
            case KEY_A:{
                camera->MoveLeft(elapsed);
+               //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                cockpit->setPosition(camera);
                break;
            }
-           case KEY_Left : camera->YawCameraLeft(elapsed); break;
+       case KEY_Left :  {
+                yaw += elapsed;
+                camera->YawCameraLeft(elapsed);
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Rotate(glm::vec3(0.0,camera->YawCameraDEG(),0.0));
+                cockpit->setPosition(camera);
+                break;
+            }
 
-           case KEY_D: camera->MoveRight(elapsed); cockpit->setPosition(camera); break;
-           case KEY_Right: camera->YawCameraRight(elapsed); break;
+       case KEY_Right: {
+                yaw += elapsed;
+                camera->YawCameraRight(elapsed);
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Rotate(glm::vec3(0.0,camera->YawCameraDEG(),0.0));
+                cockpit->setPosition(camera);
+                break;
+            }
 
+       case KEY_D: {
+           camera->MoveRight(elapsed);
+           //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+           cockpit->setPosition(camera);
+           break;
+           }
 
-           case KEY_E: camera->MoveForward(elapsed); cockpit->setPosition(camera); break;
+       case KEY_E: {
+                camera->MoveForward(elapsed);
+             //   cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->setPosition(camera);
+                break;
+           }
            case KEY_Up: camera->PitchCameraUp(elapsed); break; break;
 
-           case KEY_S:camera->MoveBackward(elapsed); cockpit->setPosition(camera);break;
+           case KEY_S: {
+                camera->MoveBackward(elapsed);
+                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->setPosition(camera);
+                break;
+           }
            case KEY_Down: camera ->PitchCameraDown(elapsed); break;
 
            case KEY_Q: stopAnimation(); break;
@@ -973,39 +1003,16 @@ void InitGL::Run() {
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-
        vec3 dummy;
        dummy = vec3(0.0,0.2,0.0);
-//       sphere1->SetProjection(projection->GetPerspective());
 
-     /*  sphere1->setActiveShader(TEXTURE_SHADER);
-       if (_Animate && sphere1->HasAnimation() ) {
-            sphere1->SetFirstTranslate(true);
-            sphere1 ->StepRotate(dummy);
-       }
-       sphere1->Draw(camera);
-*/
-       cockpit->getCockpitMesch()->SetFirstTranslate(true);
-       if (_Animate)
-            cockpit->getCockpitMesch()->StepRotate(glm::vec3(0.0,0.5,0.0));
-       cockpit->getCockpitMesch()->Draw(camera);
+       cockpit->Draw(camera);
 
-       //meshObject
-        dummy = vec3(1.0,0.0,0.0);
-      //  me->SetFirstTranslate(true);
-      //  me ->StepRotate(dummy);
-      //  me->StepTranslate(glm::vec3(2.0,0.5,0.0));
-      //  me->Translate(glm::vec3(dummy));
-      //  me->Draw(camera, currentShader);
-
-
-      //  lightSource->SetColor(glm::vec4(1.0,1.0,1.0,1.0));
-      //  lightSource->setActiveShader(TEXTURE_SHADER);
-      //  lightSource->SetProjection(projection->GetPerspective());
-        lightSource->SetFirstTranslate(true);
-        if (_Animate && lightSource->HasAnimation() )
-            lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));    //dummy);
+       lightSource->SetColor(glm::vec4(1.0,1.0,1.0,1.0));
+       lightSource->SetProjection(projection->GetPerspective());
+       lightSource->SetFirstTranslate(true);
+       if (_Animate && lightSource->HasAnimation() )
+           lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));    //dummy);
 
         lightSource->Draw(camera);
 

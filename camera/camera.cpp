@@ -168,7 +168,7 @@ void Camera::MoveRight(uint elapsed) {
 }
 
 // -----------------------------------------------------
-// Camera rotations
+// Camera rotations   1 radiant = 0,0174532925199433
 // -----------------------------------------------------
 void Camera::YawCameraLeft(uint elapsed) {
 
@@ -219,8 +219,21 @@ void Camera::PitchCameraDown(uint elapsed) {
     UpdateCamera();
 }
 
+float Camera::YawCameraDEG() {
+    return _YawCamera;
+}
 
+float Camera::PitchCameraDEG() {
+    return _PitchCamera;
+}
 
+float Camera::RollCameraDEG() {
+    return _RollCamera;
+}
+
+glm::vec3 Camera::MoveDirectionDEG(){
+    return glm::vec3(_PitchCamera, _YawCamera, _RollCamera);
+}
 
 void Camera::SetMotions(uint motx,uint moty,MOUSE m,uint elapsed) {
 
@@ -278,18 +291,11 @@ void Camera::SetMotions(uint motx,uint moty,MOUSE m,uint elapsed) {
 
 void Camera::SetDir(glm::vec3 d ) { _Dir = d; }
 
-
-
 void Camera::SetPYR(glm::vec3 pyr){ _Up = pyr; }
 
-void Camera::SetPos(glm::vec3 p) {
-    _Pos = p;
-}
+void Camera::SetPos(glm::vec3 p) { _Pos = p;  }
 
-void Camera::SetView(glm::mat4 v) {
-    _View = v;
-
-}
+void Camera::SetView(glm::mat4 v) { _View = v; }
 
 glm::vec3 Camera::GetPos()  { return _Pos; }
 glm::vec3 Camera::GetDir()  { return _Dir; }

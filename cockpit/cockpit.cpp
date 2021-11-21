@@ -4,26 +4,14 @@
 Cockpit::Cockpit(glm::mat4 proj)
 {
     matrix = proj;
+    Mesh->SetProjection(matrix);
+    _Rotation = glm::vec3(0.0,0.0,0.0);
     init();
 }
 
 void Cockpit::init() {
 
-    transFront = glm::vec3(_Position.x,_Position.y, _Position.z - 5.0);
-/*
-    Front = new CCube(glm::vec3(0.0,0.0,0.0),glm::vec4(1.0,0.0,0.0,1.0),matrix);
-    //  Front->StepTranslate(transFront); //.x,transFront.y,transFront.z);
-    Front->SetHasTextures(true);
-    std::vector<std::string> list;
-    std::string s = "images/world.png";
-    list.push_back(s);
-    Front->addTexture(list,"cockpit:init");
-    Front->scaleX(2.0);
-    Front->scaleY(3.5f);
-    Front->scaleZ(1.0);
-
-    Front->SetHasTextures(false);
-*/
+    transFront = glm::vec3(_Position.x,_Position.y, _Position.z -15);
 }
 
 void Cockpit::setMesh(Animate *mesh)
@@ -51,10 +39,20 @@ void Cockpit::setShader(ShaderType st)
 }
 
 void Cockpit::Draw(Camera *cam) {
-    Mesh->SetProjection(matrix);
-    Mesh->SetColor(glm::vec4(1.0,1.0,1.0,0.5));
-    Mesh->Translate(glm::vec3(-10,2,20));
     Mesh->Draw(cam);
+}
+
+void Cockpit::Rotate(glm::vec3 rot) {
+    _Rotation  = rot;
+    Mesh->SetFirstTranslate(true);
+    Mesh->Rotate(_Rotation);
+   //
+
+}
+
+void Cockpit::Translate(glm::vec3 tran) {
+    _Translation = tran;
+     Mesh->Translate(glm::vec3(transFront.x + _Translation.x ,transFront.y + _Translation.y, transFront.z + _Translation.z));
 }
 
 void Cockpit::setProjectionMatrix(glm::mat4 mat) {
@@ -62,8 +60,9 @@ void Cockpit::setProjectionMatrix(glm::mat4 mat) {
 }
 void Cockpit::setPosition(Camera * cam) {
     _Position = cam->GetPos();
-    transFront = glm::vec3(_Position.x,_Position.y, _Position.z - 15.0);
-    Mesh->Translate(transFront);//.x,transFront.y,transFront.z);
+    transFront = glm::vec3(_Position.x + _Translation.x ,_Position.y + _Translation.y, _Position.z + _Translation.z);
+    Mesh->Translate(transFront);
+    Mesh->Rotate(_Rotation);
 }
 
 glm::vec3 Cockpit::Position() {

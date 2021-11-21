@@ -16,6 +16,8 @@ public:
     glm::vec3 Position();
     void setProjectionMatrix(glm::mat4 mat);
     void Draw( Camera * cam);
+    void Rotate(glm::vec3 rot);
+    void Translate(glm::vec3 tran);
     void InitShader(ShaderType s, GLuint prog);
     void setShader(ShaderType st);
     void setMesh(Animate * mesh);
@@ -32,6 +34,8 @@ protected:
 private:
     void init();
     glm::vec3       _Position;
+    glm::vec3       _Rotation;
+    glm::vec3       _Translation;
     glm::mat4       matrix;
 
 };

@@ -17,22 +17,6 @@
 
 #include "../defines.h"
 
-/*
-template <typename T>
-static inline Tmat4<T> lookat(const vecN<T,3>& eye, const vecN<T,3>& center, const vecN<T,3>& up)
-{
-    const Tvec3<T> f = normalize(center - eye);
-    const Tvec3<T> upN = normalize(up);
-    const Tvec3<T> s = cross(f, upN);
-    const Tvec3<T> u = cross(s, f);
-    const Tmat4<T> M = Tmat4<T>(Tvec4<T>(s[0], u[0], -f[0], T(0)),
-                                Tvec4<T>(s[1], u[1], -f[1], T(0)),
-                                Tvec4<T>(s[2], u[2], -f[2], T(0)),
-                                Tvec4<T>(T(0), T(0), T(0), T(1)));
-
-    return M * translate<T>(-eye);
-}
-*/
 class Camera {
 public:
     Camera();
@@ -52,6 +36,15 @@ public:
     glm::vec3 GetOrgPos();
     glm::vec3 GetOrgDir();
     glm::vec3 GetOrgPYR();
+
+    //---------------------------------------------------------------
+    // return MoveDirection in degree
+    // --------------------------------------------------------------
+    float YawCameraDEG();
+    float PitchCameraDEG();
+    float RollCameraDEG();
+    glm::vec3 MoveDirectionDEG();
+
 
     glm::mat4 GetView();
     float GetSpeed();
