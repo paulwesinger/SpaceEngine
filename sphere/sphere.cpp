@@ -174,6 +174,7 @@ void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
 
     //glUseProgram(shaderprogram);
     glEnable(GL_DEPTH_TEST);
+    glFrontFace(GL_CCW);
     glUseProgram(currentShader);
 
     // Locate uniforms in shader
@@ -250,7 +251,7 @@ void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
     glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
     glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));
 
-    glFrontFace(GL_CW);
+    //glFrontFace(GL_CW);
 
     glBindVertexArray(_Vao);
     glBindBuffer(GL_ARRAY_BUFFER, _VertexBuffer);

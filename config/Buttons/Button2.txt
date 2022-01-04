@@ -1,4 +1,4 @@
-Image: images/darkgray.png
+Image: ../SpaceEngine/images/darkgray.png
 PositionX: 120
 PositionY: 521
 SizeX: 120

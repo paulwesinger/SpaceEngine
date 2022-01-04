@@ -889,15 +889,15 @@ void InitGL::Run() {
 
            case KEY_A:{
                camera->MoveLeft(elapsed);
-               //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                cockpit->setPosition(camera);
                break;
            }
        case KEY_Left :  {
                 yaw += elapsed;
                 camera->YawCameraLeft(elapsed);
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(0.0,camera->YawCameraDEG(),0.0));
+                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Rotate(glm::vec3(0.0,-camera->YawCameraDEG(),0.0));
                 cockpit->setPosition(camera);
                 break;
             }
@@ -905,22 +905,22 @@ void InitGL::Run() {
        case KEY_Right: {
                 yaw += elapsed;
                 camera->YawCameraRight(elapsed);
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(0.0,camera->YawCameraDEG(),0.0));
+                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Rotate(glm::vec3(0.0,-camera->YawCameraDEG(),0.0));
                 cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_D: {
-           camera->MoveRight(elapsed);
-           //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-           cockpit->setPosition(camera);
-           break;
+               camera->MoveRight(elapsed);
+               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+               cockpit->setPosition(camera);
+               break;
            }
 
        case KEY_E: {
                 camera->MoveForward(elapsed);
-             //   cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                 cockpit->setPosition(camera);
                 break;
            }
@@ -928,7 +928,7 @@ void InitGL::Run() {
 
            case KEY_S: {
                 camera->MoveBackward(elapsed);
-                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                 cockpit->setPosition(camera);
                 break;
            }
