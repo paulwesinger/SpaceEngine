@@ -17,10 +17,12 @@ public:
     void setProjectionMatrix(glm::mat4 mat);
     void Draw( Camera * cam);
     void Rotate(glm::vec3 rot);
+    void Steprotate(float step);
     void Translate(glm::vec3 tran);
     void InitShader(ShaderType s, GLuint prog);
     void setShader(ShaderType st);
     void setMesh(Animate * mesh);
+    void SetDir(glm::vec3 dir);
     Animate * getCockpitMesch();
 protected:
     Animate * Mesh;  // armaturenbrett
@@ -36,7 +38,9 @@ private:
     glm::vec3       _Position;
     glm::vec3       _Rotation;
     glm::vec3       _Translation;
+    glm::vec3       _Dir;
     glm::mat4       matrix;
+    float           _StepRotate;
 
 };
 

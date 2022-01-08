@@ -803,8 +803,6 @@ void InitGL::Run() {
 
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
-
-    float yaw = 0.0f;
     while ( ! quit) {
 
         elapsed = tickend - tickstart;
@@ -864,9 +862,6 @@ void InitGL::Run() {
        uint motionx =0;
        uint motiony =0;
 
-
-
-
        e.type = 0;
        SDL_PollEvent( &e );
 
@@ -889,50 +884,76 @@ void InitGL::Run() {
 
            case KEY_A:{
                camera->MoveLeft(elapsed);
-               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                cockpit->setPosition(camera);
+               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
                break;
            }
        case KEY_Left :  {
-                yaw += elapsed;
                 camera->YawCameraLeft(elapsed);
+
+                cockpit->SetDir(camera->GetDir());
                 cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(0.0,-camera->YawCameraDEG(),0.0));
+                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
                 cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_Right: {
-                yaw += elapsed;
                 camera->YawCameraRight(elapsed);
+
+                cockpit->SetDir(camera->GetDir());
                 cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(0.0,-camera->YawCameraDEG(),0.0));
+                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
                 cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_D: {
                camera->MoveRight(elapsed);
-               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                cockpit->setPosition(camera);
+               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
                break;
            }
 
        case KEY_E: {
                 camera->MoveForward(elapsed);
+                cockpit->setPosition(camera);
                 cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->setPosition(camera);
-                break;
-           }
-           case KEY_Up: camera->PitchCameraUp(elapsed); break; break;
 
-           case KEY_S: {
-                camera->MoveBackward(elapsed);
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->setPosition(camera);
                 break;
            }
-           case KEY_Down: camera ->PitchCameraDown(elapsed); break;
+
+       case KEY_S: {
+            camera->MoveBackward(elapsed);
+            cockpit->setPosition(camera);
+            cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
+            break;
+       }
+
+
+       case KEY_Up: {
+                camera->PitchCameraUp(elapsed);
+
+                cockpit->SetDir(camera->GetDir());
+                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                cockpit->setPosition(camera);
+
+                break;
+
+           }
+
+
+           case KEY_Down: camera ->PitchCameraDown(elapsed);
+
+                cockpit->SetDir(camera->GetDir());
+                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                cockpit->setPosition(camera);
+                break;
 
            case KEY_Q: stopAnimation(); break;
 
