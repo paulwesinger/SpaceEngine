@@ -134,12 +134,12 @@ void checkdegree(float & angle) {
     if (angle == 0.0f )
         return;
     
-    if ( angle > 360.0f) {
+    if ( angle >= 360.0f) {
         angle -= 360.0f;
         return;
     }
     
-    if (angle < -360.0f ) 
+    if (angle < 0.0 )
         angle += 360; 
 }
 

@@ -227,6 +227,26 @@ void CEngine::initMenu(){
     // add label for Frames to buildin textrender label
     cameraZ->setLabel("Cam Z");
 
+    p = con2->NextControllPos();
+    camerayaw = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0));
+    camerayaw->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
+    con2->addControll2D(camerayaw);
+    // add label for Frames to buildin textrender label
+    camerayaw->setLabel("Cam Yaw");
+
+    p = con2->NextControllPos();
+    cameradirZ = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0));
+    cameradirZ->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
+    con2->addControll2D(cameradirZ);
+    // add label for Frames to buildin textrender label
+    cameradirZ->setLabel("CamDir.Z");
+
+    p = con2->NextControllPos();
+    cameradirX = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0));
+    cameradirX->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
+    con2->addControll2D(cameradirX);
+    // add label for Frames to buildin textrender label
+    cameradirX->setLabel("CamDir.X");
 
     MainMenu->addConatiner(con2);
 }
@@ -250,9 +270,6 @@ void CEngine::ShowFramesPerSec(uint32 sec) {
     }
 }
 
-
-
-
 void CEngine::ShowCameraPos() {
     if (cameraX != nullptr) {
         TextRender * tX = cameraX->getTextPtr();
@@ -275,6 +292,30 @@ void CEngine::ShowCameraPos() {
         if (tZ != nullptr) {
             tZ->setText(0, FloatToString(camera->GetPos().z));
             tZ->Render();
+        }
+    }
+
+    if (camerayaw != nullptr) {
+        TextRender * tyaw = camerayaw->getTextPtr();
+        if (tyaw != nullptr) {
+            tyaw->setText(0, FloatToString(camera->YawCameraDEG()));
+            tyaw->Render();
+        }
+    }
+
+    if (cameradirZ != nullptr) {
+        TextRender * tdir = cameradirZ->getTextPtr();
+        if (tdir != nullptr) {
+            tdir->setText(0, FloatToString(camera->GetDir().z));
+            tdir->Render();
+        }
+    }
+
+    if (cameradirX != nullptr) {
+        TextRender * tdir = cameradirX->getTextPtr();
+        if (tdir != nullptr) {
+            tdir->setText(0, FloatToString(camera->GetDir().x));
+            tdir->Render();
         }
     }
 }

@@ -20,7 +20,7 @@
 
 Camera::Camera() {
     _Pos = glm::vec3( 0.0,2.0, 10.0);
-    _Dir = glm::vec3( 0.0, 0.0,-1.0);
+    _Dir = glm::vec3( 0.0, 0.0,1.0);
     _Up = glm::vec3( 0.0,1.0,0.0);
 
     Up    = glm::vec3(0.0,1.0,0.0);
@@ -32,7 +32,7 @@ Camera::Camera() {
     _OrgUp = _Up;
     _OrgRight = glm::vec3(1.0,0.0,0.0);
 
-    _YawCamera        = 0.0f;
+    _YawCamera        = 270.0f;
     _YawEye           = 0.0f;
     _PitchCamera      = 0.0f;
     _PitchEye         = 0.0f;
@@ -185,7 +185,6 @@ void Camera::YawCameraRight(uint elapsed) {
     float vel = _Speed * elapsed / 100;
     _YawCamera += vel;
     checkdegree(_YawCamera);
-
     _Dir.x = cos(glm::radians(_YawCamera)) * cos(glm::radians(_PitchCamera));
     _Dir.y = sin(glm::radians(_PitchCamera));
     _Dir.z = sin(glm::radians(_YawCamera)) * cos(glm::radians(_PitchCamera));

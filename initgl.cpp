@@ -627,9 +627,11 @@ void InitGL::InitEngineObject() {
 
     // Sphere
     loginfo("Erstelle Sphere .........done");
-    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(1.0,1.0,1.0,1.0), projection->GetPerspective(),15,(GLfloat)4.0,shader);
-    sphere1->SetColor(glm::vec4(1.0,1.0,0.5,1.0));
+    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(0.0,0.0,1.0,0.5), projection->GetPerspective(),15,(GLfloat)4.0,shader);
+    sphere1->SetColor(glm::vec4(0.0,0.0,0.8,0.5));
     sphere1->SetHasAlpha(true);
+    sphere1->setPolygonMode(GL_LINE);
+
 
     texturesok =  fu.readLine("../SpaceEngine/config/SphereWorldTextures.cfg",cubeimages);
     if (texturesok)
@@ -676,7 +678,7 @@ void InitGL::InitEngineObject() {
     loginfo("Erstelle Cokpit ","InitGL::InitEngineObjects");
     loginfo("--------------------------------------------");
 
-    cockpit = new Cockpit(projection->GetPerspective());
+    cockpit = new Cockpit(projection->GetPerspective(),camera->GetPos());
 
     cockpit->setMesh(sphere1);
 
@@ -872,7 +874,8 @@ void InitGL::Run() {
        HandleEvent(testEvent);
 
        switch ( event) {
-           case KEY_Esc  : quit = true;    break;
+           case KEY_Esc  : quit = true;
+               break;
 
            case KEY_M :{
                if (showMenu == true)
@@ -880,7 +883,6 @@ void InitGL::Run() {
                 else showMenu = true;
                break;
            }
-
 
            case KEY_A:{
                camera->MoveLeft(elapsed);
@@ -893,7 +895,7 @@ void InitGL::Run() {
                 camera->YawCameraLeft(elapsed);
 
                 cockpit->SetDir(camera->GetDir());
-                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                 cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
                 cockpit->setPosition(camera);
                 break;
@@ -903,7 +905,7 @@ void InitGL::Run() {
                 camera->YawCameraRight(elapsed);
 
                 cockpit->SetDir(camera->GetDir());
-                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
                 cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
                 cockpit->setPosition(camera);
                 break;
@@ -931,8 +933,7 @@ void InitGL::Run() {
             cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
             break;
-       }
-
+            }
 
        case KEY_Up: {
                 camera->PitchCameraUp(elapsed);
@@ -947,15 +948,16 @@ void InitGL::Run() {
            }
 
 
-           case KEY_Down: camera ->PitchCameraDown(elapsed);
+       case KEY_Down: camera ->PitchCameraDown(elapsed);
 
-                cockpit->SetDir(camera->GetDir());
-                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-                cockpit->setPosition(camera);
-                break;
+           cockpit->SetDir(camera->GetDir());
+           cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+           cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+           cockpit->setPosition(camera);
+           break;
 
-           case KEY_Q: stopAnimation(); break;
+        case KEY_Q: stopAnimation();
+           break;
 
            // Shader select
            case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;        _ShaderChanged = true;  break;
@@ -963,7 +965,7 @@ void InitGL::Run() {
            case KEY_F8  : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER; _ShaderChanged = true; break;
            case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;        _ShaderChanged = true;  break;
            case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;  _ShaderChanged = true;  break;
-           case KEY_F11: {
+           case KEY_F11 : {
                 toogleFullScreen(); break;
            }
 

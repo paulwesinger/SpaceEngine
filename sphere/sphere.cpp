@@ -262,28 +262,16 @@ void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _Textures[0]);
 
-
- //   glPointSize(2.0f);
-    // Alle indices binden:
-    // Nordpol
-   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Ebo_npol);
-   // glDrawElements( GL_TRIANGLE_FAN, /*_CountPoints * 2 + 1 */ northPol.size()  , GL_UNSIGNED_SHORT, 0);
-
-    // Südpol
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Ebo_spol);
-    //glDrawElements(GL_TRIANGLE_FAN, /*_CountPoints * 2 + 1*/ southPol.size(), GL_UNSIGNED_SHORT, 0);
-
-    // Body
-
     glPointSize(8);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glPolygonMode(GL_FRONT_AND_BACK,BaseObject::_PolgonMode);       //GL_FILL  , GL_POINT);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_BodyPoints);
     glDrawElements(_DrawMode,body.size(),GL_UNSIGNED_SHORT,0);
 
     glBindTexture(GL_TEXTURE_2D,0);
     glActiveTexture(GL_TEXTURE0);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
@@ -797,11 +785,7 @@ for (int i = 0; i < _CountPoints - 2; i++) {
 }
 void CSphere::setUp() {
 
-   // vs = shader->compileVertexShader(vs_source);
-   // fs = shader->compileFragmentShader(fs_source);
-   // shaderprogram = shader->CreateProgram(vs,fs);
 
-    //calcNew();
     calcStrip();
 
     // Neu mit std::vector

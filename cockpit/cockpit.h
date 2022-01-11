@@ -11,7 +11,7 @@
 class Cockpit
 {
 public:
-    Cockpit(glm::mat4 proj);
+    Cockpit(glm::mat4 proj,glm::vec3 position);
     void setPosition(Camera * cam);
     glm::vec3 Position();
     void setProjectionMatrix(glm::mat4 mat);

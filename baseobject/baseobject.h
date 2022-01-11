@@ -54,7 +54,8 @@ public:
     virtual void setActiveShader(ShaderType t);
     virtual void initShader(ShaderType s,GLuint prog);
     virtual void addLight(light * l);
-    virtual void setDrawMode(GLuint mode);
+    virtual void setDrawMode(GLuint mode); // For drawing poligons
+    virtual void setPolygonMode(GLuint mode);
 
 
 
@@ -106,6 +107,7 @@ protected:
     GLuint  _Textures[5];
 
     GLuint _DrawMode;
+    GLuint _PolgonMode;
 
     // Light
      light *  _Light;

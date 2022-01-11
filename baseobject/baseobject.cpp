@@ -53,6 +53,7 @@ void BaseObject::init( ) {
     _AlphaColor.b = 0.0;
 
     _DrawMode = GL_TRIANGLE_STRIP;
+    _PolgonMode = GL_FILL;
     _HasAnimation = false;
     _Light = nullptr;
 }
@@ -172,9 +173,8 @@ void BaseObject::setActiveShader(ShaderType t){
  void BaseObject::SetAlphaColor(glm::vec3 alphacol) { _AlphaColor = alphacol; }
  glm::vec3 BaseObject::AlphaColor() {return _AlphaColor; }
 
- void BaseObject::setDrawMode(GLuint mode) {
-    _DrawMode = mode;
- }
+ void BaseObject::setDrawMode(GLuint mode) {    _DrawMode = mode; }
+ void BaseObject::setPolygonMode(GLuint mode) { _PolgonMode = mode;}
  bool BaseObject::HasAnimation() {
      return _HasAnimation;
  }

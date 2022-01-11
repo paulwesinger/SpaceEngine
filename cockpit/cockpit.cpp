@@ -1,11 +1,12 @@
 #include "cockpit.h"
 #include "../defines.h"
 
-Cockpit::Cockpit(glm::mat4 proj)
+Cockpit::Cockpit(glm::mat4 proj,glm::vec3 position)
 {
     matrix = proj;
-
+    _Position = position;
     _Rotation = glm::vec3(0.0,0.0,0.0);
+   // Mesh->setPolygonMode(GL_POINT); // GL_FILL, GL_LINE
     init();
 }
 
@@ -17,6 +18,8 @@ void Cockpit::init() {
 void Cockpit::setMesh(Animate *mesh)
 {
     Mesh = mesh;
+    Mesh->SetColor(glm::vec4(1.0,1.0,1.0,0.4));
+ //   Mesh->translate(_Position.x+transFront.x,_Position.y+transFront.y,_Position.z+transFront.z);
 }
 Animate * Cockpit::getCockpitMesch() {
     return Mesh;
@@ -44,14 +47,13 @@ void Cockpit::Draw(Camera *cam) {
 }
 
 void Cockpit::Rotate(glm::vec3 rot) {
-    _Rotation.x  = -rot.x;
+    _Rotation.x  = rot.x;
     _Rotation.y  = -rot.y;
     _Rotation.z  = -rot.z;
 
-    Mesh->SetFirstTranslate(false);
+    Mesh->SetFirstTranslate(true);
     Mesh->Rotate(_Rotation);
-    //transFront = glm::vec3(_Position.x + (_Translation.x + _Dir.x) , _Position.y + (_Translation.y + _Dir.y) , _Position.z + (_Translation.z +_Dir.z));
-    //Mesh->Translate(transFront);
+
 }
 
 void Cockpit::Steprotate(float step) {
@@ -59,9 +61,9 @@ void Cockpit::Steprotate(float step) {
 }
 
 void Cockpit::Translate(glm::vec3 tran) {
-    _Translation = tran;
-    transFront = glm::vec3(_Position.x + _Translation.x ,_Position.y + _Translation.y, _Position.z + _Translation.z);
-    Mesh->Translate(transFront);
+    //_Translation = tran;
+    //transFront = glm::vec3(((_Position.x) ) ,((_Position.y)), ((_Position.z)));
+    Mesh->Translate(_Position);
 }
 
 void Cockpit::setProjectionMatrix(glm::mat4 mat) {
@@ -69,7 +71,7 @@ void Cockpit::setProjectionMatrix(glm::mat4 mat) {
 }
 
 void Cockpit::SetDir(glm::vec3 dir) {
-    _Dir=  dir;
+    _Dir = dir;
 }
 
 void Cockpit::setPosition(Camera * cam) {

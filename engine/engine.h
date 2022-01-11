@@ -101,6 +101,9 @@ protected:
     TextEdit * cameraX;
     TextEdit * cameraY;
     TextEdit * cameraZ;
+    TextEdit * camerayaw;
+    TextEdit * cameradirZ;
+    TextEdit * cameradirX;
 
 
     std::string &getValueItem(std::string &s, std::string erasestring);
