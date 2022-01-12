@@ -57,8 +57,6 @@ public:
     virtual void setDrawMode(GLuint mode); // For drawing poligons
     virtual void setPolygonMode(GLuint mode);
 
-
-
     // Flags
     void SetFirstTranslate(bool ok);
     bool GetFirstTranslate();
@@ -68,7 +66,6 @@ public:
     bool HasAlpha();
     void SetAlphaColor(glm::vec3 alphacol);
     glm::vec3 AlphaColor();
-
 
     void SetProjection(glm::mat4 pro,bool orthomode = false);
     glm::mat4 & GetProjection();
@@ -114,8 +111,6 @@ protected:
 
 private:
     void init();
-
-
 };
 
 

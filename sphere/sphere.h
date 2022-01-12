@@ -66,9 +66,8 @@ private:
     Shader * shader;
     GLfloat _Radius;
     int _CountPoints;
-    void setUp();
-    void calc( GLfloat * v);
 
+    void setUp();
     // Neue Version für Vertex calculation:
     std::vector<sVertexTexture> vertsTexture;
     std::vector<sVertexColor> vertsColor;

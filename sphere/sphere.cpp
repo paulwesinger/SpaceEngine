@@ -67,8 +67,6 @@ static const GLchar * fs_source = {
 "}                                              "
 };
 
-
-
 CSphere::CSphere() :
     Animate((vec3(0.0,0.0,0.0)),vec3(0.0,0.0,0.0),vec3(0.0,0.0,0.0),vec4(0.5,0.2,0.6,1.0)) {
    _CountPoints = 36;
@@ -91,7 +89,6 @@ CSphere::CSphere( int points) :
    float near= 0.1f ;
    float far = 100.0f;
    glm::mat4 pro = perspective(radians,aspect,near,far); //Standard
- //  SetProjection(pro);
    setUp();
 }
 CSphere::CSphere( int points, GLfloat rad)
@@ -103,7 +100,6 @@ CSphere::CSphere( int points, GLfloat rad)
    float near= 0.1f ;
    float far = 100.0f;
    glm::mat4 pro = perspective(radians,aspect,near,far); //Standard
-  // SetProjection(pro);
    setUp();
 }
 
@@ -132,7 +128,6 @@ CSphere::CSphere(vec3 origin, glm::mat4 pro, int points, GLfloat rad, Shader * s
     shader = shad;
     _CountPoints = points;
     _Radius      = rad;
-  //  SetProjection( pro);
     setUp();
 }
 
@@ -140,14 +135,12 @@ CSphere::CSphere(vec3 origin, vec4 color, glm::mat4 pro)
     : Animate(origin,origin,origin,color) {
     _Radius      = 20.0f;
     _CountPoints = 36;
-   // SetProjection(pro);
     setUp();
 }
 CSphere::CSphere(vec3 origin, vec4 color, glm::mat4 pro ,int points)
     : Animate(origin,origin,origin,color) {
     _Radius      = 20.0f;
     _CountPoints = points;
- //   SetProjection(pro);
     setUp();
 }
 CSphere::CSphere(vec3 origin, vec4 color, glm::mat4 pro ,int points,GLfloat rad,Shader * shad)
@@ -155,7 +148,6 @@ CSphere::CSphere(vec3 origin, vec4 color, glm::mat4 pro ,int points,GLfloat rad,
     shader = shad;
     _Radius      = rad;
     _CountPoints = points;
-  //  SetProjection(pro);
     setUp();
 }
 
@@ -170,9 +162,8 @@ void CSphere::SetColor(vec4 color) {
     _color = color; // in Baseobject
 }
 //virtuale MEthoden
-void CSphere::Draw(Camera* cam ){//, GLuint &shaderprog) {
+void CSphere::Draw(Camera* cam ){
 
-    //glUseProgram(shaderprogram);
     glEnable(GL_DEPTH_TEST);
     glFrontFace(GL_CCW);
     glUseProgram(currentShader);
@@ -404,178 +395,6 @@ void CSphere::calcStrip() {
 
 
 
-
-
-
-    //---------------------------------------------------------------------------------
-   /*
-    glm::vec3 npol = glm::vec3(0.0,_Radius ,0.0);
-    float winkel_laenge = 180.0f / (_CountPoints ) ;
-    float winkel_breite = 360.0f / ((_CountPoints  * 2)); // ((_CountPoints  * 2) - 1)
-    float laengenwinkel = 90.0f - winkel_laenge;
-    float breitenwinkel = winkel_breite;
-
-    sVertexTexture vt;   // Structure für Texture Sphere
-    sVertexColor   vc;   // Structure für Color Sphere
-
-    // glm::vec3 color = glm::vec3(GetColor().x, GetColor().y, GetColor().z);
-    // Nordpol ins array für vertexbuffer eintragen
-    // structure für Texture Nordpol:
-    vt.vector = npol;
-    vt.color = glm::normalize(vt.vector);   //color;
-    vt.tex   = glm::vec2(0.5,1.0);
-
-    //structure für Color Nordpol
-    vc.vector = npol;
-    vc.color  = npol;
-
-//    vertsTexture.push_back(vt);
-//    vertsColor.push_back(vc);
-
-    //--------------------------------------------------------------
-    // jetzt den Body : Hilfsvariablen
-    //--------------------------------------------------------------
-    glm::vec3 laengengrad;
-    glm::vec3 breitengrad;
-
-    float texCoordU = 1.0f / ((_CountPoints * 2)-1) ;
-    float texCoordV = 1.0f / ((_CountPoints)-1);
-    float texU;
-    float texV;
-
-    for (int i = 0; i < (_CountPoints * 2); i++){
-
-
-        laengengrad.x = 0.0f; //winkel_breite * static_cast<float>(i);
-        laengengrad.y = _Radius;
-        laengengrad.z = 0.0f;
-        vt.vector = laengengrad;
-        glm::vec2 lPoint;
-
-        calccircle(laengengrad.x,breitenwinkel,lPoint);
-
-        // missbrauch von color für normalen vector...
-        vt.color = glm::normalize(vt.vector);
-
-        texU = i * texCoordU;
-        texV = 0.0f;
-        vt.tex   = glm::vec2(texU,texV);
-
-        //structure für Color
-        vc.vector = laengengrad;
-        vc.color = glm::normalize(vc.vector);
-
-        vertsTexture.push_back(vt);
-        vertsColor.push_back(vc);
-    }
-
-
-    laengengrad.x = 0.0f; //winkel_breite * static_cast<float>(i);
-    laengengrad.y = _Radius;
-    laengengrad.z = 0.0f;
-    vt.vector = laengengrad;
-    vt.color = glm::normalize(vt.vector);
-
-    vc.vector = laengengrad;
-    vc.color = glm::normalize(vc.vector);
-
-    texU = 1.0;
-    texV = 0.0f;
-
-    vertsTexture.push_back(vt);
-    vertsColor.push_back(vc);
-
-    for (int i = 1; i < _CountPoints; i++) {
-
-        glm::vec2 mPoint;
-        calccircle(_Radius, laengenwinkel, mPoint);
-
-        laengenwinkel -= winkel_laenge;
-        if ( laengenwinkel < 0.0f )
-            laengenwinkel += 360.0f;
-
-        laengengrad.x = mPoint.x;//meridianPoints.at(i).x;
-        laengengrad.y = mPoint.y;//meridianPoints.at(i).y;
-        laengengrad.z = 0.0;
-
-        // structure für Texture Sphere
-        vt.vector = laengengrad;
-
-        // missbrauch von color für normalen vector...
-        vt.color = glm::normalize(vt.vector);
-
-        texU = 0.0f;
-        texV = static_cast<float>(i) * texCoordV;
-        vt.tex   = glm::vec2(texU,texV);
-
-        //structure für Color
-        vc.vector = laengengrad;
-        vc.color = glm::normalize(vc.vector);
-
-        vertsTexture.push_back(vt);
-        vertsColor.push_back(vc);
-
-        // ========================================================
-        // Jetzt den Breitengrad für jeden längengrad punkt rechnen
-        // diesmal CountPoints * 2 -1
-        //---------------------------------------------------------
-        for (int j = 0; j < _CountPoints * 2; j++) {
-            // sehne  :
-            glm::vec2 lPoint;
-
-             calccircle(laengengrad.x,breitenwinkel,lPoint);
-             breitenwinkel += winkel_breite;
-             // Man könnte das ganze auch gleich direkt in das array fürden GPU Mem schreiben
-             // .. ist aber so leichter zu lesen
-             breitengrad.x = lPoint.x;//latitudePoints.at(j).x;
-             breitengrad.y = laengengrad.y;
-             breitengrad.z = lPoint.y;//latitudePoints.at(j).y;
-             // Texture , diesmal nur u koordinate , v bleibt erstmal
-             texU = static_cast<float>(j) * texCoordU;
-
-             vt.vector = breitengrad;
-             vt.color = glm::normalize(vt.vector);
-
-             if ( j ==   _CountPoints * 2 )
-                vt.tex = glm::vec2(1.0,1.0);
-             else
-                vt.tex = glm::vec2(texU,texV);
-
-             //structure für Color Nordpol
-             vc.vector = laengengrad;
-             vc.color =glm::normalize(vt.vector);
-
-             vertsTexture.push_back(vt);
-             vertsColor.push_back(vc);
-        }
-
-        breitenwinkel = winkel_breite;
-
-    }
-    // "Südpol"
-    for (int i = 0; i < (_CountPoints * 2); i++){
-
-        laengengrad.x = 0.0f; //laengengrad.x = winkel_breite * static_cast<float>(i);
-        laengengrad.y = -_Radius;
-        laengengrad.z = 0.0f;
-        vt.vector = laengengrad;
-
-        // missbrauch von color für normalen vector...
-        vt.color = glm::normalize(vt.vector);
-
-        texU = static_cast<float>(i) * texCoordU;
-        texV = 1.0;
-        vt.tex   = glm::vec2(texU,texV);
-
-        //structure für Color
-        vc.vector = laengengrad;
-        vc.color = glm::normalize(vc.vector);
-
-        vertsTexture.push_back(vt);
-        vertsColor.push_back(vc);
-    }
-
-    */
 }
 
 void CSphere::calcNew() {
@@ -697,92 +516,6 @@ void CSphere::calcNew() {
     vertsColor.push_back(vc);
 }
 
-
-
-
-void CSphere::calc(GLfloat * v) {
-/*
-// Erstmal NordPol festlegen
-glm::vec3 npol = glm::vec3(0.0,_Radius ,0.0);
-float winkel_laenge = 180.0f / (_CountPoints -1 ) ;
-float winkel_breite = 360.0f / ((_CountPoints  * 2) -1 )  ; // ((_CountPoints  * 2) - 1)
-float laengenwinkel = 90.0f - winkel_laenge;
-float breitenwinkel = -winkel_breite;
-// Nordpol ins array für vertexbuffer eintragen
-// Vertex
-int index = 0;
-Add2GPU(v,index, npol);
-Add2GPU(v,index, GetColor().x, GetColor().y, GetColor().z);
-// Dummy für Texture
-Add2GPU(v,index, glm::vec2(0.5,1.0));
-
-countVertex = 1;
-// Erstmal eine 2D-Sehne für den Längengrad erstellen und in ein array eintragen
-// Entspricht x und y koordinate
-glm::vec2 laengensehne[_CountPoints-1];  //
-glm::vec2 breitensehne[_CountPoints*2];  //
-
-glm::vec3 laengengrad;
-glm::vec3 breitengrad;
-
-float texCoordU = 1.0f / ((_CountPoints * 2) -1 ) ;
-float texCoordV = 1.0f / (_CountPoints);
-float texU;
-float texV;
-
-
-for (int i = 0; i < _CountPoints - 2; i++) {
-    calccircle(_Radius, laengenwinkel, laengensehne[i]);
-    laengenwinkel -= winkel_laenge;
-    if ( laengenwinkel < 0.0f )
-        laengenwinkel += 360.0f;
-
-    laengengrad.x = laengensehne[i].x;
-    laengengrad.y = laengensehne[i].y;
-    laengengrad.z = 0.0;
-
-    Add2GPU(v, index, laengengrad);
-    Add2GPU(v, index, GetColor().x, GetColor().y, GetColor().z);
-    //Add2GPU(v,index,glm::vec2(1.0,1.0));
-    texU = 0.0f;
-    texV = (i+1) * texCoordV;
-    Add2GPU(v,index,glm::vec2(texU,texV));
-
-    countVertex ++;
-   // ========================================================
-   // Jetzt den Breitengrad für jeden längengrad punkt rechnen
-   // diesmal CountPoints * 2
-   //---------------------------------------------------------
-   for (int j = 0; j < _CountPoints * 2 - 1 ;  j++) {//                   -1;  j++) {
-       // sehne  :
-        calccircle(laengengrad.x,breitenwinkel,breitensehne[j]);
-        breitenwinkel += winkel_breite;
-
-        // Man könnte das ganze auch gleich direkt in das array fürden GPU Mem schreiben
-        // .. ist aber so leichter zu lesen
-        breitengrad.x = breitensehne[j].x;
-        breitengrad.y = laengengrad.y;
-        breitengrad.z = breitensehne[j].y;
-
-        Add2GPU(v, index, breitengrad);
-        Add2GPU(v, index, GetColor().x, GetColor().y, GetColor().z);
-        //Add2GPU(v, index, glm::vec2(1.0,1.0));
-        texU = j * texCoordU;
-        Add2GPU(v,index,glm::vec2(texU,texV));
-        countVertex ++;
-   }
-
-   breitenwinkel = winkel_breite;
-}
-
-
-
-    Add2GPU(v,index,0.0, -(_Radius),0.0);  // "Südpol"
-    Add2GPU(v, index, GetColor().x, GetColor().y, GetColor().z);
-    Add2GPU(v, index, glm::vec2(0.5,0.0));
-    countVertex++;
-    */
-}
 void CSphere::setUp() {
 
 
@@ -839,6 +572,4 @@ void CSphere::setUp() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
-
-
 }

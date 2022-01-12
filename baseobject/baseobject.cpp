@@ -96,6 +96,7 @@ bool BaseObject::addTexture(std::vector<std::string> path, std::string obj) {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
                 logimage("Texture "+ path[i]+ " geladen. Index = " + IntToString(i),obj);
             }
         }  // if surface
