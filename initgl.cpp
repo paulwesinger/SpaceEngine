@@ -241,9 +241,7 @@ void InitGL::InitShaders() {
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/colorshader.frg";
     int fs_Color = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    // Fragment Shader Texture
-    v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMulti.frg";
-    int fs_Tex = shader ->compileFragmentShaderFromFile(v_source,filestream);
+
     // ColorCubeShader
     loginfo("Erstelle Cube Color Shader.................done");
     shader->CreateCustomShader(cubeshaderprog_color);
@@ -251,6 +249,9 @@ void InitGL::InitShaders() {
     shader->AttachCustomShader(cubeshaderprog_color,fs_Color);
     shader->CreateCustomProgram(cubeshaderprog_color);
 
+    // Fragment Shader Texture
+    v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMulti.frg";
+    int fs_Tex = shader ->compileFragmentShaderFromFile(v_source,filestream);
     //Texture CubeShader
     loginfo("Erstelle Cube Texture Shader ..............done");
     shader->CreateCustomShader(cubeshaderprog_tex);
@@ -295,6 +296,17 @@ void InitGL::InitShaders() {
     shader->AttachCustomShader(lighttexture_shader,fsn);
     shader->CreateCustomProgram(lighttexture_shader);
 
+    // Shader für Glas
+    loginfo("Erstelle Glas Shader ..............done");
+    v_source ="../SpaceEngine/ShaderSources/glasshader.vex";
+    vsn = shader ->compileVertexShaderFromFile(v_source,filestream);
+    //Fragment Shader Color
+    v_source ="../SpaceEngine/ShaderSources/glasshader.frg";
+    fsn = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    shader->CreateCustomShader(glasshader);
+    shader->AttachCustomShader(glasshader,vsn);
+    shader->AttachCustomShader(glasshader,fsn);
+    shader->CreateCustomProgram(glasshader);
 
     glDetachShader(cubeshaderprog_color,vs);
     glDetachShader(cubeshaderprog_color,vscn);
@@ -307,6 +319,9 @@ void InitGL::InitShaders() {
 
     glDetachShader(lighttexture_shader,fsn);
     glDetachShader(lighttexture_shader,vsn);
+
+    glDetachShader(glasshader,fsn);
+    glDetachShader(glasshader,vsn);
 
 
     // =======================================================================
@@ -627,27 +642,29 @@ void InitGL::InitEngineObject() {
 
     // Sphere
     loginfo("Erstelle Sphere .........done");
-    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(0.0,0.0,1.0,0.5), projection->GetPerspective(),15,(GLfloat)4.0,shader);
-    sphere1->SetColor(glm::vec4(0.0,0.0,0.8,0.5));
+    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(1.0,0.0,0.0,0.1), projection->GetPerspective(),15,(GLfloat)4.0,shader);
+    sphere1->SetColor(glm::vec4(0.0,0.0,1.0,0.4));
     sphere1->SetHasAlpha(true);
-    sphere1->setPolygonMode(GL_LINE);
+    sphere1->setPolygonMode(GL_FILL);
 
 
-    texturesok =  fu.readLine("../SpaceEngine/config/SphereWorldTextures.cfg",cubeimages);
-    if (texturesok)
-        sphere1->addTexture(cubeimages,"InitGL::Sphere");
-    else
-        logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
+    //texturesok =  fu.readLine("../SpaceEngine/config/SphereWorldTextures.cfg",cubeimages);
+
+    cubeimages.push_back("../SpaceEngine/images/Cockpit.png");
+    //cubeimages.push_back("../SpaceEngine/images/Drawmode.png");
+    //if (texturesok)
+    sphere1->addTexture(cubeimages,"InitGL::Sphere");
+    //else
+    //    logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
     //-----------------------------------------
     // Lightsource as a spere
     //-----------------------------------------
     loginfo("Erstelle LichtQuelle als weisse sphere....","InitGL::InitEngineObjects");
-    lightSource = new CSphere(ambientLight->getPos(),glm::vec4(1.0,1.0,1.0,1.0),projection->GetPerspective(),18,(GLfloat)2.0,shader );
+    lightSource = new CSphere(ambientLight->getPos(),glm::vec4(0.5,0.5,0.5,1.0),projection->GetPerspective(),18,(GLfloat)2.0,shader );
 
-
-    //lightSource->SetColor(glm::vec4(1.0,1.0,1.0,0.8));
+    lightSource->SetColor(glm::vec4(0.0,1.0,0.0,0.4));
     //Texture loading
     cubeimages.clear();
     texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
@@ -657,14 +674,12 @@ void InitGL::InitEngineObject() {
         logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
-
-
-
     sphere1->initShader(COLOR_SHADER,cubeshaderprog_color);
     sphere1->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
     sphere1->initShader(LIGHT_SHADER, cubeshaderprog_normals);
     sphere1->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
     sphere1->setActiveShader(LIGHT_SHADER);
+    //sphere1->setGlasShader(true);
     sphere1->addLight(ambientLight);
 
     lightSource->initShader(COLOR_SHADER,cubeshaderprog_color);
@@ -801,11 +816,15 @@ void InitGL::Run() {
     Uint32 ms = 0;
     showMenu = true;
 
-    sphere1->SetProjection(projection->GetPerspective());
+
 
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
     while ( ! quit) {
+
+
+        sphere1->SetProjection(projection->GetPerspective());
+
 
         elapsed = tickend - tickstart;
 
@@ -960,11 +979,12 @@ void InitGL::Run() {
            break;
 
            // Shader select
-           case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;        _ShaderChanged = true;  break;
-           case KEY_T   : _CurrentShader = ShaderType::TEXTURE_SHADER;      _ShaderChanged = true;  break;
-           case KEY_F8  : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER; _ShaderChanged = true; break;
-           case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;        _ShaderChanged = true;  break;
-           case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;  _ShaderChanged = true;  break;
+           case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;            _ShaderChanged = true;  break;
+           case KEY_T   : _CurrentShader = ShaderType::TEXTURE_SHADER;          _ShaderChanged = true;  break;
+
+           case KEY_F8  : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER;    _ShaderChanged = true; break;
+           case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;            _ShaderChanged = true;  break;
+           case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;      _ShaderChanged = true;  break;
            case KEY_F11 : {
                 toogleFullScreen(); break;
            }
@@ -1029,9 +1049,9 @@ void InitGL::Run() {
        vec3 dummy;
        dummy = vec3(0.0,0.2,0.0);
 
-       cockpit->Draw(camera);
 
-       lightSource->SetColor(glm::vec4(1.0,1.0,1.0,1.0));
+
+       lightSource->SetColor(glm::vec4(1.0,0.0,0.0,0.2));
        lightSource->SetProjection(projection->GetPerspective());
        lightSource->SetFirstTranslate(true);
        if (_Animate && lightSource->HasAnimation() )
@@ -1049,8 +1069,14 @@ void InitGL::Run() {
                     list3D[i]->setActiveShader(_CurrentShader);
             }
             lightSource->setActiveShader(_CurrentShader);
+            sphere1->setActiveShader(_CurrentShader);
             cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+
         }
+
+        //cockpit->getCockpitMesch()->setGlasShader(true);
+        cockpit->getCockpitMesch()->SetColor(glm::vec4(1.0,0.0,0.0,0.4));
+        cockpit->Draw(camera);
 
         if (! list3D.empty() ) {
             for (unsigned int i=0;i < list3D.size(); i++ ) {
@@ -1083,9 +1109,6 @@ void InitGL::Run() {
         //====================================
 
         Prepare2D();
-
-        //cockpit->Render(0.0f,0.0f,camera);
-
         //------------------------------------
         // MainMenu rendern
         // -----------------------------------

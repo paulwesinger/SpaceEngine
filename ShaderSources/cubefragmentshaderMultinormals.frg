@@ -34,11 +34,8 @@ void main(void) {
 
 /*   pointlight
     vec3 R = reflect(-L,N);
-
     vec3 diffuse = max(dot(N,L),0.0) * specular_albedo;
     vec3 specular = pow(max(dot(R,V),0.0), specular_power) * specular_albedo;
-
-
     vec4 texcolor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.8);
     FragColor = vec4(diffuse + specular, 1.0) * texcolor * triangleColor;
 */

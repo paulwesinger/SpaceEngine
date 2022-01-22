@@ -75,8 +75,6 @@ void CEngine::Run() {
     Init2D();
     Init3D();
     InitButtons();
-    //logimage("Erstelle Cockpt............");
-    //cockpit= new Base2D(_ResX, _ResY,"images/blackWidowAlpha1920x1200.png");
 
     InitGL::Run();
 }

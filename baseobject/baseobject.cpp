@@ -156,6 +156,19 @@ void BaseObject::setActiveShader(ShaderType t){
      _rotate += step;
      checkdegree(_rotate);
  }
+ void BaseObject::setGlasShader(bool useglas) {
+     if (useglas) {
+        _UseGlasshader = true;
+        oldshader = currentShader;
+        currentShader = glasshader;
+     }
+     else {
+        currentShader = oldshader;
+        _UseGlasshader = false;
+     }
+
+ }
+
  void BaseObject::StepTranslate(vec3 step)  { _trans_step = step; _translate += step; }
  void BaseObject::StepScale(vec3 step)      { _scale_step = step; _scale += step;  }
 
@@ -179,4 +192,5 @@ void BaseObject::setActiveShader(ShaderType t){
  bool BaseObject::HasAnimation() {
      return _HasAnimation;
  }
+ bool BaseObject::UseGlasShader() { return UseGlasShader();}
 

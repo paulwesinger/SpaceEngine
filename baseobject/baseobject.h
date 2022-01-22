@@ -56,6 +56,7 @@ public:
     virtual void addLight(light * l);
     virtual void setDrawMode(GLuint mode); // For drawing poligons
     virtual void setPolygonMode(GLuint mode);
+    virtual void setGlasShader(bool useglas);
 
     // Flags
     void SetFirstTranslate(bool ok);
@@ -64,6 +65,7 @@ public:
     void SetHasTextures(bool hasATexture);
     void SetHasAlpha(bool yes);
     bool HasAlpha();
+    bool UseGlasShader();
     void SetAlphaColor(glm::vec3 alphacol);
     glm::vec3 AlphaColor();
 
@@ -79,6 +81,8 @@ protected:
                 lightshader,
                 lightcolorshader,
                 lighttextureshader,
+                glasshader,
+                oldshader,
                 currentShader;
 
     // This vectors holds the current translation,rotation,scale
@@ -98,6 +102,7 @@ protected:
     bool _IsOrtho;
     bool _HasTextures;
     bool _HasAlpha;
+    bool _UseGlasshader;
     glm::vec3 _AlphaColor;
 
     uint _CountTextures;  // die Anzehl = Listen länge

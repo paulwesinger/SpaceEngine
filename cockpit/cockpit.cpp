@@ -18,7 +18,8 @@ void Cockpit::init() {
 void Cockpit::setMesh(Animate *mesh)
 {
     Mesh = mesh;
-    Mesh->SetColor(glm::vec4(1.0,1.0,1.0,0.4));
+    Mesh->SetHasAlpha(true);
+    //Mesh->SetColor(glm::vec4(1.0,0.0,0.0,0.5));
  //   Mesh->translate(_Position.x+transFront.x,_Position.y+transFront.y,_Position.z+transFront.z);
 }
 Animate * Cockpit::getCockpitMesch() {

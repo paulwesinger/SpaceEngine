@@ -76,6 +76,8 @@ DISTFILES += \
     ShaderSources/fogfragmentshader.frg \
     ShaderSources/fogvertexshader.vex \
     ShaderSources/fragmentnormalcolorshader.frg \
+    ShaderSources/glasshader.frg \
+    ShaderSources/glasshader.vex \
     ShaderSources/vertexnormalcolorshader.vex \
     config/2DObjects/2DObjects.txt \
     config/3DObjects/ColoredCubes/ColorCubes.cfg \

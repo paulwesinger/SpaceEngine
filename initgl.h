@@ -187,6 +187,7 @@ protected:
 
     // Test Shader
     Shader * shader;
+    GLuint glasshader;
     GLuint cubeshaderprog_color;
     GLuint cubeshaderprog_tex;
     GLuint cubeshaderprog_normals;

@@ -165,7 +165,13 @@ void CSphere::SetColor(vec4 color) {
 void CSphere::Draw(Camera* cam ){
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+
+   // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
     glFrontFace(GL_CCW);
+
     glUseProgram(currentShader);
 
     // Locate uniforms in shader
@@ -173,7 +179,7 @@ void CSphere::Draw(Camera* cam ){
     int projectionloc = glGetUniformLocation(currentShader,"projection");
     int viewloc = glGetUniformLocation(currentShader,"view");
 
-    //color_location = glGetUniformLocation(shaderprogram,"triangleColor");
+    color_location = glGetUniformLocation(currentShader,"triangleColor");
     int ortho_location;// = glGetUniformLocation(currentShader,"orthomatrix");
 
     // Model  Lightning
@@ -181,9 +187,6 @@ void CSphere::Draw(Camera* cam ){
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
 
-
-    //mv_location     = glGetUniformLocation(shaderprogram,"mv");
-    //color_location  = glGetUniformLocation(shaderprogram,"changecolor");
     glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
 
     glm::mat4 Model(1);
@@ -231,7 +234,7 @@ void CSphere::Draw(Camera* cam ){
         }
         else {
             glm::vec3 lightpos = vec3(-10.0,2.0,-5.0);
-            glm::vec3 lightcolor = glm::vec3( 0.0,1.0,0.0);
+            glm::vec3 lightcolor = glm::vec3( 0.0,1.00,0.0);
             glUniform3f(lightlocation,lightpos.x,lightpos.y,lightpos.z);
             glUniform3f(lightcolorlocation,lightcolor.x,lightcolor.y,lightcolor.z);
         }
@@ -267,6 +270,8 @@ void CSphere::Draw(Camera* cam ){
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
+    glDisable(GL_BLEND);
+    glBlendFunc(GL_ONE,GL_ZERO);
     glFrontFace(GL_CCW);
 }
 
