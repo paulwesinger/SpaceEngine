@@ -662,9 +662,8 @@ void InitGL::InitEngineObject() {
     // Lightsource as a spere
     //-----------------------------------------
     loginfo("Erstelle LichtQuelle als weisse sphere....","InitGL::InitEngineObjects");
-    lightSource = new CSphere(ambientLight->getPos(),glm::vec4(0.5,0.5,0.5,1.0),projection->GetPerspective(),18,(GLfloat)2.0,shader );
+    lightSource = new CSphere(ambientLight->getPos(),glm::vec4(1.0,1.0,1.0,1.0),projection->GetPerspective(),18,(GLfloat)2.0,shader );
 
-    lightSource->SetColor(glm::vec4(0.0,1.0,0.0,0.4));
     //Texture loading
     cubeimages.clear();
     texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
@@ -678,6 +677,7 @@ void InitGL::InitEngineObject() {
     sphere1->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
     sphere1->initShader(LIGHT_SHADER, cubeshaderprog_normals);
     sphere1->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    sphere1->initShader(GLASS_SHADER,glasshader);
     sphere1->setActiveShader(LIGHT_SHADER);
     //sphere1->setGlasShader(true);
     sphere1->addLight(ambientLight);
@@ -784,8 +784,8 @@ void InitGL::Run() {
 
     bool quit = false;
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //  glEnable(GL_BLEND);
+  //  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Diese transformations vectoren enthalten die "steps" für die Animation
     vec3 steptrans;
@@ -982,6 +982,7 @@ void InitGL::Run() {
            case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;            _ShaderChanged = true;  break;
            case KEY_T   : _CurrentShader = ShaderType::TEXTURE_SHADER;          _ShaderChanged = true;  break;
 
+           case KEY_F7  : _CurrentShader = ShaderType::GLASS_SHADER;            _ShaderChanged = true;  break;
            case KEY_F8  : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER;    _ShaderChanged = true; break;
            case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;            _ShaderChanged = true;  break;
            case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;      _ShaderChanged = true;  break;
@@ -1051,13 +1052,18 @@ void InitGL::Run() {
 
 
 
-       lightSource->SetColor(glm::vec4(1.0,0.0,0.0,0.2));
+       lightSource->SetColor(glm::vec4(0.0,0.0,1.0,0.1));
        lightSource->SetProjection(projection->GetPerspective());
        lightSource->SetFirstTranslate(true);
        if (_Animate && lightSource->HasAnimation() )
            lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));    //dummy);
 
         lightSource->Draw(camera);
+
+        sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
+        sphere1->SetHasAlpha(true);
+        sphere1->Translate(camera->GetPos());
+        sphere1->Draw(camera);
 
         // ===================================
         // Engine Objekte
@@ -1070,13 +1076,10 @@ void InitGL::Run() {
             }
             lightSource->setActiveShader(_CurrentShader);
             sphere1->setActiveShader(_CurrentShader);
-            cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+            //cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
 
         }
-
-        //cockpit->getCockpitMesch()->setGlasShader(true);
-        cockpit->getCockpitMesch()->SetColor(glm::vec4(1.0,0.0,0.0,0.4));
-        cockpit->Draw(camera);
+        //cockpit->Draw(camera);
 
         if (! list3D.empty() ) {
             for (unsigned int i=0;i < list3D.size(); i++ ) {

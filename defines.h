@@ -214,7 +214,8 @@ enum ShaderType {
     TEXTURE_SHADER,
     LIGHT_SHADER,
     LIGHT_COLOR_SHADER,
-    LIGHT_TEXTURE_SHADER
+    LIGHT_TEXTURE_SHADER,
+    GLASS_SHADER
 };
 
 // ------------------------------------------------------

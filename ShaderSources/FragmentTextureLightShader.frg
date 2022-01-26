@@ -20,7 +20,7 @@ uniform vec4 triangleColor;
 
 void main()
 {           
-    vec3 color = texture(texture1,fs_in.TexCoords);     //(floorTexture, fs_in.TexCoords);
+    vec3 color = texture(texture1,fs_in.TexCoords).rgb;     //(floorTexture, fs_in.TexCoords);
     // ambient
     vec3 ambient = 0.5 * color;
     // diffuse

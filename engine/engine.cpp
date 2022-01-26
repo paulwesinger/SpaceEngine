@@ -508,6 +508,7 @@ bool CEngine::loadTexturedCubes(){
                  obj->Rotate(glm::vec3(s3D.trans.rotate.x, s3D.trans.rotate.y, s3D.trans.rotate.z) );
                  obj->Translate(glm::vec3(s3D.trans.translate.x, s3D.trans.translate.y, s3D.trans.translate.z));
                  obj->Scale(glm::vec3(s3D.trans.scale.x, s3D.trans.scale.y, s3D.trans.scale.z));
+                 obj->SetHasAlpha(true);
 
                  //----------------------------------------
                  // Add textures , if we have some

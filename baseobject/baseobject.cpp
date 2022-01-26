@@ -135,7 +135,8 @@ void BaseObject::setActiveShader(ShaderType t){
         case TEXTURE_SHADER     : currentShader = perspectiveTextureShader; break;
         case LIGHT_SHADER       : currentShader = lightshader; break;
         case LIGHT_COLOR_SHADER : currentShader = lightcolorshader; break;
-        case LIGHT_TEXTURE_SHADER   :  currentShader = lighttextureshader;break;
+        case LIGHT_TEXTURE_SHADER   : currentShader = lighttextureshader;break;
+        case GLASS_SHADER           : currentShader = glasshader; break;
     }
 }
  // Transormatioons
@@ -160,7 +161,7 @@ void BaseObject::setActiveShader(ShaderType t){
      if (useglas) {
         _UseGlasshader = true;
         oldshader = currentShader;
-        currentShader = glasshader;
+        setActiveShader(GLASS_SHADER);
      }
      else {
         currentShader = oldshader;
