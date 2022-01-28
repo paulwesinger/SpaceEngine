@@ -226,9 +226,6 @@ void CColorCube::Draw(Camera * cam) {
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-
-
-    glEnable(GL_BLEND);
     // Locate uniforms in shader
     mv_location = glGetUniformLocation(currentShader, "mv_matrix");
     int projectionloc = glGetUniformLocation(currentShader,"projection");

@@ -338,10 +338,6 @@ void Base2D::Render( ) {
 
     glUniform4f(uniform_colorloc, _Color.r, _Color.g, _Color.b, _Color.a);
 
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
     GLfloat w = _Size.w;
     GLfloat h = _Size.h;
 

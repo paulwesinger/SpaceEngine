@@ -81,7 +81,7 @@ void Plane3D::Init() {
     fs = shader->compileFragmentShader(fs_src);
     program = shader->CreateProgram(vs,fs);
     if ( vs == 0 || fs == 0 || program == 0) 
-        logwarn("WARNING PersoectiveShader fehlgeschlagen !!", "Cubbe::Init" );
+        logwarn("WARNING PerspectiveShader fehlgeschlagen !!", "Plane3D::Init" );
     else
         loginfo("PerspectivShader erstellt","Cube::Init");
    

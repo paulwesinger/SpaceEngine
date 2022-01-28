@@ -642,15 +642,14 @@ void InitGL::InitEngineObject() {
 
     // Sphere
     loginfo("Erstelle Sphere .........done");
-    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(1.0,0.0,0.0,0.1), projection->GetPerspective(),15,(GLfloat)4.0,shader);
-    sphere1->SetColor(glm::vec4(0.0,0.0,1.0,0.4));
+    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(1.0,0.0,0.0,0.3), projection->GetPerspective(),15,(GLfloat)4.0,shader);
     sphere1->SetHasAlpha(true);
     sphere1->setPolygonMode(GL_FILL);
 
 
     //texturesok =  fu.readLine("../SpaceEngine/config/SphereWorldTextures.cfg",cubeimages);
 
-    cubeimages.push_back("../SpaceEngine/images/Cockpit.png");
+    cubeimages.push_back("../SpaceEngine/images/world.png"); // tex1 und 2 !!
     //cubeimages.push_back("../SpaceEngine/images/Drawmode.png");
     //if (texturesok)
     sphere1->addTexture(cubeimages,"InitGL::Sphere");
@@ -662,15 +661,18 @@ void InitGL::InitEngineObject() {
     // Lightsource as a spere
     //-----------------------------------------
     loginfo("Erstelle LichtQuelle als weisse sphere....","InitGL::InitEngineObjects");
-    lightSource = new CSphere(ambientLight->getPos(),glm::vec4(1.0,1.0,1.0,1.0),projection->GetPerspective(),18,(GLfloat)2.0,shader );
+    lightSource = new CSphere(ambientLight->getPos(),glm::vec4(0.0,0.0,1.0,0.5),projection->GetPerspective(),18,(GLfloat)2.0,shader );
 
     //Texture loading
     cubeimages.clear();
-    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
-    if (texturesok)
-        lightSource->addTexture(cubeimages,"InitGL::Sphere");
-    else
-        logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
+   // texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
+   // if (texturesok)
+        //lightSource->addTexture(cubeimages,"InitGL::Sphere");
+
+        cubeimages.push_back("../SpaceEngine/images/world.png");
+        lightSource->addTexture(cubeimages,"Ad glob to lightsource");
+   // else
+   //     logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
     sphere1->initShader(COLOR_SHADER,cubeshaderprog_color);
@@ -686,6 +688,7 @@ void InitGL::InitEngineObject() {
     lightSource->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
     lightSource->initShader(LIGHT_SHADER, cubeshaderprog_normals);
     lightSource->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    lightSource->initShader(GLASS_SHADER,glasshader);
     lightSource->setActiveShader(LIGHT_SHADER);
 
 
@@ -709,6 +712,7 @@ void InitGL::add2List(BaseObject *obj, ShaderType s) {
     obj->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
     obj->initShader(LIGHT_SHADER, cubeshaderprog_normals);
     obj->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    obj->initShader(GLASS_SHADER,glasshader);
     obj->setActiveShader(s);
     obj -> SetProjection(projection->GetPerspective());
 
@@ -783,9 +787,9 @@ bool InitGL::initSoundMachine() {
 void InitGL::Run() {
 
     bool quit = false;
-
-  //  glEnable(GL_BLEND);
-  //  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Diese transformations vectoren enthalten die "steps" für die Animation
     vec3 steptrans;
@@ -905,51 +909,51 @@ void InitGL::Run() {
 
            case KEY_A:{
                camera->MoveLeft(elapsed);
-               cockpit->setPosition(camera);
-               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+             //  cockpit->setPosition(camera);
+             //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
                break;
            }
        case KEY_Left :  {
                 camera->YawCameraLeft(elapsed);
 
-                cockpit->SetDir(camera->GetDir());
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
-                cockpit->setPosition(camera);
+              //  cockpit->SetDir(camera->GetDir());
+              //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+              //  cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
+              //  cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_Right: {
                 camera->YawCameraRight(elapsed);
 
-                cockpit->SetDir(camera->GetDir());
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-                cockpit->setPosition(camera);
+               // cockpit->SetDir(camera->GetDir());
+               // cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+               // cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+               // cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_D: {
                camera->MoveRight(elapsed);
-               cockpit->setPosition(camera);
-               cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+             //  cockpit->setPosition(camera);
+             //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
                break;
            }
 
        case KEY_E: {
                 camera->MoveForward(elapsed);
-                cockpit->setPosition(camera);
-                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+             //   cockpit->setPosition(camera);
+             //   cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
                 break;
            }
 
        case KEY_S: {
             camera->MoveBackward(elapsed);
-            cockpit->setPosition(camera);
-            cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+           // cockpit->setPosition(camera);
+           // cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
             break;
             }
@@ -957,22 +961,21 @@ void InitGL::Run() {
        case KEY_Up: {
                 camera->PitchCameraUp(elapsed);
 
-                cockpit->SetDir(camera->GetDir());
-                cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-                cockpit->setPosition(camera);
+           //     cockpit->SetDir(camera->GetDir());
+           //     cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+           //     cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+           //     cockpit->setPosition(camera);
 
                 break;
-
-           }
+            }
 
 
        case KEY_Down: camera ->PitchCameraDown(elapsed);
 
-           cockpit->SetDir(camera->GetDir());
-           cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-           cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-           cockpit->setPosition(camera);
+         //  cockpit->SetDir(camera->GetDir());
+         //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+         //  cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+         //  cockpit->setPosition(camera);
            break;
 
         case KEY_Q: stopAnimation();
@@ -1043,7 +1046,6 @@ void InitGL::Run() {
            }
        }
 
-       glEnable(GL_DEPTH_TEST);
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -1052,7 +1054,7 @@ void InitGL::Run() {
 
 
 
-       lightSource->SetColor(glm::vec4(0.0,0.0,1.0,0.1));
+       lightSource->SetColor(glm::vec4(0.0,0.0,1.0,0.5));
        lightSource->SetProjection(projection->GetPerspective());
        lightSource->SetFirstTranslate(true);
        if (_Animate && lightSource->HasAnimation() )
@@ -1060,9 +1062,8 @@ void InitGL::Run() {
 
         lightSource->Draw(camera);
 
-        sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
-        sphere1->SetHasAlpha(true);
-        sphere1->Translate(camera->GetPos());
+        sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.8));
+        //sphere1->Translate(camera->GetPos());
         sphere1->Draw(camera);
 
         // ===================================
