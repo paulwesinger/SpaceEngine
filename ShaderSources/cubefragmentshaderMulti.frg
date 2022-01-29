@@ -14,8 +14,9 @@ out vec4 FragColor;
 void main(void) {
 
     vec4 outcolor = texture(texture2,fs_in.TexCoord);   //mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);
+    //vec4 outcolor = mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);
 
-    if (outcolor.r == 1.0 && outcolor.g == 1 && outcolor.b == 1)
+    if (outcolor.r == 1.0 && outcolor.g == 1 && outcolor.b == 1 )
         discard;
     else
     {

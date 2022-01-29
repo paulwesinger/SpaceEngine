@@ -14,6 +14,7 @@ public:
     Cockpit(glm::mat4 proj,glm::vec3 position);
     void setPosition(Camera * cam);
     glm::vec3 Position();
+    bool HasMesh();
     void setProjectionMatrix(glm::mat4 mat);
     void Draw( Camera * cam);
     void Rotate(glm::vec3 rot);

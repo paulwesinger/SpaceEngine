@@ -121,7 +121,6 @@ void CEngine::initMenu(){
     // loginfo("Erstelle Main Menu ...... done","InitGL::InitEngineObject");
 
     int curr_y;
-
     // -------------------------------------
     // Standard Menu ist in Initgl vorhanden
     // jetzt  befüllen
@@ -378,6 +377,17 @@ void CEngine::Init3D(){
    else
        logwarn("Fehler: Datei  < config/Landscape.cfg  > nicht gefunden !");
 
+   // --------------------------------------
+   // Cockpit loading
+   //---------------------------------------
+   ok = fileutil->readLine(COCKPIT_CFG + "Cockpit.cfg", objectCockpitList);
+   if (ok) {
+        if ( ! loadCockpits() )
+            logwarn("Fehler: Keine Cockpits gefunden oder Fehler im Verzeichnißpfad!");
+   }
+   else
+       logwarn("Fehler: Datei  < config/Landscape.cfg  > nicht gefunden !");
+
 
    logEmptyLine() ;
    loginfo("----------------------------");
@@ -536,6 +546,85 @@ bool CEngine::loadTexturedCubes(){
 
              logEmptyLine();
              loginfo("Prepare for next Object: ","CEngine::init3D");
+        }
+    }
+    return true;
+}
+
+bool CEngine::loadCockpits() {
+    loginfo("Lade Datei |Cockpits.cfg | ","CEngine::loadCockpits");
+
+     // Liste mit Cockpits abarbeiten :
+
+    if (objectCockpitList.empty() )
+        return false;
+
+    for (unsigned int i = 0; i < objectCockpitList.size(); i++) {
+
+         std::string path = COCKPIT_CFG + objectCockpitList[i];
+
+         loginfo("Erstelle Object: .......< " + path+ " >","Engine::loadCockpits");
+
+         fileUtil * objreader = new fileUtil;
+         std::vector<std::string> objconfig;
+         objreader->readLine(path, objconfig);
+
+
+         if( ! objconfig.empty() ) {
+
+             s3DStruct s3D;
+
+             if (init3DStruct(s3D,objconfig)) {
+
+                 CCube * obj = new CCube();
+                 //obj->SetColor(glm::vec4(s3D.color.x, s3D.color.y, s3D.color.z, s3D.color.w));
+                 if ( s3D.textures == "" )
+                     obj->SetHasTextures( false);
+                 else
+                     obj->SetHasTextures( true);
+
+                 obj->SetColor(glm::vec4(s3D.color.x, s3D.color.y, s3D.color.z, s3D.color.w));
+                 obj->SetFirstTranslate( ( s3D.firstTranslate == 1) ? true: false);
+                 obj->Rotate(glm::vec3(s3D.trans.rotate.x, s3D.trans.rotate.y, s3D.trans.rotate.z) );
+                 obj->Translate(glm::vec3(s3D.trans.translate.x, s3D.trans.translate.y, s3D.trans.translate.z));
+                 obj->Scale(glm::vec3(s3D.trans.scale.x, s3D.trans.scale.y, s3D.trans.scale.z));
+                 obj->SetHasAlpha(true);
+
+                 //----------------------------------------
+                 // Add textures , if we have some
+                 // ---------------------------------------
+                 bool texturesok;
+                 std::vector<std::string> images;
+
+                 std::string path = s3D.textures;
+                 if ( s3D.textures != "" ) {
+                     fileUtil fu;
+
+                     texturesok =  fu.readLine(path, images);
+                     if (texturesok)
+                         obj->addTexture(images,"InitGL::addCockpitTexture");
+                     else
+                         logwarn("Engine::loadCockpits: Konnte Textures nicht laden ! ","CEngine::loadCockpits");
+                 }
+                 loginfo("Cockpit initialisisert ","CEngine::loadCockpit");
+
+                 obj->initShader(COLOR_SHADER,cubeshaderprog_color);
+                 obj->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
+                 obj->initShader(LIGHT_SHADER, cubeshaderprog_normals);
+                 obj->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+                 obj->initShader(GLASS_SHADER,glasshader);
+                 obj->setActiveShader(TEXTURE_SHADER);
+
+                 cockpit->setMesh(obj);
+                 //add2List(obj,LIGHT_SHADER); //LIGHT_SHADER)
+
+             }
+             else
+                 logwarn("konnte Cockpit nicht initialisieren !!", "CEngine::loadCockpit" );
+                // Hier die neuen stringpart functions einbauen
+
+             logEmptyLine();
+             loginfo("Prepare for next cockpit: ","CEngine::loadcockpit");
         }
     }
     return true;

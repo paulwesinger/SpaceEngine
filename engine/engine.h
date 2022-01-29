@@ -18,6 +18,7 @@
 
 const std::string BUTTONS_CFG  = "../SpaceEngine/config/Buttons/";
 const std::string OBJECT3D_CFG = "../SpaceEngine/config/3DObjects/";
+const std::string COCKPIT_CFG  = "../SpaceEngine/config/3DObjects/Cockpits/";
 
 
 
@@ -59,6 +60,7 @@ protected:
     std::vector<std::string> object3DTexturedList;
     std::vector<std::string> object3DColoredList;
     std::vector<std::string> object3DLandscapeList;
+    std::vector<std::string> objectCockpitList;
 
 
     CControllContainer *con1;
@@ -88,9 +90,11 @@ protected:
     bool init3DStruct(s3DStruct & d3s, std::vector<std::string> &cfg);
     bool initLandscape(sLandscape &ls, std::vector<std::string> &cfg);
 
+
     bool loadTexturedCubes();
     bool loadColorCubes();
     bool loadLandscape();
+    bool loadCockpits();
     //----------------------------------------------------------------
     // Menu controlls
     //----------------------------------------------------------------

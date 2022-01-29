@@ -642,15 +642,14 @@ void InitGL::InitEngineObject() {
 
     // Sphere
     loginfo("Erstelle Sphere .........done");
-    sphere1  = new CSphere(glm::vec3(0.0,0.0,0.0),glm::vec4(1.0,0.0,0.0,0.3), projection->GetPerspective(),15,(GLfloat)4.0,shader);
+    sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),15,(GLfloat)4.0,shader);
     sphere1->SetHasAlpha(true);
     sphere1->setPolygonMode(GL_FILL);
 
 
     //texturesok =  fu.readLine("../SpaceEngine/config/SphereWorldTextures.cfg",cubeimages);
-
-    cubeimages.push_back("../SpaceEngine/images/world.png"); // tex1 und 2 !!
-    //cubeimages.push_back("../SpaceEngine/images/Drawmode.png");
+    cubeimages.push_back("../SpaceEngine/images/Cockpit.png");
+     //cubeimages.push_back("../SpaceEngine/images/Drawmode.png");
     //if (texturesok)
     sphere1->addTexture(cubeimages,"InitGL::Sphere");
     //else
@@ -668,7 +667,6 @@ void InitGL::InitEngineObject() {
    // texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
    // if (texturesok)
         //lightSource->addTexture(cubeimages,"InitGL::Sphere");
-
         cubeimages.push_back("../SpaceEngine/images/world.png");
         lightSource->addTexture(cubeimages,"Ad glob to lightsource");
    // else
@@ -698,8 +696,8 @@ void InitGL::InitEngineObject() {
 
     cockpit = new Cockpit(projection->GetPerspective(),camera->GetPos());
 
-    cockpit->setMesh(sphere1);
-
+    //cockpit->setMesh(sphere1);
+    logwarn("Cokpit angelegt, noch KEINE Mesh zugewiesen !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 }
 
@@ -787,10 +785,6 @@ bool InitGL::initSoundMachine() {
 void InitGL::Run() {
 
     bool quit = false;
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     // Diese transformations vectoren enthalten die "steps" für die Animation
     vec3 steptrans;
     vec3 steprotate;
@@ -820,15 +814,17 @@ void InitGL::Run() {
     Uint32 ms = 0;
     showMenu = true;
 
+    glEnable(GL_DEPTH_TEST);
 
+    //--------------------------------------------------
+    // Uncomment, if needed
+    //--------------------------------------------------
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
     while ( ! quit) {
-
-
-        sphere1->SetProjection(projection->GetPerspective());
-
 
         elapsed = tickend - tickstart;
 
@@ -889,7 +885,6 @@ void InitGL::Run() {
 
        e.type = 0;
        SDL_PollEvent( &e );
-
        event = HandleInput(e,motionx,motiony );
 
        SDL_Event testEvent = e;
@@ -909,51 +904,52 @@ void InitGL::Run() {
 
            case KEY_A:{
                camera->MoveLeft(elapsed);
-             //  cockpit->setPosition(camera);
-             //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+               //cockpit->setPosition(camera);
+               //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
 
                break;
            }
        case KEY_Left :  {
                 camera->YawCameraLeft(elapsed);
 
-              //  cockpit->SetDir(camera->GetDir());
-              //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-              //  cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
-              //  cockpit->setPosition(camera);
+                //cockpit->SetDir(camera->GetDir());
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
+                //cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_Right: {
                 camera->YawCameraRight(elapsed);
 
-               // cockpit->SetDir(camera->GetDir());
-               // cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-               // cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-               // cockpit->setPosition(camera);
+                //cockpit->SetDir(camera->GetDir());
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                //cockpit->setPosition(camera);
                 break;
             }
 
        case KEY_D: {
                camera->MoveRight(elapsed);
-             //  cockpit->setPosition(camera);
-             //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+               //cockpit->setPosition(camera);
+               //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
                break;
            }
 
        case KEY_E: {
                 camera->MoveForward(elapsed);
-             //   cockpit->setPosition(camera);
-             //   cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->setPosition(camera);
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
                 break;
            }
 
        case KEY_S: {
             camera->MoveBackward(elapsed);
-           // cockpit->setPosition(camera);
-           // cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+            //cockpit->setPosition(camera);
+            //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
 
             break;
             }
@@ -961,10 +957,10 @@ void InitGL::Run() {
        case KEY_Up: {
                 camera->PitchCameraUp(elapsed);
 
-           //     cockpit->SetDir(camera->GetDir());
-           //     cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-           //     cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-           //     cockpit->setPosition(camera);
+                //cockpit->SetDir(camera->GetDir());
+                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                //cockpit->setPosition(camera);
 
                 break;
             }
@@ -972,10 +968,10 @@ void InitGL::Run() {
 
        case KEY_Down: camera ->PitchCameraDown(elapsed);
 
-         //  cockpit->SetDir(camera->GetDir());
-         //  cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-         //  cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-         //  cockpit->setPosition(camera);
+           cockpit->SetDir(camera->GetDir());
+           //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+           //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+           //cockpit->setPosition(camera);
            break;
 
         case KEY_Q: stopAnimation();
@@ -1054,33 +1050,44 @@ void InitGL::Run() {
 
 
 
-       lightSource->SetColor(glm::vec4(0.0,0.0,1.0,0.5));
+       lightSource->SetColor(glm::vec4(0.0,0.0,1.0,1.0));
        lightSource->SetProjection(projection->GetPerspective());
        lightSource->SetFirstTranslate(true);
        if (_Animate && lightSource->HasAnimation() )
-           lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));    //dummy);
+           lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));
 
         lightSource->Draw(camera);
 
-        sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.8));
-        //sphere1->Translate(camera->GetPos());
-        sphere1->Draw(camera);
+        sphere1->Translate(camera->GetPos());
+        sphere1->Rotate(glm::vec3(camera->PitchCameraDEG(), -camera->YawCameraDEG(),camera->RollCameraDEG()));
+        sphere1->SetProjection(projection->GetPerspective());
+        //sphere1->Draw(camera);
 
         // ===================================
         // Engine Objekte
         // ===================================
-
         if (_ShaderChanged) {
             if (! list3D.empty() ) {
                 for (unsigned int i=0;i < list3D.size(); i++ )
                     list3D[i]->setActiveShader(_CurrentShader);
             }
+
             lightSource->setActiveShader(_CurrentShader);
-            sphere1->setActiveShader(_CurrentShader);
-            //cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+            sphere1-> setActiveShader(_CurrentShader);
+
+            if (cockpit->HasMesh())
+                cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
 
         }
-        //cockpit->Draw(camera);
+
+        if (cockpit->HasMesh() ) {
+
+            //cockpit->getCockpitMesch()->Translate(camera->GetPos());
+            cockpit->Translate(camera->GetPos());
+            cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+            cockpit->setProjectionMatrix(projection->GetPerspective());
+            cockpit->Draw(camera);
+        }
 
         if (! list3D.empty() ) {
             for (unsigned int i=0;i < list3D.size(); i++ ) {

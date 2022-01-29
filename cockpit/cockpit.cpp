@@ -7,54 +7,64 @@ Cockpit::Cockpit(glm::mat4 proj,glm::vec3 position)
     _Position = position;
     _Rotation = glm::vec3(0.0,0.0,0.0);
    // Mesh->setPolygonMode(GL_POINT); // GL_FILL, GL_LINE
+    Mesh = nullptr;
     init();
 }
 
 void Cockpit::init() {
 
+    // Hat momentan keine Verwendung , erstmal lassen vielleicht wirds ja noch gebraucht
     transFront = glm::vec3(_Position.x,_Position.y, _Position.z -15);
 }
 
 void Cockpit::setMesh(Animate *mesh)
 {
-    Mesh = mesh;
-    Mesh->SetHasAlpha(true);
-    //Mesh->SetColor(glm::vec4(1.0,0.0,0.0,0.5));
- //   Mesh->translate(_Position.x+transFront.x,_Position.y+transFront.y,_Position.z+transFront.z);
+    if (mesh != nullptr ) {
+        Mesh = mesh;
+        Mesh->SetHasAlpha(true);
+        Mesh->SetFirstTranslate(true);
+    }
 }
 Animate * Cockpit::getCockpitMesch() {
     return Mesh;
 }
 
+bool Cockpit::HasMesh() {
+    return (Mesh != nullptr) ? true : false;
+}
+
 void Cockpit::InitShader(ShaderType s, GLuint prog) {
-    switch(s)
-    {
-        case ShaderType::COLOR_SHADER       :  Mesh->initShader(s,prog);   break;
-        case ShaderType::LIGHT_COLOR_SHADER :  Mesh->initShader(s,prog);   break;
-        case ShaderType::LIGHT_SHADER       :  Mesh->initShader(s,prog);   break;
-        case ShaderType::TEXTURE_SHADER     :  Mesh->initShader(s,prog);   break;
+
+    if (Mesh != nullptr) {
+
+        Mesh->initShader(s,prog);
+        Mesh->setActiveShader(s);
     }
-    Mesh->setActiveShader(s);
 }
 
 void Cockpit::setShader(ShaderType st)
 {
-    Mesh->setActiveShader(st);
+    if ( Mesh != nullptr) {
+        Mesh->setActiveShader(st);
+    }
 }
 
 void Cockpit::Draw(Camera *cam) {
-    Mesh->SetProjection(matrix);
-    Mesh->Draw(cam);
+    if ( Mesh != nullptr) {
+        Mesh->SetProjection(matrix);
+        Mesh->Draw(cam);
+    }
 }
 
 void Cockpit::Rotate(glm::vec3 rot) {
+
     _Rotation.x  = rot.x;
     _Rotation.y  = -rot.y;
     _Rotation.z  = -rot.z;
 
-    Mesh->SetFirstTranslate(true);
-    Mesh->Rotate(_Rotation);
-
+    if (Mesh != nullptr) {
+        Mesh->Rotate(_Rotation);
+    }
 }
 
 void Cockpit::Steprotate(float step) {
@@ -62,9 +72,10 @@ void Cockpit::Steprotate(float step) {
 }
 
 void Cockpit::Translate(glm::vec3 tran) {
-    //_Translation = tran;
-    //transFront = glm::vec3(((_Position.x) ) ,((_Position.y)), ((_Position.z)));
-    Mesh->Translate(_Position);
+    if (Mesh != nullptr) {
+        _Position = tran;
+        Mesh->Translate(tran);
+    }
 }
 
 void Cockpit::setProjectionMatrix(glm::mat4 mat) {
@@ -77,6 +88,7 @@ void Cockpit::SetDir(glm::vec3 dir) {
 
 void Cockpit::setPosition(Camera * cam) {
     _Position = cam->GetPos();
+    Translate(_Position);
 }
 
 glm::vec3 Cockpit::Position() {
