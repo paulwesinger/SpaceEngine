@@ -24,6 +24,7 @@ uniform vec3 diffuse_albedo = vec3(0.5,1.0,0.7); //vec3(0.5,0.2,0.7);
 uniform vec3 specular_albedo = vec3(0.8);
 uniform float specular_power = 255.0;
 
+uniform int useTexture_2;
 
 
 void main(void) {
@@ -45,15 +46,21 @@ void main(void) {
    float ambientStrength = 1.0;
    vec3 ambient = lightcolor * ambientStrength;
 
-   // Bis hierher passt
+    // Bis hierher passt
 
-   vec3 norm =  normalize(normal_out);
-   vec3 lightDir = normalize(lightpos - fragpos);
+    vec3 norm =  normalize(normal_out);
+    vec3 lightDir = normalize(lightpos - fragpos);
 
-   float diff = max(dot(normal_out,lightDir),0.0);
-   vec3 diffuse = diff * lightcolor;
+    float diff = max(dot(normal_out,lightDir),0.0);
+    vec3 diffuse = diff * lightcolor;
 
-    vec4 texcolor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.8);
+    vec4 texcolor;
+
+    if (useTexture_2 == 0)
+        texcolor = texture(texture1,TexCoord);
+    else
+        texcolor = mix(texture(texture1,TexCoord), texture(texture2,TexCoord), 0.5);
+
     FragColor = texcolor * (vec4(diffuse,1.0) + vec4(ambient,1.0));
 
 }

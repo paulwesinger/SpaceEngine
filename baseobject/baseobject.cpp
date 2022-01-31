@@ -122,7 +122,8 @@ void BaseObject::initShader(ShaderType s, GLuint prog) {
         case TEXTURE_SHADER:        perspectiveTextureShader = prog; break;
         case LIGHT_SHADER:          lightshader = prog; break;
         case LIGHT_COLOR_SHADER:    lightcolorshader = prog; break;
-        case LIGHT_TEXTURE_SHADER: lighttextureshader = prog; break;
+        case LIGHT_TEXTURE_SHADER:  lighttextureshader = prog; break;
+        case GLASS_SHADER        :  glasshader = prog; break;
     default:
             perspectiveColorShader = prog;
     }

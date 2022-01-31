@@ -175,7 +175,7 @@ void CSphere::Draw(Camera* cam ){
 
    // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    glFrontFace(GL_CCW);
+    glFrontFace(GL_CW);
 
     glUseProgram(currentShader);
 
@@ -191,8 +191,14 @@ void CSphere::Draw(Camera* cam ){
     int modellocation = glGetUniformLocation(currentShader,"model");
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
+    int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
 
     glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
+
+
+
+    glUniform1i(useTex2Location,0);
+
 
     glm::mat4 Model(1);
 
@@ -257,9 +263,9 @@ void CSphere::Draw(Camera* cam ){
 
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,_Textures[1]);
+    glBindTexture(GL_TEXTURE_2D,_Textures[0]);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _Textures[0]);
+    glBindTexture(GL_TEXTURE_2D, _Textures[1]);
 
     glPointSize(8);
 

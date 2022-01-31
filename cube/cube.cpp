@@ -272,6 +272,12 @@ void CCube::Draw(Camera * cam) {
 
     glUseProgram( currentShader);
 
+
+    //----------------------------
+    // Nur zum Test für Cockpit !!
+    //Am Ende von draw auch wieder weg
+    // Normal ist GL_CCW !!!
+    //----------------------------
     // Locate uniforms in shader
     int matrix_location = glGetUniformLocation(currentShader, "mv_matrix");
     int projectionloc = glGetUniformLocation(currentShader,"projection");
@@ -284,8 +290,9 @@ void CCube::Draw(Camera * cam) {
     int modellocation = glGetUniformLocation(currentShader,"model");
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
+    int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
 
-
+    glUniform1i(useTex2Location,1);
     glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
     //Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model= glm::mat4(1.0f);
@@ -354,4 +361,5 @@ void CCube::Draw(Camera * cam) {
     glBindTexture(GL_TEXTURE_2D,0);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(0);
+
 }

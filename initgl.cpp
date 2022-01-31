@@ -233,100 +233,100 @@ void InitGL::InitShaders() {
     //Test für CustomShader
 
     shader = new Shader();
+    int vs;
+    int fs;
 
     // Vertex Shader
     // ------------------------------------------------------------------------
     std::string v_source ="../SpaceEngine/ShaderSources/cubevertexshader.vex";
-    int vs = shader ->compileVertexShaderFromFile(v_source,filestream);
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/colorshader.frg";
-    int fs_Color = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
 
     // ColorCubeShader
     loginfo("Erstelle Cube Color Shader.................done");
     shader->CreateCustomShader(cubeshaderprog_color);
     shader->AttachCustomShader(cubeshaderprog_color,vs);
-    shader->AttachCustomShader(cubeshaderprog_color,fs_Color);
+    shader->AttachCustomShader(cubeshaderprog_color,fs);
     shader->CreateCustomProgram(cubeshaderprog_color);
+    glDetachShader(cubeshaderprog_color,vs);
+    glDetachShader(cubeshaderprog_color,fs);
 
     // Fragment Shader Texture
     v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMulti.frg";
-    int fs_Tex = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
     //Texture CubeShader
     loginfo("Erstelle Cube Texture Shader ..............done");
     shader->CreateCustomShader(cubeshaderprog_tex);
     shader->AttachCustomShader(cubeshaderprog_tex,vs);
-    shader->AttachCustomShader(cubeshaderprog_tex,fs_Tex);
+    shader->AttachCustomShader(cubeshaderprog_tex,fs);
     shader->CreateCustomProgram(cubeshaderprog_tex);
+    glDetachShader(cubeshaderprog_tex,vs);
+    glDetachShader(cubeshaderprog_tex,fs);
 
 
     // Shader für lightning
     loginfo("Erstelle Cube Lightning Shader ..............done");
     v_source ="../SpaceEngine/ShaderSources/cubevertexnormalshader.vex";
-    int vsn = shader ->compileVertexShaderFromFile(v_source,filestream);
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMultinormals.frg";
-    int fsn = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
     shader->CreateCustomShader(cubeshaderprog_normals);
-    shader->AttachCustomShader(cubeshaderprog_normals,vsn);
-    shader->AttachCustomShader(cubeshaderprog_normals,fsn);
+    shader->AttachCustomShader(cubeshaderprog_normals,vs);
+    shader->AttachCustomShader(cubeshaderprog_normals,fs);
     shader->CreateCustomProgram(cubeshaderprog_normals);
+    glDetachShader(cubeshaderprog_normals,vs);
+    glDetachShader(cubeshaderprog_normals,fs);
 
     // Shader für colorlightning
     loginfo("Erstelle Cube Color Light Shader ..............done");
     v_source ="../SpaceEngine/ShaderSources/vertexnormalcolorshader.vex";
-    int vscn = shader ->compileVertexShaderFromFile(v_source,filestream);
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/fragmentnormalcolorshader.frg";
-    int fscn = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
     shader->CreateCustomShader(cubeshaderprog_color_normal);
-    shader->AttachCustomShader(cubeshaderprog_color_normal,vscn);
-    shader->AttachCustomShader(cubeshaderprog_color_normal,fscn);
+    shader->AttachCustomShader(cubeshaderprog_color_normal,vs);
+    shader->AttachCustomShader(cubeshaderprog_color_normal,fs);
     shader->CreateCustomProgram(cubeshaderprog_color_normal);
+    glDetachShader(cubeshaderprog_color_normal,vs);
+    glDetachShader(cubeshaderprog_color_normal,fs);
 
     // Shader für Texture lightning
     loginfo("Erstelle Lightning Shader ..............done");
     v_source ="../SpaceEngine/ShaderSources/VertexTextureLightShader.vex";
-    vsn = shader ->compileVertexShaderFromFile(v_source,filestream);
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/FragmentTextureLightShader.frg";
-    fsn = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
     shader->CreateCustomShader(lighttexture_shader);
-    shader->AttachCustomShader(lighttexture_shader,vsn);
-    shader->AttachCustomShader(lighttexture_shader,fsn);
+    shader->AttachCustomShader(lighttexture_shader,vs);
+    shader->AttachCustomShader(lighttexture_shader,fs);
     shader->CreateCustomProgram(lighttexture_shader);
+    glDetachShader(lighttexture_shader,vs);
+    glDetachShader(lighttexture_shader,fs);
 
     // Shader für Glas
     loginfo("Erstelle Glas Shader ..............done");
     v_source ="../SpaceEngine/ShaderSources/glasshader.vex";
-    vsn = shader ->compileVertexShaderFromFile(v_source,filestream);
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/glasshader.frg";
-    fsn = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
     shader->CreateCustomShader(glasshader);
-    shader->AttachCustomShader(glasshader,vsn);
-    shader->AttachCustomShader(glasshader,fsn);
+    shader->AttachCustomShader(glasshader,vs);
+    shader->AttachCustomShader(glasshader,fs);
     shader->CreateCustomProgram(glasshader);
-
-    glDetachShader(cubeshaderprog_color,vs);
-    glDetachShader(cubeshaderprog_color,vscn);
-    glDetachShader(cubeshaderprog_color,fscn);
-    glDetachShader(cubeshaderprog_color,fs_Color);
-    glDetachShader(cubeshaderprog_tex,fs_Tex);
-
-    glDetachShader(cubeshaderprog_normals,fsn);
-    glDetachShader(cubeshaderprog_normals,vsn);
-
-    glDetachShader(lighttexture_shader,fsn);
-    glDetachShader(lighttexture_shader,vsn);
-
-    glDetachShader(glasshader,fsn);
-    glDetachShader(glasshader,vsn);
-
+    glDetachShader(glasshader,vs);
+    glDetachShader(glasshader,fs);
 
     // =======================================================================
     //------------------------------------------------------------------------
     // Sphere Shader color:
+
+    /*
     v_source = "../SpaceEngine/ShaderSources/spherevertexshader.vex";
     vs = shader->compileVertexShaderFromFile(v_source,filestream);
     // Fragment sHader
@@ -346,6 +346,7 @@ void InitGL::InitShaders() {
 
     shader->deleteShader(vsn);
     shader->deleteShader(fsn);
+    */
     // ========================================================================
     _CurrentShader = ShaderType::LIGHT_SHADER;
 }
@@ -647,13 +648,11 @@ void InitGL::InitEngineObject() {
     sphere1->setPolygonMode(GL_FILL);
 
 
-    //texturesok =  fu.readLine("../SpaceEngine/config/SphereWorldTextures.cfg",cubeimages);
-    cubeimages.push_back("../SpaceEngine/images/Cockpit.png");
-     //cubeimages.push_back("../SpaceEngine/images/Drawmode.png");
-    //if (texturesok)
-    sphere1->addTexture(cubeimages,"InitGL::Sphere");
-    //else
-    //    logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
+    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
+    if (texturesok)
+        sphere1->addTexture(cubeimages,"InitGL::Sphere");
+    else
+        logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
     //-----------------------------------------
@@ -664,13 +663,11 @@ void InitGL::InitEngineObject() {
 
     //Texture loading
     cubeimages.clear();
-   // texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
-   // if (texturesok)
-        //lightSource->addTexture(cubeimages,"InitGL::Sphere");
-        cubeimages.push_back("../SpaceEngine/images/world.png");
+    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
+    if (texturesok)
         lightSource->addTexture(cubeimages,"Ad glob to lightsource");
-   // else
-   //     logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
+    else
+        logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
     sphere1->initShader(COLOR_SHADER,cubeshaderprog_color);
@@ -1058,10 +1055,10 @@ void InitGL::Run() {
 
         lightSource->Draw(camera);
 
-        sphere1->Translate(camera->GetPos());
-        sphere1->Rotate(glm::vec3(camera->PitchCameraDEG(), -camera->YawCameraDEG(),camera->RollCameraDEG()));
+        //sphere1->Translate(camera->GetPos());
+        //sphere1->Rotate(glm::vec3(camera->PitchCameraDEG(), -camera->YawCameraDEG(),camera->RollCameraDEG()));
         sphere1->SetProjection(projection->GetPerspective());
-        //sphere1->Draw(camera);
+        sphere1->Draw(camera);
 
         // ===================================
         // Engine Objekte
@@ -1082,8 +1079,8 @@ void InitGL::Run() {
 
         if (cockpit->HasMesh() ) {
 
-            //cockpit->getCockpitMesch()->Translate(camera->GetPos());
-            cockpit->Translate(camera->GetPos());
+            cockpit->getCockpitMesch()->Translate(camera->GetPos());
+            //cockpit->Translate(camera->GetPos());
             cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
             cockpit->setProjectionMatrix(projection->GetPerspective());
             cockpit->Draw(camera);

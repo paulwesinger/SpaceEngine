@@ -17,10 +17,18 @@ uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform bool blinn;
 uniform vec4 triangleColor;
+uniform int useTexture_2;
 
 void main()
 {           
-    vec3 color = texture(texture1,fs_in.TexCoords).rgb;     //(floorTexture, fs_in.TexCoords);
+
+    vec3 color;
+    if (useTexture_2 == 0)
+        color = texture(texture1,fs_in.TexCoords).rgb;     //(floorTexture, fs_in.TexCoords);
+    else
+        color = mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);
+
+
     // ambient
     vec3 ambient = 0.5 * color;
     // diffuse
