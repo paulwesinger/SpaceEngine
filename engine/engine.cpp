@@ -421,9 +421,6 @@ bool CEngine::loadLandscape() {
 
              loginfo("objconfig size : " + IntToString(objconfig.size()),"Engine::loadLandScape");
 
-             for (int i =0; i< objconfig.size(); i++) {
-                 logimage("objconfig[" + IntToString(i)+ "] : " + objconfig[i] ,"Engine::loadLandscape");
-             }
              sLandscape landscape;
              if (initLandscape(landscape,objconfig)) {
 
@@ -473,8 +470,8 @@ bool CEngine::loadLandscape() {
                  logwarn("konnte Structure Landscape nicht initialisieren !!", "CEngine::loadLandscpae" );
                 // Hier die neuen stringpart functions einbauen
 
-             logEmptyLine();
              loginfo("Prepare for next Object: ","CEngine::init3D");
+             logEmptyLine();
         }
     }
     return true;
@@ -493,7 +490,7 @@ bool CEngine::loadTexturedCubes(){
 
          std::string path = OBJECT3D_CFG + "TexturedCubes/" + object3DTexturedList[i];
 
-         loginfo("Erstelle Object: .......< " + path+ " >","Engine::loadTexturedCubes");
+         loginfo("Erstelle Textured Cubes: .......< " + path+ " >","Engine::loadTexturedCubes");
 
          fileUtil * objreader = new fileUtil;
          std::vector<std::string> objconfig;
@@ -544,8 +541,8 @@ bool CEngine::loadTexturedCubes(){
                  logwarn("konnte s3D nicht initialisieren !!", "CEngine::init3D" );
                 // Hier die neuen stringpart functions einbauen
 
-             logEmptyLine();
              loginfo("Prepare for next Object: ","CEngine::init3D");
+             logEmptyLine();
         }
     }
     return true;
@@ -620,11 +617,11 @@ bool CEngine::loadCockpits() {
 
              }
              else
-                 logwarn("konnte Cockpit nicht initialisieren !!", "CEngine::loadCockpit" );
+                 logwarn("konnte Cockpit nicht initialisieren !!", "CEngine::loadCockpits" );
                 // Hier die neuen stringpart functions einbauen
 
-             logEmptyLine();
              loginfo("Prepare for next cockpit: ","CEngine::loadcockpit");
+             logEmptyLine();
         }
     }
     return true;
@@ -643,7 +640,7 @@ bool CEngine::loadColorCubes() {
 
          std::string path = OBJECT3D_CFG + "ColoredCubes/" + object3DColoredList[i];
 
-         loginfo("Erstelle Object: .......< " + path+ " >","Engine::Init3D");
+         loginfo("Erstelle Colored Cubes: .......< " + path+ " >","Engine::LoadColoredCubes");
 
          fileUtil * objreader = new fileUtil;
          std::vector<std::string> objconfig;
@@ -673,8 +670,8 @@ bool CEngine::loadColorCubes() {
                  logwarn("konnte s3D nicht initialisieren !!", "CEngine::init3D" );
                 // Hier die neuen stringpart functions einbauen
 
-             logEmptyLine();
              loginfo("Prepare for next Object: ","CEngine::init3D");
+             logEmptyLine();
         }
     }
     return true;
@@ -907,7 +904,6 @@ bool CEngine::init3DStruct(s3DStruct &d3s, std::vector<std::string> &cfg){
 
             if (parts.at(0) == "firstTranslate")
                 d3s.firstTranslate = StringToInt(parts.at(1));
-
 
         }
         return true;

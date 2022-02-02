@@ -6,39 +6,6 @@
 #include <string>
 #include "../logs/logs.h"
 
-
-
-static const char vertexshadersource[]=
-        "#version 440 core 					\n"
-        "out vec4 vs_color;					\n"
-        "layout (location = 0) in vec4 offsett;			\n"
-        "layout (location = 1) in vec4 color;	                \n"
-        "void main(void)					\n"
-            "{							\n"
-        "	const vec4 vertices[] = vec4[](vec4(0.25,-0.25,0.5,1.0),\n"
-        "			  	vec4(-0.25,-0.25,0.5,1.0),\n"
-        "			  	vec4(0.25,0.25,0.5,1.0));\n"
-        "						           \n"
-        "	const vec4 colors[] = vec4[](vec4(1.0f,0.0f,0.0f,1.0f),\n"
-        "        		      vec4(0.0f,1.0f,0.0f,1.0f),\n"
-        "			      vec4(0.0f,0.0f,1.0f,1.0f));\n"
-        "							   "
-        "	gl_Position = vertices[gl_VertexID]+offsett;	\n"
-        "      // oder :  vs_color = colors[gl_VertexID];       \n"
-        "       vs_color = color;  		  		\n"
-                "							\n"
-        "}							\n";
-static const char* fragmentshadersource=
-        "#version 440 core  					\n"
-                "							\n"
-        "in vec4 vs_color;					\n"
-        "out vec4 fragcolor;					\n"
-        "void main(void)					\n"
-        "{							\n"
-            "	fragcolor = vs_color;				\n"
-        "}";
-
-
 Shader::Shader()
 {
     //Komment
@@ -57,12 +24,12 @@ int Shader::compileVertexShader(const char* source)
     if (  ! ok )
     {
         glGetShaderInfoLog(ret,512,NULL,log);
-        //fprintf(stdout,"Fehlermeldung:",log );
-        std::cout << "Fehler :" << log <<  ok << std::endl;
-                logwarn("Warning " + (std::string)log,"Shader::VertexShader" );
+        logwarn("Warning: compile failed !" ,"Shader::compileVertexShader" );
+        std::cout << "Fehler :" << log << std::endl;
+
     }
     else
-        fprintf(stdout,"Vertex Shader compile erfolgreich\n");
+        loginfo("VertexShader: compiled ","Shader::compileVertexShader");
 
     return ret;
 
@@ -78,13 +45,14 @@ int Shader::compileFragmentShader(const char * source)
     if ( ! ok)
     {
         glGetShaderInfoLog(ret,512,NULL,log);
-        //fprintf(stdout,"Fehlermeldung:",log );
+
+        logwarn("Warning: compile failed" ,"Shader::compileFragment Shader");
         std::cout << "Fehler :" << log << std::endl;
-                logwarn("Warning :" + (std::string) log,"Shader::Fragment Shader");
+
     }
     else
-        fprintf(stdout,"Fragment Shader compile erfolgreich\n");
-        return ret;
+        loginfo("Fragment Shader: compiled","Shader::compileFragmentShader");
+     return ret;
 }
 int Shader::CreateProgram(int &vs,int &fs)
 {
@@ -101,9 +69,7 @@ int Shader::CreateProgram(int &vs,int &fs)
 int Shader::compileVertexShaderFromFile(std::string path, fileUtil* reader) {
       std::string shadertext;
       if ( ! reader->readShaderSource(shadertext,path)  ) {
-          logwarn("Shader Source nicht gefunden","Shader::compileVertexShaderFromFile");
-          logwarn("Fehler: " + shadertext + "Path : " + path," Shader:: readFromFile");
-
+          logwarn("Shader Source nicht gefunden: " + path,"Shader::compileVertexShaderFromFile");
           return -1;
       }
       loginfo("Source " + path + " geladen !","Shader::compileVertexShaderFromFile");
@@ -118,14 +84,12 @@ int Shader::compileVertexShaderFromFile(std::string path, fileUtil* reader) {
       char log[512];
       glGetShaderiv(ret,GL_COMPILE_STATUS,&ok);
       if ( ok ) {
-          loginfo("VertexShader erfolgreich compiliert !","Shader::compileVertexShaderFromFile");
+          loginfo("VertexShader " + path + " erfolgreich compiliert !","Shader::compileVertexShaderFromFile");
           return ret;
       }
       else {
         glGetShaderInfoLog(ret,512,NULL,log);
-    //fprintf(stdout,"Fehlermeldung:",log );
-    std::cout << "Fehler :" << log << std::endl;
-        logwarn("Warning :" + (std::string) log,"Shader::compileVertexShaderFromCource");
+        logwarn("Warning : "+ path + "failed:" + (std::string) log,"Shader::compileVertexShaderFromCource");
         return -1;
       }
 }
@@ -133,7 +97,7 @@ int Shader::compileVertexShaderFromFile(std::string path, fileUtil* reader) {
 int Shader::compileFragmentShaderFromFile(std::string path, fileUtil* reader) {
       std::string shadertext;
       if ( ! reader->readShaderSource(shadertext,path)  ) {
-          logwarn("Shader Source nicht gefunden","Shader::compileFragmentShaderFromFile");
+          logwarn("Shader Source nicht gefunden: " + path,"Shader::compileFragmentShaderFromFile");
           return -1;
       }
       loginfo("Source " + path + "  geladen !","Shader::compileFragmentShaderFromFile");
@@ -147,14 +111,12 @@ int Shader::compileFragmentShaderFromFile(std::string path, fileUtil* reader) {
       char log[512];
       glGetShaderiv(ret,GL_COMPILE_STATUS,&ok);
       if ( ok ) {
-          loginfo("FragmentShader erfolgreich compiliert !","Shader::compileFragmentShaderFromFile");
+          loginfo("FragmentShader: " + path + " erfolgreich compiliert !","Shader::compileFragmentShaderFromFile");
           return ret;
       }
       else {
         glGetShaderInfoLog(ret,512,NULL,log);
-    //fprintf(stdout,"Fehlermeldung:",log );
-    std::cout << "Fehler :" << log << std::endl;
-        logwarn("Warning :" + (std::string) log,"Shader::compileFragmentShaderFromCource");
+        logwarn("Warning :" + path + " Log: " +(std::string) log,"Shader::compileFragmentShaderFromCource");
         return -1;
       }
 }

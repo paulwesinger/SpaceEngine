@@ -252,6 +252,7 @@ void InitGL::InitShaders() {
     shader->CreateCustomProgram(cubeshaderprog_color);
     glDetachShader(cubeshaderprog_color,vs);
     glDetachShader(cubeshaderprog_color,fs);
+    logEmptyLine();
 
     // Fragment Shader Texture
     v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMulti.frg";
@@ -383,9 +384,8 @@ bool InitGL::InitSDL2()  {
 
     if (  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO ) != 0 )
     {
-            printf("Initialisierung fehlgeschlagen  FEHLERMELDUNG:  %s" , SDL_GetError());
+            logwarn("Konnte SDL nicht initialisieren ! " + (std::string) SDL_GetError());
             return(false);
-
     }
     atexit(SDL_Quit);
 
@@ -522,9 +522,6 @@ bool InitGL::InitSDL2()  {
     MouseResX = (float)_ResX / (float)current.w;
     MouseResY = (float)_ResY / (float)current.h;
 
-    logwarn("MouseRes X " + FloatToString(MouseResX));
-    logwarn("MouseRes Y " + FloatToString(MouseResY));
-
     InitEngineObject();
 
 
@@ -622,7 +619,9 @@ void InitGL::InitEngineObject() {
     textrender->SetHasTexture(true);
     textrender->SetAlignRight(false);
 
-    loginfo("Erstelle Shaders........");
+    loginfo("===========================");
+    loginfo("Erstelle Shaders...........");
+    loginfo("===========================");
     InitShaders();
     loginfo("..... done all");
     loginfo("============================");
@@ -642,7 +641,9 @@ void InitGL::InitEngineObject() {
     bool texturesok;
 
     // Sphere
+    loginfo("=============================");
     loginfo("Erstelle Sphere .........done");
+    loginfo("=============================");
     sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),15,(GLfloat)4.0,shader);
     sphere1->SetHasAlpha(true);
     sphere1->setPolygonMode(GL_FILL);

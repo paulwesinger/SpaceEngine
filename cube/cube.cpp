@@ -291,7 +291,9 @@ void CCube::Draw(Camera * cam) {
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
     int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
+    int useBlinnLocation = glGetUniformLocation(currentShader,"blinn");
 
+    glUniform1i(useBlinnLocation,true);
     glUniform1i(useTex2Location,1);
     glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
     //Model matrix : an identity matrix (model will be at the origin)

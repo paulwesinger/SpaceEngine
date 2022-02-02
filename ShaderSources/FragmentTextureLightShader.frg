@@ -26,7 +26,7 @@ void main()
     if (useTexture_2 == 0)
         color = texture(texture1,fs_in.TexCoords).rgb;     //(floorTexture, fs_in.TexCoords);
     else
-        color = mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);
+        color = mix(texture(texture1, fs_in.TexCoords), texture(texture2, fs_in.TexCoords), 0.8).rgb;
 
 
     // ambient
@@ -43,13 +43,13 @@ void main()
     if(blinn)
     {
         vec3 halfwayDir = normalize(lightDir + viewDir);  
-        spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+        spec = pow(max(dot(normal, halfwayDir), 0.0), 1.0);
     }
     else
     {
         vec3 reflectDir = reflect(-lightDir, normal);
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.0);
     }
-    vec3 specular = vec3(0.3) * spec; // assuming bright white light color
-    FragColor = vec4(ambient + diffuse + specular,triangleColor.a ) * triangleColor;
+    vec3 specular = vec3(1.0) * spec; // assuming bright white light color
+    FragColor = vec4(ambient + diffuse + specular,1.0 ) * triangleColor;
 }

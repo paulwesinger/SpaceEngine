@@ -96,41 +96,6 @@ bool fileUtil::readLine(string datei,std::vector<std::string> &lines) {
 
         return  true;
     }
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    //vector<string> stringlist;
-    int i =0;
-    if ( is.is_open()) {
-        while ( ! is.eof() && i < MAXLINES ) {  // sicherheitsabbruch !!!
-            char buffer[512];
-            std::string st;
-            is.getline(buffer,512);
-            if ( is.gcount() > 0 ) {
-                st = (string)buffer;
-                lines.push_back(st);
-
-
-            }
-            i++;
-        }
-        loginfo("Loaded " + IntToString(i) + " entries" );
-        loginfo ("Reading Data from file " + datei + " ... done","fileUtil");
-        logEmptyLine();
-
-        is.close();
-        return true;
-    }
-    */
     else {
         logwarn("Warning : Konnte Datei " + datei + " nicht öffnen","fileutil");
         return  false;

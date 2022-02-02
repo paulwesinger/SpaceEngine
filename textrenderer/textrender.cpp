@@ -121,18 +121,6 @@ static const GLushort vertex_indices[] =
     0, 1, 2, 3, 4, 5
 };
 
-static const GLfloat vertex_positions[] =
-    {
-    //  Position             Texture
-        0.08f,  -0.5f,      0.0f,0.0f,
-        0.08f,  0.1f,       0.0f,1.0f,
-        0.58f, 0.1f,        1.0f,1.0f,
-
-        0.58f, -0.5f,       1.0f,0.0f,
-        0.8f, 0.1f,         1.0f,1.0f,
-        0.95f, -0.5f,       1.0f,0.0f,
-    };
-
 TextRender::TextRender(int resx, int resy) {
     Init(resx, resy);
 }
