@@ -753,10 +753,17 @@ void InitGL::ShowCameraPos() {
 }
 
 void InitGL::stopAnimation() {
- if (_Animate)
-     _Animate = false;
- else
-     _Animate = true;
+    if (_Animate)
+        _Animate = false;
+    else
+        _Animate = true;
+}
+
+void InitGL::UseBlend() {
+    if (_UseBlend)
+        _UseBlend = false;
+    else
+        _UseBlend = true;
 }
 
 bool InitGL::initSoundMachine() {
@@ -1048,6 +1055,11 @@ void InitGL::Run() {
 
 
 
+       if (_UseBlend)
+           lightSource->UseBlending(true);
+       else
+           lightSource->UseBlending(false);
+
        lightSource->SetColor(glm::vec4(0.0,0.0,1.0,1.0));
        lightSource->SetProjection(projection->GetPerspective());
        lightSource->SetFirstTranslate(true);
@@ -1058,6 +1070,13 @@ void InitGL::Run() {
 
         //sphere1->Translate(camera->GetPos());
         //sphere1->Rotate(glm::vec3(camera->PitchCameraDEG(), -camera->YawCameraDEG(),camera->RollCameraDEG()));
+
+
+        if (_UseBlend)
+            sphere1->UseBlending(true);
+        else
+            sphere1->UseBlending(false);
+
         sphere1->SetProjection(projection->GetPerspective());
         sphere1->Draw(camera);
 

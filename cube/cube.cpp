@@ -272,6 +272,12 @@ void CCube::Draw(Camera * cam) {
 
     glUseProgram( currentShader);
 
+    if (_UseBlending) {
+        glEnable(GL_BLEND);
+        //glBlendFunc(GL_BLEND_SRC_ALPHA,GL_ONE_MINUS_SRC_COLOR);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
+    }
+
 
     //----------------------------
     // Nur zum Test für Cockpit !!
@@ -364,4 +370,8 @@ void CCube::Draw(Camera * cam) {
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(0);
 
+    if (_UseBlending ) {
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_ONE,GL_ZERO);
+    }
 }

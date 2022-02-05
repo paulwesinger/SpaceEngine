@@ -66,6 +66,8 @@ public:
     void SetHasAlpha(bool yes);
     bool HasAlpha();
     bool UseGlasShader();
+    bool UseBlending(bool useblend);
+
     void SetAlphaColor(glm::vec3 alphacol);
     glm::vec3 AlphaColor();
 
@@ -103,6 +105,7 @@ protected:
     bool _HasTextures;
     bool _HasAlpha;
     bool _UseGlasshader;
+    bool _UseBlending;
     glm::vec3 _AlphaColor;
 
     uint _CountTextures;  // die Anzehl = Listen länge

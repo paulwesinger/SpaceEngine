@@ -61,7 +61,7 @@ typedef struct {
 // static flags for handler in derrived classes
 static bool renderSkybox;
 static bool _Animate;
-
+static bool _UseBlend;
 
 class InitGL {
 public:
@@ -84,9 +84,6 @@ public:
     static void setFog(bool enable = false);
     void fogParam();
 
-
-
-
 protected:
     std::vector<std::string> split(std::string const& input, std::string const& separator);
     //----------------------------------
@@ -101,6 +98,7 @@ protected:
     void LoadConfiguration();
     void InitFX();
     static void stopAnimation();
+    static void UseBlend();
 
 
     // HandleInput wird wahrscheinlich überflussig....

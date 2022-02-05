@@ -51,6 +51,7 @@ public:
     void Done() override;
 
 
+
 protected:
     void loadButtons();
     void Render(glm::mat4 cam)  override;
@@ -62,17 +63,15 @@ protected:
     std::vector<std::string> object3DLandscapeList;
     std::vector<std::string> objectCockpitList;
 
-
     CControllContainer *con1;
     CControllContainer *con2;
 
-
     CButton * toogleSkyBoxBtn;
-
 
     static void funcFog();
     static void funcToogleSkybox();
-    static void functoogleCheckBox(bool checked);
+    static void functoogleAnimation(bool checked);
+    static void functoogleBlend(bool checked);
 
  private:
 
@@ -100,6 +99,7 @@ protected:
     //----------------------------------------------------------------
     TextEdit * txtFrameperSec;
     CheckBox * checkBoxAnimation;
+    CheckBox * checkBoxBlending;
 
     // Label für CameraPos :
     TextEdit * cameraX;

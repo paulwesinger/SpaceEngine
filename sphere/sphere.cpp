@@ -164,9 +164,14 @@ void CSphere::SetColor(vec4 color) {
 //virtuale MEthoden
 void CSphere::Draw(Camera* cam ){
 
+    if (_UseBlending) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
+ //       glBlendFunc(GL_SRC_ALPHA, GL_BLEND_SRC_ALPHA);
+    }
+
 //    glEnable(GL_DEPTH_TEST);
-  //  glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
+
    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendFunc(GL_SRC_ALPHA, GL_BLEND_SRC_ALPHA);
@@ -281,8 +286,10 @@ void CSphere::Draw(Camera* cam ){
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
-    glDisable(GL_BLEND);
-    glBlendFunc(GL_ONE,GL_ZERO);
+    if (_UseBlending) {
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_ONE,GL_ZERO);
+    }
     glFrontFace(GL_CCW);
 }
 

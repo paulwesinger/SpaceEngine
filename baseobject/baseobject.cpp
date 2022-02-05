@@ -195,4 +195,4 @@ void BaseObject::setActiveShader(ShaderType t){
      return _HasAnimation;
  }
  bool BaseObject::UseGlasShader() { return UseGlasShader();}
-
+ bool BaseObject::UseBlending(bool useblend){ _UseBlending = useblend; }

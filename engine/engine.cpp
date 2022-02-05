@@ -83,13 +83,21 @@ void CEngine::Run() {
 // Place here Functons for button handler..
 // ---------------------------------------------------------------
 
-void CEngine::functoogleCheckBox(bool checked) {
+void CEngine::functoogleAnimation(bool checked) {
 
     if (checked )
         InitGL::stopAnimation();  // eigntlich startanimation..
     else
        InitGL::stopAnimation();
 }
+
+void CEngine::functoogleBlend(bool checked) {
+   if (checked)
+       InitGL::UseBlend();
+   else
+       InitGL::UseBlend();
+}
+
 void CEngine::funcToogleSkybox() {
     if (renderSkybox) {
         renderSkybox = false;
@@ -195,11 +203,22 @@ void CEngine::initMenu(){
 
     checkBoxAnimation = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) );
     checkBoxAnimation->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
-    checkBoxAnimation->AddHandler(CEngine::functoogleCheckBox);
+    checkBoxAnimation->AddHandler(CEngine::functoogleAnimation);
     con2->addControll2D(checkBoxAnimation);
     // add label for Frames to buildin textrender label
     checkBoxAnimation->setLabel("Animate");
 
+    //----------------------------------------------------
+    // checkbox für Blending
+    //----------------------------------------------------
+    p = con2->NextControllPos();
+
+    checkBoxBlending = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) );
+    checkBoxBlending->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
+    checkBoxBlending->AddHandler(CEngine::functoogleBlend);
+    con2->addControll2D(checkBoxBlending);
+    // add label for Frames to buildin textrender label
+    checkBoxBlending->setLabel("Blending");
     // ---------------------------------------------------
     // Statusfenster(pos) von Camera:
     //----------------------------------------------------
