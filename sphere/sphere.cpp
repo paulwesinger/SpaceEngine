@@ -180,8 +180,7 @@ void CSphere::Draw(Camera* cam ){
 
    // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-    glFrontFace(GL_CW);
-
+    glFrontFace(_FrontFace_Mode);
     glUseProgram(currentShader);
 
     // Locate uniforms in shader
@@ -199,8 +198,6 @@ void CSphere::Draw(Camera* cam ){
     int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
 
     glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
-
-
 
     glUniform1i(useTex2Location,0);
 
@@ -261,8 +258,6 @@ void CSphere::Draw(Camera* cam ){
     glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
     glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));
 
-    //glFrontFace(GL_CW);
-
     glBindVertexArray(_Vao);
     glBindBuffer(GL_ARRAY_BUFFER, _VertexBuffer);
 
@@ -290,7 +285,6 @@ void CSphere::Draw(Camera* cam ){
         glDisable(GL_BLEND);
         glBlendFunc(GL_ONE,GL_ZERO);
     }
-    glFrontFace(GL_CCW);
 }
 
 // ===============================================

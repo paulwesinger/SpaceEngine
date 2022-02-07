@@ -223,14 +223,19 @@ void CColorCube::SetColor( vec4 color){
 void CColorCube::Draw(Camera * cam) {
 
     glUseProgram( currentShader);
-
+/*
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    */
+
+    glFrontFace(_FrontFace_Mode);
+
     // Locate uniforms in shader
     mv_location = glGetUniformLocation(currentShader, "mv_matrix");
     int projectionloc = glGetUniformLocation(currentShader,"projection");
     int viewloc = glGetUniformLocation(currentShader,"view");
     color_location = glGetUniformLocation(currentShader,"triangleColor");
+
     // Model  Lightning
     int modellocation = glGetUniformLocation(currentShader,"model");
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");

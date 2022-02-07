@@ -645,15 +645,17 @@ void InitGL::InitEngineObject() {
     loginfo("Erstelle Sphere .........done");
     loginfo("=============================");
     sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),15,(GLfloat)4.0,shader);
-    sphere1->SetHasAlpha(true);
+   // sphere1->SetHasAlpha(true);
     sphere1->setPolygonMode(GL_FILL);
+    sphere1->SetFrontFace(GL_CW);
 
 
-    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
-    if (texturesok)
-        sphere1->addTexture(cubeimages,"InitGL::Sphere");
-    else
-        logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
+    //texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
+    //if (texturesok)
+    cubeimages.push_back("../SpaceEngine/images/world.png");
+    sphere1->addTexture(cubeimages,"InitGL::Sphere");
+    //else
+    //    logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
     //-----------------------------------------
@@ -661,6 +663,7 @@ void InitGL::InitEngineObject() {
     //-----------------------------------------
     loginfo("Erstelle LichtQuelle als weisse sphere....","InitGL::InitEngineObjects");
     lightSource = new CSphere(ambientLight->getPos(),glm::vec4(0.0,0.0,1.0,0.5),projection->GetPerspective(),18,(GLfloat)2.0,shader );
+    lightSource->SetFrontFace(GL_CW);
 
     //Texture loading
     cubeimages.clear();
@@ -694,8 +697,7 @@ void InitGL::InitEngineObject() {
 
     cockpit = new Cockpit(projection->GetPerspective(),camera->GetPos());
 
-    //cockpit->setMesh(sphere1);
-    logwarn("Cokpit angelegt, noch KEINE Mesh zugewiesen !!", "IniEngineObjects");
+    logwarn("Cokpit angelegt, Mesh wird in CEngine zugewiesen  !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 }
 
@@ -1053,11 +1055,11 @@ void InitGL::Run() {
        vec3 dummy;
        dummy = vec3(0.0,0.2,0.0);
 
-
-
        if (_UseBlend)
            lightSource->UseBlending(true);
+          // glDisable(GL_DEPTH_TEST);
        else
+           //glEnable(GL_DEPTH_TEST);
            lightSource->UseBlending(false);
 
        lightSource->SetColor(glm::vec4(0.0,0.0,1.0,1.0));
@@ -1068,17 +1070,20 @@ void InitGL::Run() {
 
         lightSource->Draw(camera);
 
-        //sphere1->Translate(camera->GetPos());
-        //sphere1->Rotate(glm::vec3(camera->PitchCameraDEG(), -camera->YawCameraDEG(),camera->RollCameraDEG()));
+        if (cockpit->HasMesh() ) {
 
+            glDisable(GL_DEPTH_TEST);
 
-        if (_UseBlend)
-            sphere1->UseBlending(true);
-        else
-            sphere1->UseBlending(false);
+            cockpit->getCockpitMesch()->UseBlending(true);
+            cockpit->getCockpitMesch()->setGlasShader(true);
+            cockpit->Translate(camera->GetPos());
+            cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+            cockpit->setProjectionMatrix(projection->GetPerspective());
+            cockpit->Draw(camera);
 
-        sphere1->SetProjection(projection->GetPerspective());
-        sphere1->Draw(camera);
+            glEnable(GL_DEPTH_TEST);
+
+        }
 
         // ===================================
         // Engine Objekte
@@ -1092,21 +1097,12 @@ void InitGL::Run() {
             lightSource->setActiveShader(_CurrentShader);
             sphere1-> setActiveShader(_CurrentShader);
 
-            if (cockpit->HasMesh())
-                cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+         //   if (cockpit->HasMesh())
+         //       cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
 
         }
 
-        if (cockpit->HasMesh() ) {
-
-            cockpit->getCockpitMesch()->Translate(camera->GetPos());
-            //cockpit->Translate(camera->GetPos());
-            cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-            cockpit->setProjectionMatrix(projection->GetPerspective());
-            cockpit->Draw(camera);
-        }
-
-        if (! list3D.empty() ) {
+         if (! list3D.empty() ) {
             for (unsigned int i=0;i < list3D.size(); i++ ) {
                 dummy = vec3(1.0 * (float) i ,2.0,3.0);
                 list3D[i]->SetProjection(projection->GetPerspective());
@@ -1132,6 +1128,27 @@ void InitGL::Run() {
         // ===================================
 
         Render(camera->GetView());
+
+        sphere1->setGlasShader(true);
+        sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
+        sphere1->SetProjection(projection->GetPerspective());
+        sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+      //  sphere1->Translate(camera->GetPos());
+        sphere1->Draw(camera);
+
+        if (cockpit->HasMesh() ) {
+
+            cockpit->getCockpitMesch()->UseBlending(true);
+            cockpit->getCockpitMesch()->setGlasShader(true);
+            cockpit->setProjectionMatrix(projection->GetPerspective());
+        //    cockpit->getCockpitMesch()->Translate(camera->GetPos());
+            cockpit->Translate(camera->GetPos());
+            cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+
+            cockpit->Draw(camera);
+        }
+
+
         // ===================================ee
         // Alles für 2D Projektion vorbereiten
         //====================================

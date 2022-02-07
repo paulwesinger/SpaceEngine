@@ -60,15 +60,18 @@ public:
 
     // Flags
     void SetFirstTranslate(bool ok);
-    bool GetFirstTranslate();
-    bool HasTextures();
+    void SetAlphaColor(glm::vec3 alphacol);
     void SetHasTextures(bool hasATexture);
     void SetHasAlpha(bool yes);
+    void SetFrontFace(uint mode);
+
     bool HasAlpha();
     bool UseGlasShader();
     bool UseBlending(bool useblend);
+    bool GetFirstTranslate();
+    bool HasTextures();
 
-    void SetAlphaColor(glm::vec3 alphacol);
+
     glm::vec3 AlphaColor();
 
     void SetProjection(glm::mat4 pro,bool orthomode = false);
@@ -86,6 +89,8 @@ protected:
                 glasshader,
                 oldshader,
                 currentShader;
+
+    uint _FrontFace_Mode;
 
     // This vectors holds the current translation,rotation,scale
     vec3 _rotate;

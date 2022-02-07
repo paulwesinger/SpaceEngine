@@ -189,6 +189,8 @@ void BaseObject::setActiveShader(ShaderType t){
  void BaseObject::SetAlphaColor(glm::vec3 alphacol) { _AlphaColor = alphacol; }
  glm::vec3 BaseObject::AlphaColor() {return _AlphaColor; }
 
+ void BaseObject::SetFrontFace(uint mode) { _FrontFace_Mode = mode; }
+
  void BaseObject::setDrawMode(GLuint mode) {    _DrawMode = mode; }
  void BaseObject::setPolygonMode(GLuint mode) { _PolgonMode = mode;}
  bool BaseObject::HasAnimation() {
