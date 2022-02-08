@@ -133,6 +133,14 @@ TextRender::TextRender(int resx, int resy, sPoint pos) {
 }
 
 
+void TextRender::SetTextShader(GLuint s) {
+    _TextShader = s;
+}
+
+void TextRender::SetTextfeldShader(GLuint s) {
+    _TextFeldShader = s;
+}
+
 TextRender::TextRender(const TextRender& orig) {
 }
 
@@ -233,7 +241,7 @@ bool TextRender::Init(int resx, int resy) {
     _MarginLeft = 5.0f;
     _MarginRight= 5.0f;
     _MarginY = 5.0f;
-
+/*
     shader = new Shader();
     if (shader ) {
         vs = shader -> compileVertexShader(vs2D_src);
@@ -272,7 +280,7 @@ bool TextRender::Init(int resx, int resy) {
         logwarn("Konnte TextfeldColorShader nicht erzeugen ","TextRender::compileColorShader");
     else
         loginfo("Texfeld Color Shader erzeugt! ","TextRender::compilecolorshader");
-
+*/
 
 
     // ---------------------------------------
@@ -569,14 +577,16 @@ void TextRender::Render() {
 
 
     if (_HasTexture)
-        currentshader =shader_textfeld ;
+      //  currentshader =shader_textfeld ;
+        _CurrentShader = _TextFeldShader;
     else
-        currentshader = shaderColorTextfeld;
+        _CurrentShader = _TextShader;
+        //currentshader = shaderColorTextfeld;
 
-    glUseProgram(currentshader);
+    glUseProgram(_CurrentShader);
 
-    projection_loc = glGetUniformLocation(currentshader,"projection_textfeld");
-    framecolor_loc = glGetUniformLocation(currentshader,"color");
+    projection_loc = glGetUniformLocation(_CurrentShader,"projection_textfeld");
+    framecolor_loc = glGetUniformLocation(_CurrentShader,"color");
     // IDentity
     glm::mat4 Model(1.0f);
 
@@ -624,10 +634,8 @@ void TextRender::Render() {
     glUniformMatrix4fv(mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
     glUniform4f(uniform_colorloc,_TextColor.r, _TextColor.g, _TextColor.b, _TextColor.a);
 
-
     // Iterate through all characters
     // std::string::const_iterator c;
-
     for (uint i = 0; i < _StringList.size(); i++ ) {
         for (c = _StringList[i].begin(); c != _StringList[i].end(); c++)
         {
@@ -651,9 +659,6 @@ void TextRender::Render() {
                 { xpos,     ypos - h - 6.0f,   0.0, 0.0 },
                 { xpos + w, ypos - 6.0f,       1.0, 1.0 },
                 { xpos + w, ypos - h - 6.0f,   1.0, 0.0 }
-
-
-
             };
             // Render glyph texture over quad
             glBindTexture(GL_TEXTURE_2D,ch.TextureID);

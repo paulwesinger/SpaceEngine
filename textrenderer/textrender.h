@@ -61,6 +61,9 @@ public:
     void SetAlignRight(bool align);
     void SetScale(GLfloat scale);
 
+    void SetTextShader(GLuint s);
+    void SetTextfeldShader(GLuint s);
+
     uint getStringCount();
     int getTextAreaHeight();
     int getHeight();
@@ -116,7 +119,9 @@ private:
     //------------------------
     int vs_textfeld;
     int fs_textfeld;
-    int shader_textfeld, shaderColorTextfeld,currentshader;
+//    int shader_textfeld, shaderColorTextfeld,currentshader;
+
+    GLuint _TextShader, _TextFeldShader, _CurrentShader;
 
     GLint mv_projectloc;
     GLint uniform_colorloc;

@@ -24,8 +24,10 @@ public:
     void AttachCustomShader( GLuint &prog, int &shader);  //Shader dazuhängen
     void CreateCustomProgram(GLuint &prog); // Die ID des Shaders retour
     void deleteShader(int &shader);
+
     ~Shader();
 protected:
+    int _TextShader;
 
 };
 

@@ -192,6 +192,9 @@ protected:
     GLuint cubeshaderprog_color_normal;
     GLuint sphereshader_color;
     GLuint lighttexture_shader;
+
+    GLuint textfeldshader, textshader;
+
     ShaderType _CurrentShader;
     bool _ShaderChanged;
 

@@ -236,9 +236,45 @@ void InitGL::InitShaders() {
     int vs;
     int fs;
 
+    //----------------------------------------------------------------
+    // Shader für Text
+    //----------------------------------------------------------------
+    std::string v_source ="../SpaceEngine/ShaderSources/TextShader.vex";
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
+    //Fragment Shader
+    v_source ="../SpaceEngine/ShaderSources/TextShader.frg";
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
+
+    loginfo("Text Shader.................done");
+    shader->CreateCustomShader(textshader);
+    shader->AttachCustomShader(textshader,vs);
+    shader->AttachCustomShader(textshader,fs);
+    shader->CreateCustomProgram(textshader);
+    glDetachShader(textshader,vs);
+    glDetachShader(textshader,fs);
+    logEmptyLine();
+
+    //----------------------------------------------------------------
+    // Shader für Textfeld
+    //----------------------------------------------------------------
+    v_source ="../SpaceEngine/ShaderSources/TextFeldColorShader.vex";
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
+    //Fragment Shader
+    v_source ="../SpaceEngine/ShaderSources/TextFeldColorShader.frg";
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
+
+    loginfo("Textfeld Shader.................done");
+    shader->CreateCustomShader(textfeldshader);
+    shader->AttachCustomShader(textfeldshader,vs);
+    shader->AttachCustomShader(textfeldshader,fs);
+    shader->CreateCustomProgram(textfeldshader);
+    glDetachShader(textfeldshader,vs);
+    glDetachShader(textfeldshader,fs);
+    logEmptyLine();
+
     // Vertex Shader
     // ------------------------------------------------------------------------
-    std::string v_source ="../SpaceEngine/ShaderSources/cubevertexshader.vex";
+    v_source ="../SpaceEngine/ShaderSources/cubevertexshader.vex";
     vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/colorshader.frg";
@@ -599,6 +635,13 @@ void InitGL::InitEngineObject() {
     skybox -> Load(faces);
     loginfo("Erstelle Skybox ........Done","InitGL::InitEngineObject");
 
+    loginfo("===========================");
+    loginfo("Erstelle Shaders...........");
+    loginfo("===========================");
+    InitShaders();
+    loginfo("..... done all");
+    loginfo("============================");
+
     //================================
     // Init 2D Objects
     // ===============================
@@ -609,6 +652,9 @@ void InitGL::InitEngineObject() {
     p.y =   400;
 
     textrender = new TextRender(_ResX, _ResY, p);
+    textrender->SetTextShader(textshader);
+    textrender->SetTextfeldShader(textfeldshader);
+
     textrender->AddString("Das ist die 1. Zeile");
     textrender->AddString("Das ist die 2. Zeile");
     textrender->AddString("Das ist die 3. Zeile");
@@ -618,13 +664,6 @@ void InitGL::InitEngineObject() {
     textrender->SetHasBackground(true);
     textrender->SetHasTexture(true);
     textrender->SetAlignRight(false);
-
-    loginfo("===========================");
-    loginfo("Erstelle Shaders...........");
-    loginfo("===========================");
-    InitShaders();
-    loginfo("..... done all");
-    loginfo("============================");
 
     //========================================
     // Init 3D Objects
