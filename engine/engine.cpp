@@ -535,7 +535,7 @@ bool CEngine::loadTexturedCubes(){
                  obj->Translate(glm::vec3(s3D.trans.translate.x, s3D.trans.translate.y, s3D.trans.translate.z));
                  obj->Scale(glm::vec3(s3D.trans.scale.x, s3D.trans.scale.y, s3D.trans.scale.z));
                  obj->SetHasAlpha(true);
-                 obj->SetFrontFace(GL_CW);
+                 obj->SetFrontFace(GL_CCW);
 
                  //----------------------------------------
                  // Add textures , if we have some
@@ -632,6 +632,7 @@ bool CEngine::loadCockpits() {
                  obj->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
                  obj->initShader(GLASS_SHADER,glasshader);
                  obj->setActiveShader(TEXTURE_SHADER);
+                 obj->SetFrontFace(GL_CW);
 
                  cockpit->setMesh(obj);
                  //add2List(obj,LIGHT_SHADER); //LIGHT_SHADER)
@@ -682,7 +683,7 @@ bool CEngine::loadColorCubes() {
                  obj->Rotate(glm::vec3(s3D.trans.rotate.x, s3D.trans.rotate.y, s3D.trans.rotate.z) );
                  obj->Translate(glm::vec3(s3D.trans.translate.x, s3D.trans.translate.y, s3D.trans.translate.z));
                  obj->Scale(glm::vec3(s3D.trans.scale.x, s3D.trans.scale.y, s3D.trans.scale.z));
-                 obj->SetFrontFace(GL_CW);
+                 obj->SetFrontFace(GL_CCW);
 
                  loginfo("s3D initialisisert ","CEngine::init3D");
 

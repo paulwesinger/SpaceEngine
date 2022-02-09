@@ -134,11 +134,11 @@ TextRender::TextRender(int resx, int resy, sPoint pos) {
 
 
 void TextRender::SetTextShader(GLuint s) {
-    _TextShader = s;
+   // _TextShader = s;
 }
 
 void TextRender::SetTextfeldShader(GLuint s) {
-    _TextFeldShader = s;
+    //_TextFeldShader = s;
 }
 
 TextRender::TextRender(const TextRender& orig) {
@@ -241,7 +241,7 @@ bool TextRender::Init(int resx, int resy) {
     _MarginLeft = 5.0f;
     _MarginRight= 5.0f;
     _MarginY = 5.0f;
-/*
+
     shader = new Shader();
     if (shader ) {
         vs = shader -> compileVertexShader(vs2D_src);
@@ -280,7 +280,7 @@ bool TextRender::Init(int resx, int resy) {
         logwarn("Konnte TextfeldColorShader nicht erzeugen ","TextRender::compileColorShader");
     else
         loginfo("Texfeld Color Shader erzeugt! ","TextRender::compilecolorshader");
-*/
+
 
 
     // ---------------------------------------
@@ -577,16 +577,16 @@ void TextRender::Render() {
 
 
     if (_HasTexture)
-      //  currentshader =shader_textfeld ;
-        _CurrentShader = _TextFeldShader;
+        currentshader =shader_textfeld ;
+      //  _CurrentShader = _TextFeldShader;
     else
-        _CurrentShader = _TextShader;
-        //currentshader = shaderColorTextfeld;
+      //  _CurrentShader = _TextShader;
+        currentshader = shaderColorTextfeld;
 
-    glUseProgram(_CurrentShader);
+    glUseProgram(currentshader);
 
-    projection_loc = glGetUniformLocation(_CurrentShader,"projection_textfeld");
-    framecolor_loc = glGetUniformLocation(_CurrentShader,"color");
+    projection_loc = glGetUniformLocation(currentshader,"projection_textfeld");
+    framecolor_loc = glGetUniformLocation(currentshader,"color");
     // IDentity
     glm::mat4 Model(1.0f);
 

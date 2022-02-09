@@ -119,9 +119,9 @@ private:
     //------------------------
     int vs_textfeld;
     int fs_textfeld;
-//    int shader_textfeld, shaderColorTextfeld,currentshader;
+    int shader_textfeld, shaderColorTextfeld,currentshader;
 
-    GLuint _TextShader, _TextFeldShader, _CurrentShader;
+    //GLuint _TextShader, _TextFeldShader, _CurrentShader;
 
     GLint mv_projectloc;
     GLint uniform_colorloc;

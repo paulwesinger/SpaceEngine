@@ -68,6 +68,8 @@ public:
     virtual void alignToSize(int w, int h);
 
 
+
+
 protected:
 
     virtual void animateClick();

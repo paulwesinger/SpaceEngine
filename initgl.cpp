@@ -239,6 +239,8 @@ void InitGL::InitShaders() {
     //----------------------------------------------------------------
     // Shader für Text
     //----------------------------------------------------------------
+
+    /*
     std::string v_source ="../SpaceEngine/ShaderSources/TextShader.vex";
     vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader
@@ -272,9 +274,11 @@ void InitGL::InitShaders() {
     glDetachShader(textfeldshader,fs);
     logEmptyLine();
 
+    */
+
     // Vertex Shader
     // ------------------------------------------------------------------------
-    v_source ="../SpaceEngine/ShaderSources/cubevertexshader.vex";
+    std::string v_source ="../SpaceEngine/ShaderSources/cubevertexshader.vex";
     vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/colorshader.frg";

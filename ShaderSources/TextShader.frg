@@ -15,7 +15,7 @@ void main()
 	if(texel.r == 0.0 && texel.g == 0.0 && texel.b == 0)        
 		discard;                                                
     	else {                                                      
-        	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, fs_in.uv).r);
+               vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, fs_in.uv).r);
 	       fragcolor =    sampled * col2D;                        
        }                                                           
 }              
