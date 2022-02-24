@@ -354,6 +354,8 @@ void CCube::Draw(Camera * cam) {
 
     glFrontFace(_FrontFace_Mode);
 
+
+
     glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
     glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));
 
