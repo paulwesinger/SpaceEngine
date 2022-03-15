@@ -1041,20 +1041,17 @@ void InitGL::Run() {
 
            // ORtho oder perspective mode:
            case KEY_O : {
-               // Hier sollte eine Objectliste durchlaufen werden ,
-               // bei allen objecten jetzt projection auf ortho setzen
-               // Hier setzte ich mal alle 3 per "Hand"
-           ////    cube->SetProjection(projection->GetOrtho(), true);
-           ////    cube2->SetProjection(projection->GetOrtho(), true);
-           ////    cube3->SetProjection(projection->GetOrtho(), true);
-               //skybox->SetProjection(projection->GetOrtho());
-               break;
+
+           for (uint i = 0; i < list3D.size(); i++) {
+                    list3D[i]->SetProjection(projection->GetOrtho(), true);
+                }
+                break;
            }
            case KEY_P: {  // Wired
-            ////   cube->SetProjection(projection->GetPerspective(), false);
-            ////   cube2->SetProjection(projection->GetPerspective(), false);
-            ////   cube3->SetProjection(projection->GetPerspective(), false);
-               //skybox->SetProjection(projection->GetOrtho());
+
+                for (uint i = 0; i < list3D.size(); i++) {
+                    list3D[i]->SetProjection(projection->GetPerspective(),false);
+                }
                break;
            }
 
@@ -1160,6 +1157,11 @@ void InitGL::Run() {
                     list3D[i]->StepTranslate(vt);
                     list3D[i]->StepRotate(rv);
                 }
+
+                if (_UseBlend)
+                    list3D[i]->UseBlending(true);
+                else
+                    list3D[i]->UseBlending(false);
 
                 //list3D[i]->setActiveShader(ShaderType::LIGHT_SHADER);
                 list3D[i]->Draw(camera);

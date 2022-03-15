@@ -274,7 +274,6 @@ void CCube::Draw(Camera * cam) {
 
     if (_UseBlending) {
         glEnable(GL_BLEND);
-        //glBlendFunc(GL_BLEND_SRC_ALPHA,GL_ONE_MINUS_SRC_COLOR);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
     }
 
@@ -317,12 +316,10 @@ void CCube::Draw(Camera * cam) {
         Model = glm::rotate(Model, radians(GetRotate().x),vec3(1.0,0.0,0.0));
         Model = glm::rotate(Model, radians(GetRotate().y),vec3(0.0,1.0,0.0));
         Model = glm::rotate(Model, radians(GetRotate().z),vec3(0.0,0.0,1.0));
-
         Model = glm::translate(Model,GetTranslate());
     }
 
     Model = glm::scale(Model,GetScale());
-
 
     if (_IsOrtho) {
         glm::mat4 view = glm::lookAt(vec3(0.0f,0.0f,0.1f),glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(0.0f, 1.0f, 0.0f));
@@ -353,8 +350,6 @@ void CCube::Draw(Camera * cam) {
     }
 
     glFrontFace(_FrontFace_Mode);
-
-
 
     glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
     glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));

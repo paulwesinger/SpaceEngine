@@ -340,7 +340,7 @@ void CSphere::calcStrip() {
             vt.tex.s = 1.0;
          else
             vt.tex.s = static_cast<float>(i) * stepTexS;
-        vt.tex.t = 1.0;
+        vt.tex.t = 0.0;
 
         vc.vector  = meridianPoint;
         vertsTexture.push_back(vt);
@@ -407,11 +407,7 @@ void CSphere::calcStrip() {
         vc.vector  = meridianPoint;
         vertsTexture.push_back(vt);
         vertsColor.push_back(vc);
-
     }
-
-
-
 }
 
 void CSphere::calcNew() {
@@ -535,7 +531,6 @@ void CSphere::calcNew() {
 
 void CSphere::setUp() {
 
-
     calcStrip();
 
     // Neu mit std::vector
@@ -574,7 +569,6 @@ void CSphere::setUp() {
             body.push_back(i + x);
             body.push_back(i + x + step);
         }
-
         x += step;
     }
 
