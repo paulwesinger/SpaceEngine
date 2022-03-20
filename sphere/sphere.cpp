@@ -271,7 +271,7 @@ void CSphere::Draw(Camera* cam ){
 
     glPolygonMode(GL_FRONT_AND_BACK,BaseObject::_PolgonMode);       //GL_FILL  , GL_POINT);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_BodyPoints);
-    glDrawElements(_DrawMode,body.size(),GL_UNSIGNED_SHORT,0);
+    glDrawElements(_DrawMode,body.size() , GL_UNSIGNED_SHORT,0);  // BaseObject::DrawMode(GL_TRIANGLESTRIP)
 
     glBindTexture(GL_TEXTURE_2D,0);
     glActiveTexture(GL_TEXTURE0);
@@ -345,14 +345,12 @@ void CSphere::calcStrip() {
         vc.vector  = meridianPoint;
         vertsTexture.push_back(vt);
         vertsColor.push_back(vc);
-
     }
-
 
     //---------------------------------------------
     // Body
     //---------------------------------------------
-    for (i =1; i<_CountPoints-1; i++){
+    for (i =1; i<_CountPoints ; i++){
 
         currentAngle -= winkelmeridian;
 
@@ -394,9 +392,9 @@ void CSphere::calcStrip() {
         }
     }
 
-    for (i=0; i<_CountPoints*2;i++){
+    for (i=0; i < _CountPoints*2; i++){
         meridianPoint.x = 0.0f;
-        meridianPoint.y = - _Radius;
+        meridianPoint.y =  -_Radius;
         meridianPoint.z = 0.0f;
 
         vt.vector = meridianPoint;
@@ -563,7 +561,7 @@ void CSphere::setUp() {
 
     int i, j;
 
-    for (j = 0; j < _CountPoints; j++) {  // -3
+    for (j = 0; j <= _CountPoints; j++) {  // -3
 
         for (i= 0; i < step; i++){
             body.push_back(i + x);
