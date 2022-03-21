@@ -269,12 +269,9 @@ void CSphere::Draw(Camera* cam ){
 
     glPointSize(8);
 
-    glPolygonMode(GL_FRONT_AND_BACK,BaseObject::_PolgonMode);       //GL_FILL  , GL_POINT);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_POINTS);//BaseObject::_PolgonMode);       //GL_FILL  , GL_POINT);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_BodyPoints);
-    glDrawElements(_DrawMode,body.size() , GL_UNSIGNED_SHORT,0);  // BaseObject::DrawMode(GL_TRIANGLESTRIP)
-
-    glBindTexture(GL_TEXTURE_2D,0);
-    glActiveTexture(GL_TEXTURE0);
+    glDrawElements(GL_LINES,body.size() , GL_UNSIGNED_SHORT,0);  // BaseObject::DrawMode(GL_TRIANGLESTRIP)
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
@@ -320,8 +317,8 @@ void CSphere::calcStrip() {
 
     float winkelmeridian     = 180.0f / _CountPoints;
     float winkelbreitengrad  = 360.0f / (_CountPoints*2);
-    float stepTexS           = 1.0f / (_CountPoints *2);  // waagrechte
-    float stepTexT           = 1.0f / _CountPoints;       // Senkrechte
+    float stepTexS           = 1.0f / (_CountPoints *2);        // waagrechte
+    float stepTexT           = 1.0f / (_CountPoints + 1);       // Senkrechte
     float currentAngle       = 90.0f;
 
     int i,j;
@@ -350,7 +347,7 @@ void CSphere::calcStrip() {
     //---------------------------------------------
     // Body
     //---------------------------------------------
-    for (i =1; i<_CountPoints ; i++){
+    for (i =1; i<_CountPoints; i++){
 
         currentAngle -= winkelmeridian;
 
@@ -561,7 +558,7 @@ void CSphere::setUp() {
 
     int i, j;
 
-    for (j = 0; j <= _CountPoints; j++) {  // -3
+    for (j = 0; j <= _CountPoints - 1; j++) {  // -3
 
         for (i= 0; i < step; i++){
             body.push_back(i + x);
