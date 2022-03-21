@@ -271,7 +271,7 @@ void CSphere::Draw(Camera* cam ){
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_POINTS);//BaseObject::_PolgonMode);       //GL_FILL  , GL_POINT);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_BodyPoints);
-    glDrawElements(GL_LINES,body.size() , GL_UNSIGNED_SHORT,0);  // BaseObject::DrawMode(GL_TRIANGLESTRIP)
+    glDrawElements(_DrawMode,body.size() , GL_UNSIGNED_SHORT,0);  // BaseObject::DrawMode(GL_TRIANGLESTRIP)
 
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
@@ -316,7 +316,7 @@ void CSphere::calcStrip() {
     glm::vec3 breitengradpoint;
 
     float winkelmeridian     = 180.0f / _CountPoints;
-    float winkelbreitengrad  = 360.0f / (_CountPoints*2);
+    float winkelbreitengrad  = 360.0f / (_CountPoints*2 -1);
     float stepTexS           = 1.0f / (_CountPoints *2);        // waagrechte
     float stepTexT           = 1.0f / (_CountPoints + 1);       // Senkrechte
     float currentAngle       = 90.0f;
@@ -377,7 +377,12 @@ void CSphere::calcStrip() {
              breitengradpoint.y = meridianPoint.y;
              breitengradpoint.z = lPoint.y;//latitudePoints.at(j).y;
              // Texture , diesmal nur u koordinate , v bleibt erstmal
-             vt.tex.s = static_cast<float>(j) * stepTexS;
+
+             if (j ==  (_CountPoints*2) -1)
+                vt.tex.s = 1.0f; //static_cast<float>(j) * stepTexS;
+             else
+                 vt.tex.s = static_cast<float>(j) * stepTexS;
+
              vt.tex.t = static_cast<float>(i) * stepTexT;
 
              vt.vector = breitengradpoint;
