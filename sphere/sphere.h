@@ -41,8 +41,7 @@ public:
     ~CSphere();
     virtual void Draw(Camera * cam );//, GLuint &shaderprog);
     virtual void SetColor(vec4 color);
-    void SetRadian(float rad);
-    void SetPoints( int countPoints);  // dieAuflösung
+
 protected:
     // einen Vektor für den GPU-Mem vorbereiten
     void Add2GPU(float*v, int &index, GLfloat vx, GLfloat vy, GLfloat vz);
@@ -58,10 +57,7 @@ private:
     std::vector<GLushort> northPol;
     std::vector<GLushort> southPol;
 
-    GLint   mv_location;
     GLint   color_location;
-    GLuint shaderprogram;
-    int countVertex;
 
     Shader * shader;
     GLfloat _Radius;
@@ -71,7 +67,6 @@ private:
     // Neue Version für Vertex calculation:
     std::vector<sVertexTexture> vertsTexture;
     std::vector<sVertexColor> vertsColor;
-    void calcNew();
     void calcStrip();
 };
 

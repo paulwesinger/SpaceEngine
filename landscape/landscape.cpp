@@ -171,12 +171,6 @@ void LandScape::setUp() {
         float texU = 1.0f / _RasterX;
         float texV = 1.0f / _RasterZ;
 
-
-        logwarn("Size _PatchX : "+ IntToString(_PatchX),"Landscape:: setUP");
-        logwarn("Size _PatchZ : "+ IntToString(_PatchZ),"Landscape:: setUP");
-        logwarn("Size _RasterX : "+ IntToString(_RasterX),"Landscape:: setUP");
-        logwarn("Size _RasterZ : "+ IntToString(_RasterZ),"Landscape:: setUP");
-
         float maxY = 9.0f;
         float minY = -10.0f;
         for (int j = 0; j < _PatchZ; j++ ) {

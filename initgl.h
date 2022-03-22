@@ -99,7 +99,7 @@ protected:
     void InitFX();
     static void stopAnimation();
     static void UseBlend();
-
+    static bool toogleVal(bool val);
 
     // HandleInput wird wahrscheinlich überflussig....
     virtual int HandleInput(SDL_Event e , uint &mox, uint &moy);
@@ -122,6 +122,7 @@ protected:
 
     bool hasSkyBox();
     void setHasSkybox(bool enable);
+
 
 
     //----------------------------------

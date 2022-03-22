@@ -798,17 +798,15 @@ void InitGL::ShowCameraPos() {
 }
 
 void InitGL::stopAnimation() {
-    if (_Animate)
-        _Animate = false;
-    else
-        _Animate = true;
+    _Animate = toogleVal(_Animate);
 }
 
 void InitGL::UseBlend() {
-    if (_UseBlend)
-        _UseBlend = false;
-    else
-        _UseBlend = true;
+    _UseBlend = toogleVal(_UseBlend);
+}
+
+bool InitGL::toogleVal(bool val){
+    return ! val;
 }
 
 bool InitGL::initSoundMachine() {
