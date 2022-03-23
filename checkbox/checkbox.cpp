@@ -62,6 +62,7 @@ void CheckBox::init() {
 
     _SizeCheck.w = _Size.w / 2;
     _SizeCheck.h = 20;
+    _Checked = true;
     _X->SetScale(TEXT::SCALE_SMALL);
     _X->AddString("X");
     _X->SetAlignRight(false);
@@ -72,13 +73,11 @@ void CheckBox::init() {
 void CheckBox::Render() {
     Base2D::Render();
 
-
     if (textLabel != nullptr && _ShowLabel)
         textLabel->Render();
 
     if (_X != nullptr)
         _X->Render();
-
 }
 
 void CheckBox::OnClick(){
@@ -90,10 +89,10 @@ TextRender* CheckBox::getLabelPtr(){
     return textLabel;
 }
 
-
 void CheckBox::showLabel (bool show) {
     _ShowLabel = show;
 }
+
 void CheckBox::setLabel(std::string label) {
     if (textLabel != nullptr)
         textLabel->setText(0, label);

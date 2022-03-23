@@ -85,28 +85,18 @@ void CEngine::Run() {
 
 void CEngine::functoogleAnimation(bool checked) {
 
-    if (checked )
-        InitGL::stopAnimation();  // eigntlich startanimation..
-    else
-       InitGL::stopAnimation();
+    InitGL::toggleAnimation();  // eigntlich startanimation..
+
 }
 
 void CEngine::functoogleBlend(bool checked) {
-   if (checked)
-       InitGL::UseBlend();
-   else
-       InitGL::UseBlend();
+
+       InitGL::toggleBlend();
 }
 
 void CEngine::funcToogleSkybox() {
-    if (renderSkybox) {
-        renderSkybox = false;
-        loginfo("skybox = false");
-    }
-    else{
-        renderSkybox = true;
-        loginfo("skybox = true");
-    }
+
+    renderSkybox = InitGL::toggleVal(renderSkybox);
 }
 
 void CEngine::funcFog(){
@@ -204,6 +194,7 @@ void CEngine::initMenu(){
     checkBoxAnimation = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) );
     checkBoxAnimation->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     checkBoxAnimation->AddHandler(CEngine::functoogleAnimation);
+    checkBoxAnimation->setChecked();
     con2->addControll2D(checkBoxAnimation);
     // add label for Frames to buildin textrender label
     checkBoxAnimation->setLabel("Animate");
@@ -216,6 +207,7 @@ void CEngine::initMenu(){
     checkBoxBlending = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) );
     checkBoxBlending->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     checkBoxBlending->AddHandler(CEngine::functoogleBlend);
+    checkBoxBlending->setChecked();
     con2->addControll2D(checkBoxBlending);
     // add label for Frames to buildin textrender label
     checkBoxBlending->setLabel("Blending");

@@ -97,9 +97,9 @@ protected:
 
     void LoadConfiguration();
     void InitFX();
-    static void stopAnimation();
-    static void UseBlend();
-    static bool toogleVal(bool val);
+    static void toggleAnimation();
+    static void toggleBlend();
+    static bool toggleVal(bool val);
 
     // HandleInput wird wahrscheinlich überflussig....
     virtual int HandleInput(SDL_Event e , uint &mox, uint &moy);

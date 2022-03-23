@@ -797,15 +797,15 @@ void InitGL::ShowFramesPerSec(uint32 sec){
 void InitGL::ShowCameraPos() {
 }
 
-void InitGL::stopAnimation() {
-    _Animate = toogleVal(_Animate);
+void InitGL::toggleAnimation() {
+    _Animate = toggleVal(_Animate);
 }
 
-void InitGL::UseBlend() {
-    _UseBlend = toogleVal(_UseBlend);
+void InitGL::toggleBlend() {
+    _UseBlend = toggleVal(_UseBlend);
 }
 
-bool InitGL::toogleVal(bool val){
+bool InitGL::toggleVal(bool val){
     return ! val;
 }
 
@@ -1022,7 +1022,7 @@ void InitGL::Run() {
            //cockpit->setPosition(camera);
            break;
 
-        case KEY_Q: stopAnimation();
+        case KEY_Q: toggleAnimation();
            break;
 
            // Shader select
