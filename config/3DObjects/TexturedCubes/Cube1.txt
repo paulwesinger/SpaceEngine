@@ -8,12 +8,12 @@ colorAlpha 0.1
 hasLight 1
 textures ../SpaceEngine/config/cube2textures.cfg
 translateX -2.0
-translateY 1.0
-translateZ 2.0
+translateY 10.0
+translateZ -200.0
 rotateX 1.0
 rotateY 1.0
 rotateZ 1.0
-scaleX 1.0
-scaleY 1.0
-scaleZ 1.0
+scaleX 115.0
+scaleY 10.0
+scaleZ 58.0
 firstTranslate 0

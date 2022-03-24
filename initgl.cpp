@@ -852,9 +852,6 @@ void InitGL::Run() {
     Uint32 second  = 0; // Zähler für elapsed bis 1000 ms
     int event = 0;
 
-
-
-
     //--------------------------------------------------
     // framerate berechene
     //--------------------------------------------------
@@ -1022,8 +1019,8 @@ void InitGL::Run() {
            //cockpit->setPosition(camera);
            break;
 
-        case KEY_Q: toggleAnimation();
-           break;
+        //case KEY_Q: toggleAnimation();
+        //   break;
 
            // Shader select
            case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;            _ShaderChanged = true;  break;
