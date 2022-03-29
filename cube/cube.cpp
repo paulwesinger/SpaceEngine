@@ -155,12 +155,6 @@ static const GLchar *orthofs_source = {
 CCube::CCube()  :Animate() {
 
    shader = new Shader;
-   float radians = glm::radians(45.0f);
-   float aspect = 4.0f / 3.0f;
-   float near= 0.1f ;
-   float far = 10000.0f;
-   //glm::mat4 pro = glm::perspective(radians,aspect,near,far); //Standard
-   //SetProjection(pro);
    Init();
 }
 

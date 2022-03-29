@@ -536,7 +536,7 @@ bool CEngine::loadTexturedCubes(){
                  std::vector<std::string> images;
 
                  std::string path = s3D.textures;
-                 if ( s3D.textures != "" ) {
+                 if ( s3D.textures != "none" ) {
                      fileUtil fu;
 
                      texturesok =  fu.readLine(path, images);
@@ -545,6 +545,40 @@ bool CEngine::loadTexturedCubes(){
                      else
                          logwarn("Engine::loadTexturedCube: Konnte Textures nicht laden ! ","CEngine::loadTexturedCube");
                  }
+                 else {
+
+                     int count = 0;
+
+                     if (s3D.texture0 != "" ) {
+                         images.push_back(s3D.texture0);
+                         count ++;
+                     }
+
+                     if (s3D.texture1 != "" ) {
+                         images.push_back(s3D.texture1);
+                         count ++;
+                     }
+
+                     if (s3D.texture2 != "" ) {
+                         images.push_back(s3D.texture2);
+                         count ++;
+                     }
+
+                     if (s3D.texture3 != "" ) {
+                         images.push_back(s3D.texture3);
+                         count ++;
+                     }
+
+                     if (s3D.texture4 != "" ) {
+                         images.push_back(s3D.texture4);
+                         count ++;
+                     }
+
+                     obj->addTexture(images,"InitGL::add3DObject");
+                     loginfo("added " + IntToString(count) + " Textures ", "Engine::loadTexturedCubes");
+
+                 }
+
                  loginfo("s3D initialisisert ","CEngine::init3D");
                  add2List(obj,LIGHT_SHADER); //LIGHT_SHADER)
 
@@ -919,6 +953,21 @@ bool CEngine::init3DStruct(s3DStruct &d3s, std::vector<std::string> &cfg){
 
             if (parts.at(0) == "firstTranslate")
                 d3s.firstTranslate = StringToInt(parts.at(1));
+
+            if (parts.at(0) == "texture0")
+                d3s.texture0 = parts.at(1);
+
+            if (parts.at(0) == "texture1")
+                d3s.texture1 = parts.at(1);
+
+            if (parts.at(0) == "texture2")
+                d3s.texture2 = parts.at(1);
+
+            if (parts.at(0) == "texture3")
+                d3s.texture3 = parts.at(1);
+
+            if (parts.at(0) == "texture4")
+                d3s.texture4 = parts.at(1);
 
         }
         return true;

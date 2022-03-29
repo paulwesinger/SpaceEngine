@@ -925,16 +925,13 @@ void InitGL::Run() {
        camera -> SetPos(pos);
        camera -> UpdateCamera();
        */
-       uint motionx =0;
-       uint motiony =0;
+       uint motionX =0;
+       uint motionY =0;
 
        e.type = 0;
        SDL_PollEvent( &e );
-       event = HandleInput(e,motionx,motiony );
-
-       SDL_Event testEvent = e;
-
-       HandleEvent(testEvent);
+       event = HandleInput(e,motionX,motionY );
+       HandleEvent(e); // Mouseevents
 
        switch ( event) {
            case KEY_Esc  : quit = true;

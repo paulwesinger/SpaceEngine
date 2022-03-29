@@ -228,7 +228,14 @@ typedef struct {
     TRANSFORM trans;
     FLOAT3 origin;
     FLOAT4 color;
-    std::string textures;
+    std::string textures;// for list
+
+    std::string texture0;
+    std::string texture1;
+    std::string texture2;
+    std::string texture3;
+    std::string texture4;
+
 }s3DStruct;
 
 typedef  struct {

@@ -6,7 +6,6 @@ colorGreen 1.0
 colorBlue 0.0
 colorAlpha 0.1
 hasLight 1
-textures ../SpaceEngine/config/cube2textures.cfg
 translateX -2.0
 translateY 10.0
 translateZ -200.0
@@ -17,3 +16,6 @@ scaleX 115.0
 scaleY 10.0
 scaleZ 58.0
 firstTranslate 0
+textures none
+texture0 ../SpaceEngine/images/wallAlpha.png
+texture1 ../SpaceEngine/images/Tajmahal.png
