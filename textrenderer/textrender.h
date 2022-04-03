@@ -45,14 +45,21 @@ class TextRender {
 public:
     TextRender(int resx, int resy);
     TextRender(int resx, int resy, sPoint pos);
+    TextRender(int resx, int resy, sPoint pos,std::string imagetextfield);
+    TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield);
+    TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,std::string imagebottom);
 
     TextRender(const TextRender& orig);
     virtual ~TextRender();
+    virtual void OnStartDrag(int mx, int my);
+    virtual void OnDrag(int mx, int my);
+    virtual void OnEndDrag(int mx, int my);
 
     bool Init(int resx,int resy);
     void SetHasHeader(bool hasheader);
     void SetHasBottom(bool hasbottom);
     void SetHasBackground(bool hasbg);
+    void setImagePath(std::string path);
 
     void SetTextColor(glm::vec4 col);
     void SetBackgroundColor(glm::vec4 col);
@@ -73,6 +80,9 @@ public:
     void setText(uint index, std::string newString);  // starts qt 0 !!
     void setPos(sPoint pos);
     sPoint Pos();
+    bool intersect(int x, int y);
+    bool IsDragging();
+    void calcSize(int &weite, int &height);
     void Render();
 
 protected:
@@ -148,7 +158,16 @@ private:
     sTextfeld _Textfeld;
     std::vector<std::string> _StringList;
 
+    std::string _PathHeadLine;
+    std::string _PathTextField;
+    std::string _PathBottomLine;
 private:
+
+    // hlpvars for drag
+    int distX;
+    int distY;
+    sRect  interSectHeadline;
+    bool   _Dragging;
 
 };
 

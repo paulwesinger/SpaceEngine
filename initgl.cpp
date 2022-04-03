@@ -15,10 +15,14 @@
 
 // Res for windowed Mode
 
-#define SD_WIDTH    1600.0f//1024
-#define SD_HEIGHT   1200.0f//768
-#define FULLSCREEN_WIDTH  3200//1680.0f//1920.0f
-#define FULLSCREEN_HEIGHT 1800//1050.0f//1200.0f
+#define SD_WIDTH    3200.0f//1024
+#define SD_HEIGHT   1800.0f//768
+#define FULLSCREEN_WIDTH  1680.0f//3200//1680.0f//1920.0f
+#define FULLSCREEN_HEIGHT 1050.0f//1800//1050.0f//1200.0f
+
+const std::string PATH_HEADLINE     = "../SpaceEngine/images/darkgray.png";
+const std::string PATH_TEXTFIELD    = "../SpaceEngine/images/Textfeld.png";
+const std::string PATH_BOTTOM       = "../SpaceEngine/images/Bottom.png";
 
 using namespace irrklang;
 
@@ -235,46 +239,6 @@ void InitGL::InitShaders() {
     shader = new Shader();
     int vs;
     int fs;
-
-    //----------------------------------------------------------------
-    // Shader für Text
-    //----------------------------------------------------------------
-
-    /*
-    std::string v_source ="../SpaceEngine/ShaderSources/TextShader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader
-    v_source ="../SpaceEngine/ShaderSources/TextShader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-
-    loginfo("Text Shader.................done");
-    shader->CreateCustomShader(textshader);
-    shader->AttachCustomShader(textshader,vs);
-    shader->AttachCustomShader(textshader,fs);
-    shader->CreateCustomProgram(textshader);
-    glDetachShader(textshader,vs);
-    glDetachShader(textshader,fs);
-    logEmptyLine();
-
-    //----------------------------------------------------------------
-    // Shader für Textfeld
-    //----------------------------------------------------------------
-    v_source ="../SpaceEngine/ShaderSources/TextFeldColorShader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader
-    v_source ="../SpaceEngine/ShaderSources/TextFeldColorShader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-
-    loginfo("Textfeld Shader.................done");
-    shader->CreateCustomShader(textfeldshader);
-    shader->AttachCustomShader(textfeldshader,vs);
-    shader->AttachCustomShader(textfeldshader,fs);
-    shader->CreateCustomProgram(textfeldshader);
-    glDetachShader(textfeldshader,vs);
-    glDetachShader(textfeldshader,fs);
-    logEmptyLine();
-
-    */
 
     // Vertex Shader
     // ------------------------------------------------------------------------
@@ -655,7 +619,8 @@ void InitGL::InitEngineObject() {
     p.x =   100;
     p.y =   400;
 
-    textrender = new TextRender(_ResX, _ResY, p);
+    textrender = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD);
+
     textrender->SetTextShader(textshader);
     textrender->SetTextfeldShader(textfeldshader);
 
@@ -668,6 +633,8 @@ void InitGL::InitEngineObject() {
     textrender->SetHasBackground(true);
     textrender->SetHasTexture(true);
     textrender->SetAlignRight(false);
+
+    textfields.push_back(textrender);
 
     //========================================
     // Init 3D Objects
@@ -804,6 +771,9 @@ void InitGL::toggleAnimation() {
 void InitGL::toggleBlend() {
     _UseBlend = toggleVal(_UseBlend);
 }
+void InitGL::togglePanel2D() {
+    showPanel = toggleVal(showPanel);
+}
 
 bool InitGL::toggleVal(bool val){
     return ! val;
@@ -938,9 +908,9 @@ void InitGL::Run() {
                break;
 
            case KEY_M :{
-               if (showMenu == true)
-                    showMenu = false;
-                else showMenu = true;
+
+                showMenu = this->toggleVal(showMenu);
+                MainMenu->setActive(showMenu);
                break;
            }
 
@@ -1084,107 +1054,94 @@ void InitGL::Run() {
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-       vec3 dummy;
-       dummy = vec3(0.0,0.2,0.0);
+       if ( ! showPanel) {
 
-       if (_UseBlend)
-           lightSource->UseBlending(true);
-          // glDisable(GL_DEPTH_TEST);
-       else
-           //glEnable(GL_DEPTH_TEST);
-           lightSource->UseBlending(false);
+           vec3 dummy;
+           dummy = vec3(0.0,0.2,0.0);
 
-       lightSource->SetColor(glm::vec4(0.0,0.0,1.0,1.0));
-       lightSource->SetProjection(projection->GetPerspective());
-       lightSource->SetFirstTranslate(true);
-       if (_Animate && lightSource->HasAnimation() )
-           lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));
+           if (_UseBlend)
+               lightSource->UseBlending(true);
+              // glDisable(GL_DEPTH_TEST);
+           else
+               //glEnable(GL_DEPTH_TEST);
+               lightSource->UseBlending(false);
 
-        lightSource->Draw(camera);
+           lightSource->SetColor(glm::vec4(0.0,0.0,1.0,1.0));
+           lightSource->SetProjection(projection->GetPerspective());
+           lightSource->SetFirstTranslate(true);
+           if (_Animate && lightSource->HasAnimation() )
+               lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));
 
-        if (cockpit->HasMesh() ) {
+            lightSource->Draw(camera);
 
-            glDisable(GL_DEPTH_TEST);
-
-            cockpit->getCockpitMesch()->UseBlending(true);
-            cockpit->getCockpitMesch()->setGlasShader(true);
-            cockpit->Translate(camera->GetPos());
-            cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-            cockpit->setProjectionMatrix(projection->GetPerspective());
-            cockpit->Draw(camera);
-
-            glEnable(GL_DEPTH_TEST);
-
-        }
-
-        // ===================================
-        // Engine Objekte
-        // ===================================
-        if (_ShaderChanged) {
-            if (! list3D.empty() ) {
-                for (unsigned int i=0;i < list3D.size(); i++ )
-                    list3D[i]->setActiveShader(_CurrentShader);
-            }
-
-            lightSource->setActiveShader(_CurrentShader);
-            sphere1-> setActiveShader(_CurrentShader);
-
-         //   if (cockpit->HasMesh())
-         //       cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
-
-        }
-
-         if (! list3D.empty() ) {
-            for (unsigned int i=0;i < list3D.size(); i++ ) {
-                dummy = vec3(1.0 * (float) i ,2.0,3.0);
-                list3D[i]->SetProjection(projection->GetPerspective());
-                float hlp = 0.1; //(float) (i+1);
-                glm::vec3 rv(hlp * 0.5);
-
-                glm::vec3 vt(0.001,0.002,0.003);
-
-                //list3D[0]->Translate(camera->GetPos() + camera->GetDir());
-
-                if (_Animate && list3D[i]->HasAnimation()) {
-                    list3D[i]->StepTranslate(vt);
-                    list3D[i]->StepRotate(rv);
+            // ===================================
+            // Engine Objekte
+            // ===================================
+            if (_ShaderChanged) {
+                if (! list3D.empty() ) {
+                    for (unsigned int i=0;i < list3D.size(); i++ )
+                        list3D[i]->setActiveShader(_CurrentShader);
                 }
 
-                if (_UseBlend)
-                    list3D[i]->UseBlending(true);
-                else
-                    list3D[i]->UseBlending(false);
+                lightSource->setActiveShader(_CurrentShader);
+                sphere1-> setActiveShader(_CurrentShader);
 
-                //list3D[i]->setActiveShader(ShaderType::LIGHT_SHADER);
-                list3D[i]->Draw(camera);
+                if (cockpit->HasMesh())
+                    cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+
+            }
+
+             if (! list3D.empty() ) {
+                for (unsigned int i=0;i < list3D.size(); i++ ) {
+                    dummy = vec3(1.0 * (float) i ,2.0,3.0);
+                    list3D[i]->SetProjection(projection->GetPerspective());
+                    float hlp = 0.1; //(float) (i+1);
+                    glm::vec3 rv(hlp * 0.5);
+
+                    glm::vec3 vt(0.001,0.002,0.003);
+
+                    //list3D[0]->Translate(camera->GetPos() + camera->GetDir());
+
+                    if (_Animate && list3D[i]->HasAnimation()) {
+                        list3D[i]->StepTranslate(vt);
+                        list3D[i]->StepRotate(rv);
+                    }
+
+                    if (_UseBlend)
+                        list3D[i]->UseBlending(true);
+                    else
+                        list3D[i]->UseBlending(false);
+
+                    //list3D[i]->setActiveShader(ShaderType::LIGHT_SHADER);
+                    list3D[i]->Draw(camera);
+                }
+            }
+
+            // ===================================
+            // Das beste zum Schluss : Skybox
+            // ===================================
+
+            Render(camera->GetView());
+
+            sphere1->setGlasShader(true);
+            sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
+            sphere1->SetProjection(projection->GetPerspective());
+            sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+          //  sphere1->Translate(camera->GetPos());
+            sphere1->Draw(camera);
+
+            if (cockpit->HasMesh() ) {
+
+                cockpit->getCockpitMesch()->UseBlending(true);
+                cockpit->getCockpitMesch()->setGlasShader(true);
+                cockpit->setProjectionMatrix(projection->GetPerspective());
+            //    cockpit->getCockpitMesch()->Translate(camera->GetPos());
+                cockpit->Translate(camera->GetPos());
+                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+
+                cockpit->Draw(camera);
             }
         }
-
-        // ===================================
-        // Das beste zum Schluss : Skybox
-        // ===================================
-
-        Render(camera->GetView());
-
-        sphere1->setGlasShader(true);
-        sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
-        sphere1->SetProjection(projection->GetPerspective());
-        sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-      //  sphere1->Translate(camera->GetPos());
-        sphere1->Draw(camera);
-
-        if (cockpit->HasMesh() ) {
-
-            cockpit->getCockpitMesch()->UseBlending(true);
-            cockpit->getCockpitMesch()->setGlasShader(true);
-            cockpit->setProjectionMatrix(projection->GetPerspective());
-        //    cockpit->getCockpitMesch()->Translate(camera->GetPos());
-            cockpit->Translate(camera->GetPos());
-            cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-
-            cockpit->Draw(camera);
-        }
-
 
         // ===================================ee
         // Alles für 2D Projektion vorbereiten
@@ -1197,9 +1154,13 @@ void InitGL::Run() {
 
         if ( MainMenu != nullptr  && showMenu) {
             MainMenu ->Render();
-
         }
-        textrender -> Render();
+
+        if (! textfields.empty() ) {
+            for (uint i = 0; i < textfields.size(); i ++) {
+                textfields.at(i)->Render();
+            }
+        }
 
         if ( !  objects2D.empty() ) {
             for (uint i =0; i < objects2D.size(); i++) {
@@ -1244,15 +1205,23 @@ void InitGL::Restore3D() {
 
 uint InitGL::HandleEvent(SDL_Event e) {
     switch (e.type) {
-        case SDL_MOUSEMOTION : OnMouseMove(e.motion.x, e.motion.y, e.button.state); break;
+        case SDL_MOUSEMOTION :
+            OnMouseMove(e.motion.x, e.motion.y, e.button.state);
+            break;
 
         case SDL_MOUSEBUTTONDOWN: {
+
             if ( e.button.button == SDL_BUTTON_LEFT ) {
-                OnLeftMouseButtonUp(e.motion.x, e.motion.y);
+                OnLeftMouseButtonDown(e.motion.x, e.motion.y);
             }
             break;
          }
         case SDL_MOUSEBUTTONUP: {
+
+            if ( e.button.button == SDL_BUTTON_LEFT ) {
+                OnLeftMouseButtonUp(e.motion.x, e.motion.y);
+            }
+
             if ( e.button.button == SDL_BUTTON_LEFT ) {
                 OnLeftMouseButtonClick(e.motion.x, e.motion.y);
             }
@@ -1280,13 +1249,34 @@ MOUSE InitGL::convertMouse(int x, int y) {
     return  m;
 }
 void InitGL::OnMouseMove(int &x, int &y, uint buttonstate) {
+
     _Mouse = convertMouse(x,y);
+
+    //for (uint i = 0; i < textfields.size(); i++) {
+
+        if ( buttonstate == SDL_BUTTON_LEFT  && textfields.at(0)->IsDragging()) {
+            textfields.at(0)->OnDrag(x, y);
+        }
+    //}
+}
+
+void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
+
+    MOUSE m = convertMouse(x,y);
+//    if (textfields.at(0)->intersect(x,y))
+        textfields.at(0)->OnStartDrag(x, y);
+/*
+    for (uint i = 0; i < textfields.size(); i++) {
+        if (textfields.at(i)->intersect(x,y))
+            textfields.at(i)->OnStartDrag(x, y);
+    }
+    */
 }
 
 void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
 
     MOUSE m = convertMouse(x,y);
-    if ( ! MainMenu->containerList.empty() && MainMenu != nullptr) {
+    if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
 
         for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
             if ( ! MainMenu->containerList.at(i)->buttons.empty()) {
@@ -1300,6 +1290,17 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
             }
         }
     }
+
+
+    if (textfields.at(0)->IsDragging())
+            textfields.at(0)->OnEndDrag(x, y);
+    /*
+    for (uint i = 0; i < textfields.size(); i++) {
+        if (textfields.at(i)->intersect(x,y)) {
+            textfields.at(i)->OnEndDrag(x, y);
+        }
+    }
+    */
 }
 void InitGL::OnLeftMouseButtonClick(int &x, int &y) {
 
@@ -1312,7 +1313,7 @@ void InitGL::OnLeftMouseButtonClick(int &x, int &y) {
         }
     }
 
-    if ( ! MainMenu->containerList.empty() && MainMenu != nullptr) {
+    if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
 
         for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
             if ( ! MainMenu->containerList.at(i)->buttons.empty()) {

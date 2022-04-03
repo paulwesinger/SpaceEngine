@@ -43,6 +43,12 @@ void EngineTestFunc4() {
     loginfo("TestFunc4","Engine:: EngineTestFunc 4");
 }
 
+//---------------------------------
+// DrawPanel
+//---------------------------------
+void CEngine::DrawPanel() {
+    InitGL::togglePanel2D();
+}
 
 CEngine::CEngine(std::string titel) :
         InitGL(titel){
@@ -128,12 +134,12 @@ void CEngine::initMenu(){
                                   MainMenu->Pos().y,
                                   MainMenu->Width(), 0);
 
-    butn0 = new CImageButton(_ResX, _ResY,"../SpaceEngine/images/ButtonReleased.png", "../SpaceEngine/images/NewCube.png", con1->NextControllPos() );
+    butn0 = new CTextButton(_ResX, _ResY,"../SpaceEngine/images/ButtonReleased.png", "2D-Panel", con1->NextControllPos() );
     butn0->setSize(BTN_WIDTH,BTN_HEIGHT);
     butn0->setScale(TEXT::SCALE_SMALL);
     butn0->setColor(BTN_ENABLE);
     butn0->setDisablecolor(BTN_DISABLE);
-    butn0->AddHandler(FxFog);
+    butn0->AddHandler(CEngine::DrawPanel);
     con1->addButton(butn0);
 
     butn1 = new CImageButton(_ResX, _ResY,"../SpaceEngine/images/ButtonReleased.png", "../SpaceEngine/images/ShowSkyBox.png", con1->NextControllPos());

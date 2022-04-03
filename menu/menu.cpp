@@ -80,7 +80,15 @@ void CMenu::init() {
     menuBackground->setSize(width, height);
     menuBackground->setColor(backgroundColor);
 
+    _Active = true;
+}
 
+void CMenu::setActive(bool active) {
+    _Active = active;
+}
+
+bool CMenu::Active() {
+    return _Active;
 }
 
 sPoint CMenu::Pos() {

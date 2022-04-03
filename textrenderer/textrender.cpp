@@ -122,16 +122,49 @@ static const GLushort vertex_indices[] =
 };
 
 TextRender::TextRender(int resx, int resy) {
-    Init(resx, resy);
+    _PathHeadLine = "";
+    _PathTextField = "";
+    _PathBottomLine = "";
+   Init(resx, resy);
 }
 
 TextRender::TextRender(int resx, int resy, sPoint pos) {
 
     posX = (GLfloat) pos.x;
     posY = (GLfloat) pos.y;
+    _PathHeadLine = "";
+    _PathTextField = "";
+    _PathBottomLine = "";
     Init(resx, resy);
 }
 
+TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagetextfield) {
+
+    posX = (GLfloat) pos.x;
+    posY = (GLfloat) pos.y;
+    _PathHeadLine = "";
+    _PathTextField = imagetextfield;
+    _PathBottomLine = "";
+    Init(resx, resy);
+}
+
+TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield) {
+    posX = (GLfloat) pos.x;
+    posY = (GLfloat) pos.y;
+    _PathHeadLine = imagehead;
+    _PathTextField = imagetextfield;
+    _PathBottomLine = "";
+    Init(resx, resy);
+}
+
+TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,std::string imagebottom) {
+    posX = (GLfloat) pos.x;
+    posY = (GLfloat) pos.y;
+    _PathHeadLine = imagehead;
+    _PathTextField = imagetextfield;
+    _PathBottomLine = imagebottom;
+    Init(resx, resy);
+}
 
 void TextRender::SetTextShader(GLuint s) {
    // _TextShader = s;
@@ -147,6 +180,39 @@ TextRender::TextRender(const TextRender& orig) {
 TextRender::~TextRender() {
     if ( shader )
         delete shader;
+}
+
+//------------------------------------------------------------------------
+//Draging
+//------------------------------------------------------------------------
+void TextRender::OnStartDrag(int mx, int my) {
+    distX = posX - mx;
+    distY = posY - my;
+    _Dragging = true;
+}
+
+void TextRender::OnDrag(int mx, int my) {
+    posX = mx + distX;
+    posY = my + distY;
+
+   interSectHeadline.x  += distX;
+   interSectHeadline.x1 += distX;
+   interSectHeadline.y  -= distY;
+   interSectHeadline.y1 -= distY;
+}
+
+void TextRender::OnEndDrag(int mx, int my) {
+    posX = mx + distX;
+    posY = my + distY;
+    _Dragging = false;
+}
+
+bool TextRender::intersect(int x, int y) {
+    return (x > interSectHeadline.x && x < interSectHeadline.x1 && y > interSectHeadline.y && y < interSectHeadline.y1);
+}
+
+bool TextRender::IsDragging() {
+    return  _Dragging;
 }
 
 // -----------------------------------------------------------------------
@@ -209,7 +275,15 @@ void TextRender::alignToRectSize(int w, int h) {
 
 
 void TextRender::SetHasBottom(bool hasbottom) {_RenderBottom = hasbottom;}
-void TextRender::SetHasHeader(bool hasheader) {_RenderHeader = hasheader;}
+void TextRender::SetHasHeader(bool hasheader) {
+    _RenderHeader = hasheader;
+    if (hasheader) {
+        interSectHeadline.x = _Textfeld.x + posX;
+        interSectHeadline.x1 = _Textfeld.x + _Textfeld.w;
+        interSectHeadline.y = _Textfeld.y - posY + 20;
+        interSectHeadline.y1 = _Textfeld.y - posY;
+    }
+}
 void TextRender::SetHasBackground(bool hasbg) {_HasBackground = hasbg; }
 
 void TextRender::SetTextColor(glm::vec4 col) { _TextColor = col; }
@@ -353,19 +427,19 @@ bool TextRender::Init(int resx, int resy) {
     // -------------------------
     // Grafiken für Textfenster
     //--------------------------
-    if (GenTextfeldSegment("Headline.png",texHeadline))
+    if (GenTextfeldSegment(_PathHeadLine,texHeadline))
         loginfo("Generiere Headline....","TextRender::Init");
     else
         logwarn("Headline.... fehlgeschlagen !!","TextRender::Init");
 
    // glActiveTexture(GL_TEXTURE0 + 2);
-    if (GenTextfeldSegment("Textfeld.png",texPaintarea))
+    if (GenTextfeldSegment(_PathTextField,texPaintarea))
         loginfo("Generiere Textfeld....","TextRender::Init");
     else
         logwarn("Textfeld.... fehlgeschlagen !!","TextRender::Init");
 
     //glActiveTexture(GL_TEXTURE0 + 4);
-    if (GenTextfeldSegment("Bottom.png",texBottom))
+    if (GenTextfeldSegment(_PathBottomLine,texBottom))
         loginfo("Generiere Bottom....","TextRender::Init");
     else
         logwarn("Bottom... fehlgeschlagen !!","TextRender::Init");
@@ -442,7 +516,7 @@ bool TextRender::Init(int resx, int resy) {
 
 bool TextRender::GenTextfeldSegment(std::string image, unsigned int &tex) {
 
-    std::string imagepath = "images/" + image;
+    std::string imagepath = image;
     //glBindTexture(GL_TEXTURE_2D,tex);
     SDL_Surface * surface;
     char * data;
@@ -527,6 +601,28 @@ void TextRender::RenderFrame(GLfloat x, GLfloat y, uint tex) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void TextRender::calcSize(int &weite, int &height) {
+    // Breite ermitteln:
+    std::string::const_iterator c;
+    GLfloat feldweite = 0.0f;
+    GLfloat feldhoehe = 20.0f; // Standard höhe 16 Pixel
+    GLfloat width = 0.0f;
+    int count = 0;
+    for ( uint i = 0; i < _StringList.size(); i ++ ) {
+        for (c = _StringList[i].begin(); c != _StringList[i].end(); c++) {
+            Character ch = Characters[*c];
+            feldweite += static_cast<GLfloat> ( (ch.Advance >> 6) * _Scale);
+        }
+        count ++;
+
+        if ( width < feldweite )
+            width = feldweite;
+        feldweite = 0.0f;
+    }
+
+    weite = width;
+    height = feldhoehe * count * _Scale;
+}
 // ---------------------------------------------------
 // Render Function
 // param in [x] - X Position in screencoords
@@ -546,6 +642,7 @@ void TextRender::Render() {
 
     // Breite ermitteln:
     std::string::const_iterator c;
+    /*
     GLfloat feldweite = 0.0f;
     GLfloat feldhoehe = 20.0f; // Standard höhe 16 Pixel
     GLfloat width = 0.0f;
@@ -562,9 +659,15 @@ void TextRender::Render() {
         feldweite = 0.0f;
     }
     feldhoehe = feldhoehe * count * _Scale;
+*/
+    int width;
+    int height;
 
+    calcSize(width,height);
+    _Textfeld.x = posX;
+    _Textfeld.y = posY;
     _Textfeld.w = width * _Scale + _MarginLeft + _MarginRight;
-    _Textfeld.h = feldhoehe;
+    _Textfeld.h = height;
     GLfloat newX;
     if ( _AlignRight )
          newX = _ResX - _Textfeld.w;
@@ -601,14 +704,14 @@ void TextRender::Render() {
         glBindBuffer(GL_ARRAY_BUFFER,_bgVBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_bgEBO);
 
-        RenderPaintarea(newX, _y - (16 - _MarginY*2), feldhoehe);
+        RenderPaintarea(newX, _y - (16 - _MarginY*2), height);
 
         // Alles Rendern
         if (_RenderHeader)
             RenderFrame(newX, _y - (16.0f - _MarginY*2), texHeadline );
 
         if (_RenderBottom)
-            RenderFrame(newX, _y + feldhoehe, texBottom );
+            RenderFrame(newX, _y + height, texBottom );
         // ... und aushängen
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

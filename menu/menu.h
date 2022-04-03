@@ -32,6 +32,8 @@ public:
 
     void Render();
     void setMenuHeader(std::string name);
+    void setActive(bool active);
+    bool Active();
 
     //----------------------------------------
     // container functions
@@ -72,6 +74,7 @@ private:
     int _currentY; //hilfsvariable für nächste freie y-positon im Menu - relativ zu bildschirm
     int _resX;
     int _resY;
+    bool _Active;
 };
 
 #endif // CMENU_H

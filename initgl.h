@@ -62,6 +62,7 @@ typedef struct {
 static bool renderSkybox;
 static bool _Animate;
 static bool _UseBlend;
+static bool showPanel;   // DrawPanel für 2D
 
 class InitGL {
 public:
@@ -82,6 +83,8 @@ public:
 
     // effects
     static void setFog(bool enable = false);
+
+
     void fogParam();
 
 protected:
@@ -99,8 +102,8 @@ protected:
     void InitFX();
     static void toggleAnimation();
     static void toggleBlend();
+    static void togglePanel2D();
     static bool toggleVal(bool val);
-
     // HandleInput wird wahrscheinlich überflussig....
     virtual int HandleInput(SDL_Event e , uint &mox, uint &moy);
 
@@ -110,6 +113,7 @@ protected:
     virtual void OnMouseMove(int &x, int &y, uint buttonstate);
     virtual void OnLeftMouseButtonClick(int &x, int &y);
     virtual void OnLeftMouseButtonUp(int &x, int &y);
+    virtual void OnLeftMouseButtonDown( int &x, int &y);
 
     //----------------------------------
     // Object creation
@@ -123,13 +127,12 @@ protected:
     bool hasSkyBox();
     void setHasSkybox(bool enable);
 
-
-
     //----------------------------------
     // Main Menu
     // ---------------------------------
     CMenu* MainMenu;
     bool showMenu;
+
 
     // Flags for effects:
     bool _Fog;
@@ -166,6 +169,9 @@ protected:
     std::vector<Base2D *> objects2D;
     // Eine Button liste
     std::vector<CButton*>  buttons;
+
+    //Liste für Textfelder
+    std::vector<TextRender*> textfields;
 
 
     SDL_Event e;

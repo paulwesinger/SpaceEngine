@@ -72,6 +72,7 @@ protected:
     static void funcToogleSkybox();
     static void functoogleAnimation(bool checked);
     static void functoogleBlend(bool checked);
+    static void DrawPanel();
 
  private:
 
@@ -116,6 +117,7 @@ protected:
     //-----------------------------------------------------------------
     //flags
     //-----------------------------------------------------------------
+
 
 };
 
