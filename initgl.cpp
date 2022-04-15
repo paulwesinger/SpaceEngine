@@ -900,6 +900,7 @@ void InitGL::Run() {
 
        e.type = 0;
        SDL_PollEvent( &e );
+       SDL_PumpEvents();
        event = HandleInput(e,motionX,motionY );
        HandleEvent(e); // Mouseevents
 
@@ -1205,8 +1206,13 @@ void InitGL::Restore3D() {
 
 uint InitGL::HandleEvent(SDL_Event e) {
     switch (e.type) {
-        case SDL_MOUSEMOTION :
-            OnMouseMove(e.motion.x, e.motion.y, e.button.state);
+        case      SDL_MOUSEMOTION :
+
+            _Mouse.x = e.motion.x;
+            _Mouse.y = e.motion.y;
+
+            _MouseButtons = SDL_GetMouseState(&e.motion.x, &e.motion.y);
+            OnMouseMove(e.motion.x, e.motion.y, _MouseButtons);
             break;
 
         case SDL_MOUSEBUTTONDOWN: {
@@ -1216,14 +1222,11 @@ uint InitGL::HandleEvent(SDL_Event e) {
             }
             break;
          }
+
         case SDL_MOUSEBUTTONUP: {
 
-            if ( e.button.button == SDL_BUTTON_LEFT ) {
+        if ( e.button.button == SDL_BUTTON_LEFT ) {
                 OnLeftMouseButtonUp(e.motion.x, e.motion.y);
-            }
-
-            if ( e.button.button == SDL_BUTTON_LEFT ) {
-                OnLeftMouseButtonClick(e.motion.x, e.motion.y);
             }
             break;
         }
@@ -1248,63 +1251,26 @@ MOUSE InitGL::convertMouse(int x, int y) {
 
     return  m;
 }
-void InitGL::OnMouseMove(int &x, int &y, uint buttonstate) {
+void InitGL::OnMouseMove(int &x, int &y, uint32 buttonstate) {
 
-    _Mouse = convertMouse(x,y);
+    MOUSE m = convertMouse(x,y);
 
-    //for (uint i = 0; i < textfields.size(); i++) {
+    for (uint i = 0; i < textfields.size(); i++) {
 
-        if ( buttonstate == SDL_BUTTON_LEFT  && textfields.at(0)->IsDragging()) {
-            textfields.at(0)->OnDrag(x, y);
+        if (textfields.at(0)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
+            textfields.at(0)->OnDrag(m.x, m.y);
         }
-    //}
+    }
 }
 
 void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
 
     MOUSE m = convertMouse(x,y);
-//    if (textfields.at(0)->intersect(x,y))
-        textfields.at(0)->OnStartDrag(x, y);
-/*
+
     for (uint i = 0; i < textfields.size(); i++) {
-        if (textfields.at(i)->intersect(x,y))
-            textfields.at(i)->OnStartDrag(x, y);
+        if (textfields.at(i)->intersect(m.x,m.y))
+            textfields.at(i)->OnStartDrag(m.x, m.y);
     }
-    */
-}
-
-void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
-
-    MOUSE m = convertMouse(x,y);
-    if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
-
-        for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
-            if ( ! MainMenu->containerList.at(i)->buttons.empty()) {
-
-                for (uint j=0; j< MainMenu->containerList.at(i)->buttons.size(); j ++) {
-                    if (MainMenu->containerList.at(i)->buttons.at(j)->intersect(m.x, m.y) ) {
-                        MainMenu->containerList.at(i)->buttons.at(j)->OnRelease();
-
-                    }
-                }
-            }
-        }
-    }
-
-
-    if (textfields.at(0)->IsDragging())
-            textfields.at(0)->OnEndDrag(x, y);
-    /*
-    for (uint i = 0; i < textfields.size(); i++) {
-        if (textfields.at(i)->intersect(x,y)) {
-            textfields.at(i)->OnEndDrag(x, y);
-        }
-    }
-    */
-}
-void InitGL::OnLeftMouseButtonClick(int &x, int &y) {
-
-    MOUSE m = convertMouse(x,y);
 
     if ( ! buttons.empty()  ) {
         for (uint i = 0; i < buttons.size(); i++) {
@@ -1324,14 +1290,53 @@ void InitGL::OnLeftMouseButtonClick(int &x, int &y) {
 
                     }
                 }
-            }
-            if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
+             if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
                 for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
                     if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(m.x, m.y) ) {
                         MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
                     }
                 }
+             }
+          }
+       }
+    }
+}
+
+void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
+
+    MOUSE m = convertMouse(x,y);
+    if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
+
+        for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
+            if ( ! MainMenu->containerList.at(i)->buttons.empty()) {
+
+                for (uint j=0; j< MainMenu->containerList.at(i)->buttons.size(); j ++) {
+                    if (MainMenu->containerList.at(i)->buttons.at(j)->intersect(m.x, m.y) ) {
+                        MainMenu->containerList.at(i)->buttons.at(j)->OnRelease();
+                    }
+                }
             }
+
+            if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
+            //    for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
+            //        if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(m.x, m.y) ) {
+            //            MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
+            //        }
+            //    }
+            }
+        }
+    }
+
+    if ( ! buttons.empty()  ) {
+        for (uint i = 0; i < buttons.size(); i++) {
+            if (buttons[i]->intersect(m.x, m.y) )
+                buttons[i]->OnRelease();
+        }
+    }
+
+    for (uint i = 0; i < textfields.size(); i++) {
+        if (textfields.at(i)->IsDragging() ) {
+            textfields.at(i)->OnEndDrag(m.x, m.y);
         }
     }
 }
@@ -1395,48 +1400,27 @@ int InitGL::HandleInput(SDL_Event e, uint &mox, uint &moy) {
         // Mouse Buttons
         case SDL_MOUSEBUTTONUP : {
             switch (e.button.button) {
-                case SDL_BUTTON_LEFT    :   return MOUSE_BTN_Left_Clk;      break;
-                case SDL_BUTTON_MIDDLE  :   return MOUSE_BTN_MiddLe_Clk;    break;
-                case SDL_BUTTON_RIGHT   :   return MOUSE_BTN_Right_Clk;     break;
+                case SDL_BUTTON_LEFT    :   return MOUSE_BTN_Left_UP;      break;
+                case SDL_BUTTON_MIDDLE  :   return MOUSE_BTN_MiddLe_UP;    break;
+                case SDL_BUTTON_RIGHT   :   return MOUSE_BTN_Right_UP;     break;
+            }
+        }
+
+        case SDL_MOUSEBUTTONDOWN : {
+            switch (e.button.button) {
+                case SDL_BUTTON_LEFT    :   return MOUSE_BTN_Left_DOWN;      break;
+                case SDL_BUTTON_MIDDLE  :   return MOUSE_BTN_MiddLe_DOWN;    break;
+                case SDL_BUTTON_RIGHT   :   return MOUSE_BTN_Right_DOWN;     break;
             }
         }
 
         case SDL_MOUSEMOTION: {
 
-            // Camera Yaw
-
-            int stepx = e.motion.x - ( _ResX / 2);//_Mouse.lastx;
-            int stepy = e.motion.y - ( _ResY / 2);//_Mouse.lasty;
-
-             /*
-            if ( stepx > 0 ) {
-
-                mox = MOUSE_Move_Right;
-                logwarn("Motion X " + IntToString(mox),"InitGL::HandleInput");
-            }
-            else if ( stepx < 0) {
-                mox = MOUSE_Move_Left;
-                logwarn("Motion X " + IntToString(mox),"InitGL::HandleInput");
-            }
-            // Das ganse für pitch
-
-            if (stepy > 0 ) {
-                moy =  MOUSE_Move_Down;
-                logwarn("Motion Y " + IntToString(moy),"InitGL::HandleInput");
-            }
-            else if (stepy < 0 ) {
-                moy =  MOUSE_Move_Up;
-                logwarn("Motion Y " + IntToString(moy),"InitGL::HandleInput");
-
-            }
-            else
-                return NO_INPUT;
-            */
             mox = e.motion.x;
             moy = e.motion.y;
 
-            _Mouse.lastx = e.motion.x;
-            _Mouse.lasty = e.motion.y;
+         //   _Mouse.lastx = e.motion.x;
+         //   _Mouse.lasty = e.motion.y;
             return MOUSE_Move;
         }
         default : return NO_INPUT;

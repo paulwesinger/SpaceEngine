@@ -202,9 +202,13 @@ enum Events{
     MOUSE_Move_Up,      
     MOUSE_Move_Down,
 
-    MOUSE_BTN_Left_Clk   = 10000 ,
-    MOUSE_BTN_Right_Clk ,    
-    MOUSE_BTN_MiddLe_Clk,    
+    MOUSE_BTN_Left_DOWN   = 10000 ,
+    MOUSE_BTN_Right_DOWN ,
+    MOUSE_BTN_MiddLe_DOWN,
+
+    MOUSE_BTN_Left_UP   = 11000 ,
+    MOUSE_BTN_Right_UP ,
+    MOUSE_BTN_MiddLe_UP,
 
     MOUSE_Wheel 
 };

@@ -148,8 +148,8 @@ void CTextButton::animateClick() {
     if (btnText != nullptr) {
         sPoint p;
         p = btnText->Pos();
-        p.x -= 2;
-        p.y -= 2;
+        p.x += 2;
+        p.y += 2;
 
         btnText->setPos(p);
     }
@@ -159,8 +159,8 @@ void CTextButton::releaseClick() {
     if (btnText != nullptr) {
         sPoint p;
         p = btnText->Pos();
-        p.x += 2;
-        p.y += 2;
+        p.x -= 2;
+        p.y -= 2;
         btnText->setPos(p);
     }
 }
@@ -266,7 +266,7 @@ void CImageButton::animateClick() {
         sPoint p;
 
         p = textImage->Pos();
-        textImage->setPos(p.x-2, p.y-2);
+        textImage->setPos(p.x+2, p.y+2);
     }
 
 
@@ -278,7 +278,7 @@ void CImageButton::releaseClick() {
     if (textImage != nullptr) {
         sPoint p = textImage->Pos();
 
-        textImage->setPos(p.x+2, p.y+2);
+        textImage->setPos(p.x-2, p.y-2);
     }
 
 }

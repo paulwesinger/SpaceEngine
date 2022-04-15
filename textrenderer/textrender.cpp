@@ -186,29 +186,29 @@ TextRender::~TextRender() {
 //Draging
 //------------------------------------------------------------------------
 void TextRender::OnStartDrag(int mx, int my) {
-    distX = posX - mx;
-    distY = posY - my;
-    _Dragging = true;
+
+    if ( ! _Dragging) {
+        distX = mx - interSectHeadline.x;
+        distY = posY - my;
+
+        _Dragging = true;
+    }
 }
 
 void TextRender::OnDrag(int mx, int my) {
-    posX = mx + distX;
+    posX = mx - distX;
     posY = my + distY;
-
-   interSectHeadline.x  += distX;
-   interSectHeadline.x1 += distX;
-   interSectHeadline.y  -= distY;
-   interSectHeadline.y1 -= distY;
 }
 
 void TextRender::OnEndDrag(int mx, int my) {
-    posX = mx + distX;
-    posY = my + distY;
+
     _Dragging = false;
 }
 
 bool TextRender::intersect(int x, int y) {
-    return (x > interSectHeadline.x && x < interSectHeadline.x1 && y > interSectHeadline.y && y < interSectHeadline.y1);
+    //bool var = (x > interSectHeadline.x && x < interSectHeadline.x1 && y > interSectHeadline.y && y < interSectHeadline.y1);
+   bool var = (x > posX && x < posX + _Textfeld.w) && (y < posY && y > posY - 35);
+    return var;
 }
 
 bool TextRender::IsDragging() {
@@ -280,8 +280,8 @@ void TextRender::SetHasHeader(bool hasheader) {
     if (hasheader) {
         interSectHeadline.x = _Textfeld.x + posX;
         interSectHeadline.x1 = _Textfeld.x + _Textfeld.w;
-        interSectHeadline.y = _Textfeld.y - posY + 20;
-        interSectHeadline.y1 = _Textfeld.y - posY;
+        interSectHeadline.y = _Textfeld.y + posY - 20;
+        interSectHeadline.y1 = _Textfeld.y + posY;
     }
 }
 void TextRender::SetHasBackground(bool hasbg) {_HasBackground = hasbg; }
@@ -584,6 +584,11 @@ void TextRender::RenderFrame(GLfloat x, GLfloat y, uint tex) {
     GLfloat w = _Textfeld.w;
     GLfloat h = 16.0f;
 
+    interSectHeadline.x = x;
+    interSectHeadline.x1 = x + w;
+    interSectHeadline.y = y - h;
+    interSectHeadline.y1 = y;
+
     GLfloat vertices[6][4] = {
             { x,     y  - h,        0.0, 0.0 },
             { x,     y,             0.0, 1.0 },
@@ -593,6 +598,7 @@ void TextRender::RenderFrame(GLfloat x, GLfloat y, uint tex) {
             { x + w, y,             1.0, 1.0 },
             { x + w, y - h,         1.0, 0.0 }
     };
+
 
     glUniform4f(framecolor_loc,1.0,1.0,1.0,1.0);
     glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(vertices),vertices);

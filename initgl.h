@@ -110,8 +110,7 @@ protected:
     // .... ersetzt durch HandleEvent und die virtuellen Handler dazu
     virtual uint HandleEvent(SDL_Event e);
     // HandlerFuncs for Mouse
-    virtual void OnMouseMove(int &x, int &y, uint buttonstate);
-    virtual void OnLeftMouseButtonClick(int &x, int &y);
+    virtual void OnMouseMove(int &x, int &y, uint32 buttonstate);
     virtual void OnLeftMouseButtonUp(int &x, int &y);
     virtual void OnLeftMouseButtonDown( int &x, int &y);
 
@@ -179,6 +178,8 @@ protected:
     MOUSE _Mouse;
     float MouseResX;
     float MouseResY;
+    uint32  _MouseButtons;
+
 /*
     irrklang::ISoundEngine * soundengine;
     irrklang::ISoundEngine * soundengine1;
@@ -215,6 +216,7 @@ protected:
     std::string caption;
 
     GLFLOAT4 _ClearColor;
+
 
 
 private:
