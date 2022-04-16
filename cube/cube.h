@@ -12,7 +12,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "../shaders/shader.h"
 #include "../baseobject/baseobject.h"
 #include "../camera/camera.h"
 #include "../shaders/shader.h"

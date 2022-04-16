@@ -47,6 +47,7 @@ InitGL::InitGL (const std::string titel){
    // land = nullptr;
 
     cockpit = nullptr;
+    PE      = nullptr;
 
     MousePositions = NULL;
    // soundengine = NULL;
@@ -671,6 +672,11 @@ void InitGL::InitEngineObject() {
 
     logwarn("Cokpit angelegt, Mesh wird in CEngine zugewiesen  !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
+
+    PE = new PartikelEngine(projection->GetPerspective());
+
+    logwarn("Partikelengine mit 100 Elementen !!", "IniEngineObjects");
+    loginfo("Done 3D Objects .............");
 }
 
 // --------------------------------------------
@@ -941,9 +947,10 @@ void InitGL::Run() {
             }
 
 
-       case KEY_Down: camera ->PitchCameraDown(elapsed);
+       case KEY_Down:
+           camera ->PitchCameraDown(elapsed);
 
-           cockpit->SetDir(camera->GetDir());
+           //cockpit->SetDir(camera->GetDir());
            //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
            //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
            //cockpit->setPosition(camera);
@@ -1078,7 +1085,12 @@ void InitGL::Run() {
                     //list3D[i]->setActiveShader(ShaderType::LIGHT_SHADER);
                     list3D[i]->Draw(camera);
                 }
-            }
+
+                if ( PE != nullptr) {
+                    PE->Render(camera);
+                }
+
+            }  // Not showpanel
 
             // ===================================
             // Das beste zum Schluss : Skybox
@@ -1098,10 +1110,8 @@ void InitGL::Run() {
                 cockpit->getCockpitMesch()->UseBlending(true);
                 cockpit->getCockpitMesch()->setGlasShader(true);
                 cockpit->setProjectionMatrix(projection->GetPerspective());
-            //    cockpit->getCockpitMesch()->Translate(camera->GetPos());
                 cockpit->Translate(camera->GetPos());
-                cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-
+                cockpit->Rotate(camera->MoveDirectionDEG());
                 cockpit->Draw(camera);
             }
         }

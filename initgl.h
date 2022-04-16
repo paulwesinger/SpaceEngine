@@ -44,6 +44,7 @@
 #include "buttons/button.h"
 #include "lights/light.h"
 #include "cockpit/cockpit.h"
+#include "particleengine/partikelengine.h"
 
 const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
 const std::string SPACE = " ";
@@ -159,6 +160,7 @@ protected:
 
     // Cockpit:
     Cockpit * cockpit;
+    PartikelEngine * PE;
 
 
     // Liste für 3D objekte

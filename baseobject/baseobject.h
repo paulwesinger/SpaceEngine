@@ -1,8 +1,9 @@
 #ifndef BASEOBJECT_H
 #define BASEOBJECT_H
 
+#include <GL/glew.h>
 #include <GL/gl.h>
-//#include <GL/glew.h>
+
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>

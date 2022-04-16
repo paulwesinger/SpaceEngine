@@ -15,5 +15,5 @@ rotateY 1.0
 rotateZ 1.0
 scaleX 2.0
 scaleY 5.0
-scaleZ 6.0
+scaleZ 20.0
 firstTranslate 0

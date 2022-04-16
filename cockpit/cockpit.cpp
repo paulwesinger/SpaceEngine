@@ -58,12 +58,12 @@ void Cockpit::Draw(Camera *cam) {
 
 void Cockpit::Rotate(glm::vec3 rot) {
 
-    _Rotation.x  = rot.x;
+    _Rotation.x  = -rot.x;
     _Rotation.y  = -rot.y;
     _Rotation.z  = -rot.z;
 
     if (Mesh != nullptr) {
-        Mesh->Rotate(_Rotation);
+         Mesh->Rotate(_Rotation);
     }
 }
 

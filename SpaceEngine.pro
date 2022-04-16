@@ -35,6 +35,7 @@ SOURCES += \
         meshobject/meshobject.cpp \
         objectclasses/object.cpp \
         objloader/objloader.cpp \
+        particleengine/partikelengine.cpp \
         plane3D/plane3D.cpp \
         projection/projection.cpp \
         shaders/shader.cpp \
@@ -211,6 +212,7 @@ HEADERS += \
     meshobject/meshobject.h \
     objectclasses/object.h \
     objloader/objloader.h \
+    particleengine/partikelengine.h \
     plane3D/plane3D.h \
     projection/projection.h \
     shaders/shader.h \
