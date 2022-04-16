@@ -48,7 +48,7 @@ InitGL::InitGL (const std::string titel){
 
     cockpit = nullptr;
 
-    textrender = NULL;
+    MousePositions = NULL;
    // soundengine = NULL;
     projection = nullptr;
 
@@ -327,33 +327,9 @@ void InitGL::InitShaders() {
     glDetachShader(glasshader,vs);
     glDetachShader(glasshader,fs);
 
-    // =======================================================================
-    //------------------------------------------------------------------------
-    // Sphere Shader color:
-
-    /*
-    v_source = "../SpaceEngine/ShaderSources/spherevertexshader.vex";
-    vs = shader->compileVertexShaderFromFile(v_source,filestream);
-    // Fragment sHader
-    v_source ="../SpaceEngine/ShaderSources/spherefragmentshader.frg";
-    fs_Color = shader->compileVertexShaderFromFile(v_source,filestream);
-    //Alles zusammenfügen:
-    loginfo("Erstelle Sphere Color Shader ..............done");
-    shader -> CreateCustomShader(sphereshader_color);
-    shader -> AttachCustomShader(sphereshader_color,vs);
-    shader -> AttachCustomShader(sphereshader_color,fs_Color);
-    shader ->CreateCustomProgram(sphereshader_color);
-    // ========================================================================
-    //delete binares
-    shader->deleteShader(vs);
-    shader->deleteShader(fs_Color);
-    shader->deleteShader(fs_Tex);
-
-    shader->deleteShader(vsn);
-    shader->deleteShader(fsn);
-    */
-    // ========================================================================
     _CurrentShader = ShaderType::LIGHT_SHADER;
+    // ========================================================================
+
 }
 
 void InitGL::DeleteUtils() {
@@ -399,7 +375,7 @@ bool InitGL::InitSDL2()  {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,5);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
+    //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
 
     int numDisplaymodes = SDL_GetNumDisplayModes(0);
     loginfo("Num Display modes: " + IntToString(numDisplaymodes), "InitGL::Init");
@@ -444,10 +420,6 @@ bool InitGL::InitSDL2()  {
             );
         SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN);
 
-//        int w,h;
-//        SDL_GL_GetDrawableSize(window,&w,&h);
-//        logwarn("Drawable size " +IntToString(w) + "  " + IntToString(h) );
-
     }
     else {
 
@@ -478,11 +450,11 @@ bool InitGL::InitSDL2()  {
     }
 
     printf(" Geladene OpenGL version :");
-    //gladLoadGLLoader(SDL_GL_GetProcAddress);
+
     // Alles Ok ,checken was initialisiert ist :
     printf("Vendor :  %s\n",glGetString(GL_VENDOR));
     printf("Renderer  %s\n",glGetString(GL_RENDERER));
-    printf("Version   %s\n",glGetString(GL_VERSION));// glClearColor(0.5f,0.5f,0.0f,0.0f);
+    printf("Version   %s\n",glGetString(GL_VERSION));
 
 
        GLenum err = glGetError();
@@ -619,22 +591,22 @@ void InitGL::InitEngineObject() {
     p.x =   100;
     p.y =   400;
 
-    textrender = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD);
+    MousePositions = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD);
 
-    textrender->SetTextShader(textshader);
-    textrender->SetTextfeldShader(textfeldshader);
+    MousePositions->SetTextShader(textshader);
+    MousePositions->SetTextfeldShader(textfeldshader);
 
-    textrender->AddString("Das ist die 1. Zeile");
-    textrender->AddString("Das ist die 2. Zeile");
-    textrender->AddString("Das ist die 3. Zeile");
+    MousePositions->AddString("Das ist die 1. Zeile");
+    MousePositions->AddString("Das ist die 2. Zeile");
+    MousePositions->AddString("Das ist die 3. Zeile");
 
-    textrender->SetHasBottom(true);
-    textrender->SetHasHeader(true);
-    textrender->SetHasBackground(true);
-    textrender->SetHasTexture(true);
-    textrender->SetAlignRight(false);
+    MousePositions->SetHasBottom(true);
+    MousePositions->SetHasHeader(true);
+    MousePositions->SetHasBackground(true);
+    MousePositions->SetHasTexture(true);
+    MousePositions->SetAlignRight(false);
 
-    textfields.push_back(textrender);
+    textfields.push_back(MousePositions);
 
     //========================================
     // Init 3D Objects
@@ -654,27 +626,17 @@ void InitGL::InitEngineObject() {
     loginfo("=============================");
     loginfo("Erstelle Sphere .........done");
     loginfo("=============================");
-    sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),15,(GLfloat)4.0,shader);
-   // sphere1->SetHasAlpha(true);
-    sphere1->setPolygonMode(GL_FILL);
-    sphere1->SetFrontFace(GL_CW);
-
-
-    //texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
-    //if (texturesok)
     cubeimages.push_back("../SpaceEngine/images/world.png");
+    sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),15,(GLfloat)4.0,shader);
     sphere1->addTexture(cubeimages,"InitGL::Sphere");
-    //else
-    //    logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
     //-----------------------------------------
     // Lightsource as a spere
     //-----------------------------------------
-    loginfo("Erstelle LichtQuelle als weisse sphere....","InitGL::InitEngineObjects");
+    loginfo("Erstelle LichtQuelle als sphere....","InitGL::InitEngineObjects");
     lightSource = new CSphere(ambientLight->getPos(),glm::vec4(0.0,0.0,1.0,0.5),projection->GetPerspective(),18,(GLfloat)2.0,shader );
     lightSource->SetFrontFace(GL_CW);
-
     //Texture loading
     cubeimages.clear();
     texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
@@ -743,16 +705,16 @@ void InitGL::toogleFullScreen (){
 
     if (FullscreenFlag ) {
 
-        _ResX = FULLSCREEN_WIDTH;
-        _ResY = FULLSCREEN_HEIGHT;
+        //_ResX = FULLSCREEN_WIDTH;
+        //_ResY = FULLSCREEN_HEIGHT;
 
-        glViewport(0,0,_ResX, _ResY);//FULLSCREEN_WIDTH, FULLSCREEN_HEIGHT);
+        glViewport(0,0,FULLSCREEN_WIDTH, FULLSCREEN_HEIGHT);//FULLSCREEN_WIDTH, FULLSCREEN_HEIGHT);
 
 
     }
     else {
-        _ResX = SD_WIDTH;
-        _ResY = SD_HEIGHT;
+     //   _ResX = SD_WIDTH;
+     //   _ResY = SD_HEIGHT;
         glViewport(0,0,_ResX, _ResY);
     }
 }
@@ -854,8 +816,8 @@ void InitGL::Run() {
         ShowFramesPerSec(ms);
         ShowCameraPos();
 
-        textrender->setText(0,"Mouse X " + IntToString(_Mouse.x) );
-        textrender->setText(1,"Mouse Y " + IntToString(_Mouse.y) );
+        MousePositions->setText(0,"Mouse X " + IntToString(_Mouse.x) );
+        MousePositions->setText(1,"Mouse Y " + IntToString(_Mouse.y) );
         tickstart = tickend;
         // -------------------------------
         // Test für dynamische winkel

@@ -193,8 +193,6 @@ bool Base2D::Init(int resx, int resy) {
     _DisableColor   = glm::vec4(0.5, 0.5, 0.5, 0.5);
     _Enable = true;
 
-    projection =  glm::ortho(0.0f,static_cast<float>(_ResX), static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
-
     // ---------------------------
     // Texture Shader init :
     // ---------------------------
@@ -330,7 +328,6 @@ void Base2D::Render( ) {
 
     glActiveTexture(GL_TEXTURE0);
     projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
-    //  projection =  glm::ortho(static_cast<float>(_ResX),0.0f, static_cast<float>(_ResY), 0.0f, -1.0f, 1.0f);
 
     mv_projectloc = glGetUniformLocation(_CurrentShader,"projection");
 

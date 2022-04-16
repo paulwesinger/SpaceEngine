@@ -10,6 +10,7 @@ in VS_OUT{
 
 uniform vec4 triangleColor;
 uniform int useTexture_2;
+uniform bool hasTexture;
 
 out vec4 FragColor;
 
@@ -17,12 +18,19 @@ void main(void) {
 
     vec4 outcolor;
 
-    if (useTexture_2 == 1)
-        outcolor =  mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);
-    else
-        outcolor = texture(texture1,fs_in.TexCoord);
+    if ( hasTexture ) {
+        if (useTexture_2 == 1)
+            outcolor =  mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);
+        else
+            outcolor = texture(texture1,fs_in.TexCoord);
 
-    if (outcolor.r == 1.0 && outcolor.g == 1 && outcolor.b == 1)
+    }
+    else {
+         outcolor = triangleColor;
+    }
+
+
+    if (outcolor.r == 0.0 && outcolor.g == 0.0 && outcolor.b == 0.0)
         discard;
     else
     {

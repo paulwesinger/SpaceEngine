@@ -153,7 +153,7 @@ protected:
 
     fileUtil * filestream = nullptr;
     Projection * projection;
-    TextRender * textrender;
+    TextRender * MousePositions;
     TextRender * _Frames;
     light * ambientLight = nullptr;
 
@@ -214,10 +214,7 @@ protected:
     float _CameraSpeed;
 
     std::string caption;
-
     GLFLOAT4 _ClearColor;
-
-
 
 private:
 

@@ -209,11 +209,13 @@ void CCube::Init() {
     // Buffers
     //Genererate vertexarray object and buffers
     glGenVertexArrays(1,&vao);
-    glBindVertexArray(vao);
-
-    // positon buffer
     glGenBuffers(1,&position_buffer);
+    glGenBuffers(1,&index_buffer);
+
+    glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER,position_buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,index_buffer);
+
     // Vertex mit Normaler
     glBufferData(GL_ARRAY_BUFFER,
                  sizeof(vertex_normals),
@@ -221,8 +223,7 @@ void CCube::Init() {
                  GL_DYNAMIC_DRAW);
 
     // Index Buffer
-    glGenBuffers(1,&index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,index_buffer);
+
     glBufferData (GL_ELEMENT_ARRAY_BUFFER,
                   sizeof (vertex_NormalIndices),
                   vertex_NormalIndices,
@@ -248,10 +249,9 @@ void CCube::Init() {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    _Rotate.y = 0.0f;
-    _Trans.x =  0.0f;
-    // flags:
-    left = true;
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
 void CCube::addLight(light *l) {
@@ -270,17 +270,11 @@ void CCube::Draw(Camera * cam) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
     }
-
-
-    //----------------------------
-    // Nur zum Test für Cockpit !!
-    //Am Ende von draw auch wieder weg
-    // Normal ist GL_CCW !!!
-    //----------------------------
     // Locate uniforms in shader
     int matrix_location = glGetUniformLocation(currentShader, "mv_matrix");
-    int projectionloc = glGetUniformLocation(currentShader,"projection");
-    int viewloc = glGetUniformLocation(currentShader,"view");
+    int projectionloc   = glGetUniformLocation(currentShader,"projection");
+    int viewloc         = glGetUniformLocation(currentShader,"view");
+    int hasTextureloc  = glGetUniformLocation(currentShader,"hasTexture");
 
     color_location = glGetUniformLocation(currentShader,"triangleColor");
     //ortho_location = glGetUniformLocation(currentShader,"orthomatrix");
@@ -292,9 +286,12 @@ void CCube::Draw(Camera * cam) {
     int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
     int useBlinnLocation = glGetUniformLocation(currentShader,"blinn");
 
+
     glUniform1i(useBlinnLocation,true);
     glUniform1i(useTex2Location,1);
+    glUniform1i(hasTextureloc,_HasTextures);
     glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
+
     //Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model= glm::mat4(1.0f);
 
@@ -348,19 +345,25 @@ void CCube::Draw(Camera * cam) {
     glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
     glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,_Textures[1]);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _Textures[0]);
+    if (_HasTextures) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,_Textures[1]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, _Textures[0]);
+    }
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,index_buffer);
+
     glDrawElements( GL_TRIANGLES, sizeof(vertex_NormalIndices), GL_UNSIGNED_SHORT, 0);//GL_TRIANGLES
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-    glBindTexture(GL_TEXTURE_2D,0);
-    glActiveTexture(GL_TEXTURE0);
+    if (_HasTextures) {
+        glBindTexture(GL_TEXTURE_2D,0);
+        glActiveTexture(GL_TEXTURE0);
+    }
+
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 
     if (_UseBlending ) {
         glDisable(GL_BLEND);

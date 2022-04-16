@@ -475,6 +475,41 @@ bool CEngine::loadLandscape() {
                      else
                          logwarn("Engine::loadScape :  konnte Textures nicht laden ! ","Engine::loadLandscape");
                  }
+                 else {
+                     int count = 0;
+
+                     if (landscape.texture0 != "" ) {
+                         images.push_back(landscape.texture0);
+                         count ++;
+                     }
+
+                     if (landscape.texture1 != "" ) {
+                         images.push_back(landscape.texture1);
+                         count ++;
+                     }
+
+                     if (landscape.texture2 != "" ) {
+                         images.push_back(landscape.texture2);
+                         count ++;
+                     }
+
+                     if (landscape.texture3 != "" ) {
+                         images.push_back(landscape.texture3);
+                         count ++;
+                     }
+
+                     if (landscape.texture4 != "" ) {
+                         images.push_back(landscape.texture4);
+                         count ++;
+                     }
+
+                     if (count > 0) {
+                        obj->addTexture(images,"InitGL::addLandscape");
+                        loginfo("added " + IntToString(count) + " Textures ", "Engine::loadLandscapes");
+                     }
+                     else
+                         obj->SetHasTextures(false);
+                 }
 
                  if (obj->init() ) {
                      loginfo("Landscape initialisisert ","CEngine::loadLandscape");
@@ -580,10 +615,12 @@ bool CEngine::loadTexturedCubes(){
                          count ++;
                      }
 
-                     obj->addTexture(images,"InitGL::add3DObject");
-                     loginfo("added " + IntToString(count) + " Textures ", "Engine::loadTexturedCubes");
-
-                 }
+                     if (count > 0) {
+                        obj->addTexture(images,"InitGL::add3DObject");
+                        loginfo("added " + IntToString(count) + " Textures ", "Engine::loadTexturedCubes");
+                     }
+                     else
+                         obj->SetHasTextures(false);                 }
 
                  loginfo("s3D initialisisert ","CEngine::init3D");
                  add2List(obj,LIGHT_SHADER); //LIGHT_SHADER)
@@ -591,7 +628,6 @@ bool CEngine::loadTexturedCubes(){
              }
              else
                  logwarn("konnte s3D nicht initialisieren !!", "CEngine::init3D" );
-                // Hier die neuen stringpart functions einbauen
 
              loginfo("Prepare for next Object: ","CEngine::init3D");
              logEmptyLine();
@@ -882,6 +918,20 @@ bool CEngine::initLandscape(sLandscape &ls, std::vector<std::string> &cfg){
             if (parts.at(0) == "rasterZ")
                 ls.rasterZ = StringToFloat(parts.at(1));
 
+            if (parts.at(0) == "texture0")
+                ls.texture0 = parts.at(1);
+
+            if (parts.at(0) == "texture1")
+                ls.texture1 = parts.at(1);
+
+            if (parts.at(0) == "texture2")
+                ls.texture2 = parts.at(1);
+
+            if (parts.at(0) == "texture3")
+                ls.texture3 = parts.at(1);
+
+            if (parts.at(0) == "texture4")
+                ls.texture4 = parts.at(1);
 
         }
         return true;

@@ -248,9 +248,15 @@ typedef  struct {
     float rasterX;
     float rasterZ;
     std::string textures;
+    std::string texture0;
+    std::string texture1;
+    std::string texture2;
+    std::string texture3;
+    std::string texture4;
     FLOAT4 color;
     TRANSFORM trans;
     bool hasLight;
+
 }sLandscape ;
 
 

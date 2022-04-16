@@ -46,16 +46,7 @@ private:
     int             fs;
     Shader *        shader;
 
-    // Light
-    //light *  _Light;  // Liste ?
-
-    // Transformations
-    vec3           _Trans;
-    vec3           _Rotate;
-    vec3           _Scale;
     vec4           _Color;
-    // flags  --> ins BaseObject ??
-    bool left;
  };
 
 

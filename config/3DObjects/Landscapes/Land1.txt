@@ -3,7 +3,7 @@ colorGreen 1.0
 colorBlue 0.0
 colorAlpha 1.0
 hasLight 1
-textures ../SpaceEngine/config/LandTextures.cfg
+textures NONE
 translateX 0.0
 translateY 0.0
 translateZ 0.0
@@ -17,3 +17,5 @@ patchX 32
 patchZ 32
 rasterX 20.0
 rasterZ 20.0
+texture1 ../SpaceEngine/images/Tajmahal.png
+texture0 ../SpaceEngine/images/wallAlpha.png
