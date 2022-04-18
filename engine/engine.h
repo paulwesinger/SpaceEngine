@@ -115,10 +115,9 @@ protected:
     TextRender * textrenderer;
     fileUtil * fu;
     //-----------------------------------------------------------------
-    //flags
+    //tamplate
     //-----------------------------------------------------------------
-
-
+    void setupTemplate(int i);
 };
 
 #endif // CENGINE_H

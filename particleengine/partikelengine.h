@@ -6,7 +6,9 @@
 #include "../Animate/animate.h"
 #include "../camera/camera.h"
 #include "../projection/projection.h"
+#include "../shaders/shader.h"
 #include <glm/glm.hpp>
+#include "defines.h"
 
 typedef struct {
 
@@ -15,8 +17,11 @@ typedef struct {
     glm::vec4 color;
     glm::vec3 actPos;
     int textureID;
-    float lifeTime;
+    Uint32 lifeTime;
+    Uint32 UsedTime;
     float velocity;
+    float weight;
+    bool render;
 
     CCube * cube;
 } sPartikel;
@@ -25,18 +30,34 @@ typedef struct {
 class PartikelEngine
 {
 public:
-    PartikelEngine(glm::mat4 pro);
-    PartikelEngine(glm::mat4 pro, int count);
+    PartikelEngine(glm::mat4 pro, ShaderType s);
+    PartikelEngine(glm::mat4 pro, ShaderType s, int amount);
     ~PartikelEngine();
 
-    void emit(int id);
+    void init();
+    void setShader(ShaderType s,GLuint prog);
+    void setEmissionTime(uint ms);
+    void emit(int id,Camera * camera);
     void destroy(int id);
 
-    void Render(Camera * camera);
+    void Render(Camera * camera,Uint32  el);
 
 private:
     std::vector<sPartikel> partikel;
-    int count;
+    int count;  // anzahl aller partikel
+    int currentCount;  //momentane anzahl
+    glm::mat4 projection;
+        GLuint      perspectiveTextureShader,
+                perspectiveColorShader,
+                lightshader,
+                lightcolorshader,
+                lighttextureshader,
+                glasshader,
+                currentShader;
+
+    Uint32  emissiontime;
+     Uint32 elapsed;
+
 };
 
 #endif // PARTIKELENGINE_H

@@ -673,7 +673,17 @@ void InitGL::InitEngineObject() {
     logwarn("Cokpit angelegt, Mesh wird in CEngine zugewiesen  !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 
-    PE = new PartikelEngine(projection->GetPerspective());
+    PE = new PartikelEngine(projection->GetPerspective(),ShaderType::LIGHT_TEXTURE_SHADER);
+    PE->setShader(ShaderType::COLOR_SHADER,cubeshaderprog_color);
+    PE->setShader(ShaderType::GLASS_SHADER,glasshader);
+    PE->setShader(ShaderType::LIGHT_COLOR_SHADER,cubeshaderprog_normals);
+    PE->setShader(ShaderType::LIGHT_SHADER,cubeshaderprog_tex);
+    PE->setShader(ShaderType::LIGHT_TEXTURE_SHADER,lighttexture_shader);
+    PE->setShader(ShaderType::TEXTURE_SHADER,cubeshaderprog_tex);
+    PE->setEmissionTime(500); //ms
+    PE->init();
+
+
 
     logwarn("Partikelengine mit 100 Elementen !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
@@ -807,10 +817,14 @@ void InitGL::Run() {
 
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
+
+
     while ( ! quit) {
 
-        elapsed = tickend - tickstart;
 
+        auto start = Clock::now();
+
+        tickstart =  SDL_GetTicks();
         ms += elapsed;
         frames++;
         if (ms > 1000) {
@@ -824,7 +838,7 @@ void InitGL::Run() {
 
         MousePositions->setText(0,"Mouse X " + IntToString(_Mouse.x) );
         MousePositions->setText(1,"Mouse Y " + IntToString(_Mouse.y) );
-        tickstart = tickend;
+        //tickstart = tickend;
         // -------------------------------
         // Test für dynamische winkel
         // abhängig von verbrauchter zeit
@@ -1087,7 +1101,7 @@ void InitGL::Run() {
                 }
 
                 if ( PE != nullptr) {
-                    PE->Render(camera);
+                    PE->Render(camera,elapsed);
                 }
 
             }  // Not showpanel
@@ -1151,8 +1165,14 @@ void InitGL::Run() {
         Restore3D();
 
         SDL_GL_SwapWindow(window);
+        //tickend = tickstart;
         tickend = SDL_GetTicks();
+        elapsed = tickend - tickstart;
 
+        auto end = Clock::now();
+
+        auto el = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000;
+        elapsed =   static_cast<uint32>(el);//500;
      }
 }
 

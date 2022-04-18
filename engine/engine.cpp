@@ -633,7 +633,43 @@ bool CEngine::loadTexturedCubes(){
              logEmptyLine();
         }
     }
+
+    for (int i=0; i< 500; i++)
+        setupTemplate(i);
     return true;
+}
+
+void CEngine::setupTemplate(int i) {
+
+    CCube * obj = new CCube();
+    glm::vec3 translate = glm::vec3(1+ static_cast<float>(i), 1 +static_cast<float>(i),0 ) ;
+    glm::vec3 rotate = glm::vec3(1.0,1.0,1.0);
+    glm::vec3 scale = glm::vec3(1.0,1.0,1.0);
+    glm::vec4 color = glm::vec4(0,0,1,1);
+
+    std::string tex0 = "../SpaceEngine/images/bluefisch.png";
+    std::string tex1 = "../SpaceEngine/images/wall.png";
+
+
+    obj->SetHasTextures( true);
+
+    obj->SetColor(color);
+    obj->SetFirstTranslate( ((i % 2) == 0 ? true:false));
+    obj->Rotate(rotate );
+    obj->Translate(translate);
+    obj->Scale(scale);
+    obj->SetHasAlpha(true);
+    obj->SetFrontFace(GL_CCW);
+
+    //----------------------------------------
+    // Add textures , if we have some
+    // ---------------------------------------
+
+    std::vector<std::string> images;
+    images.push_back(tex0);
+    images.push_back(tex1);
+    obj->addTexture(images,"InitGL::add3DObject");
+    add2List(obj,LIGHT_SHADER); //LIGHT_SHADER)
 }
 
 bool CEngine::loadCockpits() {

@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <chrono>
 
 
 #include <GL/glew.h>
@@ -45,6 +46,8 @@
 #include "lights/light.h"
 #include "cockpit/cockpit.h"
 #include "particleengine/partikelengine.h"
+
+typedef std::chrono::high_resolution_clock Clock;
 
 const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
 const std::string SPACE = " ";
