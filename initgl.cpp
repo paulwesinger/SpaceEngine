@@ -15,8 +15,8 @@
 
 // Res for windowed Mode
 
-#define SD_WIDTH    3200.0f//1024
-#define SD_HEIGHT   1800.0f//768
+#define SD_WIDTH    1600
+#define SD_HEIGHT   1200
 #define FULLSCREEN_WIDTH  1680.0f//3200//1680.0f//1920.0f
 #define FULLSCREEN_HEIGHT 1050.0f//1800//1050.0f//1200.0f
 
@@ -673,6 +673,7 @@ void InitGL::InitEngineObject() {
     logwarn("Cokpit angelegt, Mesh wird in CEngine zugewiesen  !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 
+    /*
     PE = new PartikelEngine(projection->GetPerspective(),ShaderType::LIGHT_TEXTURE_SHADER);
     PE->setShader(ShaderType::COLOR_SHADER,cubeshaderprog_color);
     PE->setShader(ShaderType::GLASS_SHADER,glasshader);
@@ -682,7 +683,7 @@ void InitGL::InitEngineObject() {
     PE->setShader(ShaderType::TEXTURE_SHADER,cubeshaderprog_tex);
     PE->setEmissionTime(500); //ms
     PE->init();
-
+*/
 
 
     logwarn("Partikelengine mit 100 Elementen !!", "IniEngineObjects");
@@ -794,10 +795,9 @@ void InitGL::Run() {
     sphere1->Translate(vec3(0.0,-4.0,0.0));
 
     // timetest
-    Uint32 tickstart = SDL_GetTicks();
-    Uint32 tickend   = tickstart;
+    //Uint32 tickstart = SDL_GetTicks();
+    //Uint32 tickend   = tickstart;
     Uint32 elapsed = 0;
-    Uint32 second  = 0; // Zähler für elapsed bis 1000 ms
     int event = 0;
 
     //--------------------------------------------------
@@ -824,7 +824,7 @@ void InitGL::Run() {
 
         auto start = Clock::now();
 
-        tickstart =  SDL_GetTicks();
+       // tickstart =  SDL_GetTicks();
         ms += elapsed;
         frames++;
         if (ms > 1000) {
@@ -1100,9 +1100,9 @@ void InitGL::Run() {
                     list3D[i]->Draw(camera);
                 }
 
-                if ( PE != nullptr) {
-                    PE->Render(camera,elapsed);
-                }
+                //if ( PE != nullptr) {
+                    //PE->Render(camera,elapsed);
+                //}
 
             }  // Not showpanel
 
@@ -1165,12 +1165,8 @@ void InitGL::Run() {
         Restore3D();
 
         SDL_GL_SwapWindow(window);
-        //tickend = tickstart;
-        tickend = SDL_GetTicks();
-        elapsed = tickend - tickstart;
 
         auto end = Clock::now();
-
         auto el = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000;
         elapsed =   static_cast<uint32>(el);//500;
      }

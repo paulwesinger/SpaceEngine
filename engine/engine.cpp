@@ -634,7 +634,7 @@ bool CEngine::loadTexturedCubes(){
         }
     }
 
-    for (int i=0; i< 500; i++)
+    for (int i=0; i< 1; i++)
         setupTemplate(i);
     return true;
 }
@@ -647,7 +647,7 @@ void CEngine::setupTemplate(int i) {
     glm::vec3 scale = glm::vec3(1.0,1.0,1.0);
     glm::vec4 color = glm::vec4(0,0,1,1);
 
-    std::string tex0 = "../SpaceEngine/images/bluefisch.png";
+    std::string tex0 = "../SpaceEngine/images/bluefish.png";
     std::string tex1 = "../SpaceEngine/images/wall.png";
 
 

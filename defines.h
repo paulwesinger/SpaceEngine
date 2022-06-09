@@ -41,8 +41,22 @@ enum COLOR_Sheme {
     SYSTEM
 };
 
+enum LineType {
+    DASHED       = 0,
+    POINT,
+    SOLID
+};
+
 typedef void (*FP)();  // Zeiger auf Funktion wird für eventhandling gebraucht
 typedef void (*FPB)(bool);
+
+typedef struct {
+
+    float x;
+    float y;
+    float z;
+ }structCadBase;
+
 
 typedef struct {
     glm::vec3 vector;
