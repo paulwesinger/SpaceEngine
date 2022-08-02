@@ -66,7 +66,9 @@ typedef struct {
 static bool renderSkybox;
 static bool _Animate;
 static bool _UseBlend;
+static bool _ShowCockpit;
 static bool showPanel;   // DrawPanel für 2D
+
 
 class InitGL {
 public:
@@ -102,9 +104,11 @@ protected:
     void setClearColor(float r, float g, float b);
     void toogleFullScreen();
 
+
     void LoadConfiguration();
     void InitFX();
     static void toggleAnimation();
+    static void toogleCockpit();
     static void toggleBlend();
     static void togglePanel2D();
     static bool toggleVal(bool val);

@@ -747,6 +747,10 @@ void InitGL::toggleAnimation() {
     _Animate = toggleVal(_Animate);
 }
 
+void InitGL::toogleCockpit() {
+    _ShowCockpit = toggleVal(_ShowCockpit);
+}
+
 void InitGL::toggleBlend() {
     _UseBlend = toggleVal(_UseBlend);
 }
@@ -1116,10 +1120,10 @@ void InitGL::Run() {
             sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
             sphere1->SetProjection(projection->GetPerspective());
             sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-          //  sphere1->Translate(camera->GetPos());
+            sphere1->Translate(camera->GetPos());
             sphere1->Draw(camera);
 
-            if (cockpit->HasMesh() ) {
+            if (cockpit->HasMesh()  && _ShowCockpit) {
 
                 cockpit->getCockpitMesch()->UseBlending(true);
                 cockpit->getCockpitMesch()->setGlasShader(true);

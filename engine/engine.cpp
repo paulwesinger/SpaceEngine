@@ -115,6 +115,10 @@ void CEngine::Render(glm::mat4 cam) {
         InitGL::Render(cam);
 }
 
+void CEngine::functoogleCockpit(bool checked) {
+    InitGL::toogleCockpit();
+}
+
 // --------------------------------------------------------------
 // Init Methods for Engines
 // --------------------------------------------------------------
@@ -217,6 +221,20 @@ void CEngine::initMenu(){
     con2->addControll2D(checkBoxBlending);
     // add label for Frames to buildin textrender label
     checkBoxBlending->setLabel("Blending");
+
+    //----------------------------------------------------
+    // checkbox für Cockpit
+    //----------------------------------------------------
+    p = con2->NextControllPos();
+
+    checkBoxBlending = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,glm::vec4(0.79, 0.99, 1.0, 1.0) );
+    checkBoxBlending->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
+    checkBoxBlending->AddHandler(CEngine::functoogleCockpit);
+    checkBoxBlending->setChecked();
+    con2->addControll2D(checkBoxBlending);
+    // add label for Frames to buildin textrender label
+    checkBoxBlending->setLabel("Cockpit");
+
     // ---------------------------------------------------
     // Statusfenster(pos) von Camera:
     //----------------------------------------------------
