@@ -1054,7 +1054,7 @@ void InitGL::Run() {
                //glEnable(GL_DEPTH_TEST);
                lightSource->UseBlending(false);
 
-           lightSource->SetColor(glm::vec4(0.0,0.0,1.0,1.0));
+           lightSource->SetColor(glm::vec4(0.5,0.5,0.5,0.3));
            lightSource->SetProjection(projection->GetPerspective());
            lightSource->SetFirstTranslate(true);
            if (_Animate && lightSource->HasAnimation() )
@@ -1117,7 +1117,7 @@ void InitGL::Run() {
             Render(camera->GetView());
 
             sphere1->setGlasShader(true);
-            sphere1->SetColor(glm::vec4(1.0,0.0,0.0,0.1));
+            sphere1->SetColor(glm::vec4(0.0,1.0,0.0,0.5));
             sphere1->SetProjection(projection->GetPerspective());
             sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
             sphere1->Translate(camera->GetPos());
@@ -1130,7 +1130,7 @@ void InitGL::Run() {
                 cockpit->setProjectionMatrix(projection->GetPerspective());
                 cockpit->Translate(camera->GetPos());
                 cockpit->Rotate(camera->MoveDirectionDEG());
-                cockpit->Draw(camera);
+            //    cockpit->Draw(camera);
             }
         }
 
