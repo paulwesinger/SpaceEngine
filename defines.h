@@ -77,8 +77,7 @@ typedef struct {
  int y1;
 } sRect;
 
-
-typedef struct{
+typedef struct {
   int x;
   int y;
 } sPoint;

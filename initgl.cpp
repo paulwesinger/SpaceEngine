@@ -1,4 +1,5 @@
 #include "initgl.h"
+#include "Cad/cad2d.h"
 
 
 /*
@@ -822,9 +823,14 @@ void InitGL::Run() {
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
 
+    BaseCad2D * cad2 = new BaseCad2D(_ResX,_ResY);
+    sPoint p0{100,100};
+    sPoint p1{600,800};
+    cad2->setPoint0(p0);
+    cad2->setPoint1(p1);
+    //cad2->setColor(glm::vec4(1.0,1.0,1.0,1.0));
 
     while ( ! quit) {
-
 
         auto start = Clock::now();
 
@@ -1121,7 +1127,7 @@ void InitGL::Run() {
             sphere1->SetProjection(projection->GetPerspective());
             sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
             sphere1->Translate(camera->GetPos());
-            sphere1->Draw(camera);
+            //sphere1->Draw(camera);
 
             if (cockpit->HasMesh()  && _ShowCockpit) {
 
@@ -1142,6 +1148,10 @@ void InitGL::Run() {
         //------------------------------------
         // MainMenu rendern
         // -----------------------------------
+
+
+        //cad2->setColor(glm::vec4(1.0,0.0,0.0,1.0));
+        cad2->Render();
 
         if ( MainMenu != nullptr  && showMenu) {
             MainMenu ->Render();
@@ -1410,7 +1420,6 @@ int InitGL::HandleInput(SDL_Event e, uint &mox, uint &moy) {
 
             mox = e.motion.x;
             moy = e.motion.y;
-
          //   _Mouse.lastx = e.motion.x;
          //   _Mouse.lasty = e.motion.y;
             return MOUSE_Move;
