@@ -329,6 +329,20 @@ void InitGL::InitShaders() {
     glDetachShader(glasshader,vs);
     glDetachShader(glasshader,fs);
 
+    // Shader für line2D
+    loginfo("Erstelle Linien Shader ..............done");
+    v_source ="../SpaceEngine/ShaderSources/cad2Dshader.vex";
+    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
+    //Fragment Shader Color
+    v_source ="../SpaceEngine/ShaderSources/cad2Dshader.frg";
+    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
+    shader->CreateCustomShader(line2DShader);
+    shader->AttachCustomShader(line2DShader,vs);
+    shader->AttachCustomShader(line2DShader,fs);
+    shader->CreateCustomProgram(line2DShader);
+    glDetachShader(line2DShader,vs);
+    glDetachShader(line2DShader,fs);
+
     _CurrentShader = ShaderType::LIGHT_SHADER;
     // ========================================================================
 
@@ -823,7 +837,7 @@ void InitGL::Run() {
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
 
-    BaseCad2D * cad2 = new BaseCad2D(_ResX,_ResY);
+    BaseCad2D * cad2 = new BaseCad2D(_ResX,_ResY,projection->GetPerspective(),projection->GetOrtho());
     sPoint p0{100,100};
     sPoint p1{600,800};
     cad2->setPoint0(p0);
@@ -1143,15 +1157,12 @@ void InitGL::Run() {
         // ===================================ee
         // Alles für 2D Projektion vorbereiten
         //====================================
-
         Prepare2D();
+
         //------------------------------------
         // MainMenu rendern
         // -----------------------------------
 
-
-        //cad2->setColor(glm::vec4(1.0,0.0,0.0,1.0));
-        cad2->Render();
 
         if ( MainMenu != nullptr  && showMenu) {
             MainMenu ->Render();
@@ -1175,6 +1186,15 @@ void InitGL::Run() {
 
             }
         }
+
+        cad2->useShader(line2DShader);
+        cad2->setColor(glm::vec4(0.4,1.0,0.8,1.0));
+        sPoint p0{300,100};
+        sPoint p1{1500,500};
+        cad2->setPoint0(p0);
+        cad2->setPoint1(p1);
+
+        cad2->Render(camera);
 
         Restore3D();
 

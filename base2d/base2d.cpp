@@ -304,6 +304,8 @@ bool Base2D::Init(int resx, int resy) {
     return true;
  }
 
+uint Base2D::getColorShader() { return _CurrentShader; }
+
 void Base2D::setImage(std::string path) {
     _ImagePath = path;
 }

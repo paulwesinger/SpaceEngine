@@ -13,6 +13,7 @@ unix:LIBS += -L /usr/lib64 -L/usr/lib64/GL -lGL -lSDL2 -lGLEW -lSDL2_image -lfre
 SOURCES += \
         3DLoader/load3ds.cpp \
         Animate/animate.cpp \
+        Base/base.cpp \
         Cad/cad2d.cpp \
         base2d/base2d.cpp \
         baseobject/baseobject.cpp \
@@ -189,6 +190,7 @@ DISTFILES += \
 HEADERS += \
     3DLoader/load3ds.h \
     Animate/animate.h \
+    Base/base.h \
     Cad/cad2d.h \
     base2d/base2d.h \
     baseobject/baseobject.h \

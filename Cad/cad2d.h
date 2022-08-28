@@ -7,36 +7,40 @@
 
 
 #include "../shaders/shader.h"
-//#include "../camera/camera.h"
+#include "../camera/camera.h"
 
 #include "../defines.h"
+#include "../Base/base.h"
+
 
 using namespace glm;
-class BaseCad2D
+class BaseCad2D : public Base
 {
 public:
     BaseCad2D();
-    BaseCad2D(int resx, int resy);
-    void useShader(int type);
+    BaseCad2D(int resx, int resy,glm::mat4 perspektive,glm::mat4 ortho);
 
     virtual ~BaseCad2D();
-    virtual bool Init(int resx,int resy);
+
     virtual void setPoint0(sPoint p0);
     virtual void setPoint1(sPoint p1);
 
     virtual bool intersectP0(sPoint p0, sPoint mouse);
     virtual bool intersectP1(sPoint p1, sPoint mouse);
 
-    virtual void Render();
+    virtual void Render(Camera * cam);
     virtual void OnClick();
 
     glm::vec2 Pos0();
     glm::vec2 Pos1();
+
     void setDisablecolor(glm::vec4 disCol);
     void setColor(glm::vec4 col);
     void disable();
     void enable();
+    void useShader(GLuint s);
 
+    bool Init(int resx,int resy);
     bool IsEnabled();
 
 protected:
@@ -57,6 +61,8 @@ protected:
     // Shaders
     //-----------------
     Shader * shader;
+    glm::mat4 matPerspective;
+    glm::mat4 matOrtho;
     // ints for shader returns
     int vs;
     int fs;

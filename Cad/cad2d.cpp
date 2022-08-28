@@ -5,21 +5,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-static const GLfloat vertex_positions[] =
-{
-//  Position
-    0.08f,  -0.5f,
-    0.08f,  0.1f,
-    0.58f, 0.1f,
-
-    0.58f, -0.5f,
-    0.8f, 0.1f,
-    0.95f, -0.5f,
-};
 
 BaseCad2D::BaseCad2D() {}
 
-BaseCad2D::BaseCad2D(int resx, int resy){
+BaseCad2D::BaseCad2D(int resx, int resy, glm::mat4 perspektive,glm::mat4 ortho){
+
+    matPerspective = perspektive;
+    matOrtho = ortho;
     Init(resx,resy);
 }
 
@@ -70,6 +62,8 @@ bool BaseCad2D::Init(int resx,int resy) {
         glDetachShader(_ColorShader,vs);
         glDetachShader(_ColorShader,fs);
         logEmptyLine();
+
+        _CurrentShader = _ColorShader;
     }
     else
         logwarn("Warning: Failed create shader","cad2D::Init");
@@ -83,38 +77,55 @@ bool BaseCad2D::Init(int resx,int resy) {
     glBindBuffer(GL_ARRAY_BUFFER,_VBO);
 
     glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 4,
+                 sizeof(GLfloat) * 2 * 3 ,
                  nullptr,
                  GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0,1,GL_FLOAT,GL_FALSE,0,(void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
     glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindVertexArray(0);
+
 
     // --------------   Index
     return true;
 }
 
-void BaseCad2D::useShader(int type) {
 
-    //--------------------------------------------
-    // type sollte hier dash, dotted usw sein.....
-    //--------------------------------------------
-    _CurrentShader = _ColorShader;
+
+void BaseCad2D::useShader(GLuint s) {
+    _CurrentShader = s;
 }
 
-void BaseCad2D::Render(){
+void BaseCad2D::Render(Camera * cam){
 
-    GLfloat vertices[4] = {
-         (_P0.x, _P0.y, _P1.x, _P1.y)
+
+    glUseProgram(_CurrentShader);
+
+    GLfloat x = static_cast<GLfloat>(_P0.x);
+    GLfloat y = static_cast<GLfloat>(_P0.y);
+    GLfloat x1 = static_cast<GLfloat>(_P1.x);
+    GLfloat y1 = static_cast<GLfloat>(_P1.y);
+
+    GLfloat vertices[2][3] = {
+        {x, y, 0.0},
+        {x1, y1, 0.0}
        };
 
-    projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY),
-                             0.0f,  -1.0f, 1.0f);
+    projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
+
+
     GLint color_loc = glGetUniformLocation(_ColorShader,"col2D");
     mv_projectloc = glGetUniformLocation(_CurrentShader,"projection");
 
     glm::mat4 Model(1.0f);
-    glm::mat4 mvp = projection * Model ;
+//    glm::mat4 mvp = projection * cam->GetView() *  Model ;
+    //glm::mat4 mvp =  matOrtho * cam ->GetView() *  Model;
+    glm::mat4 mvp =  projection * Model;
+
+
+
 
     glUniformMatrix4fv(mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
     glUniform4f(color_loc,_Color.r,_Color.g,_Color.b,_Color.a);
@@ -128,7 +139,7 @@ void BaseCad2D::Render(){
 
     glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(vertices),vertices);
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    glDrawArrays( GL_LINE_STRIP	, 0, sizeof(vertices));
+    glDrawArrays( GL_LINES, 0,2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -153,7 +164,11 @@ glm::vec2 BaseCad2D::Pos1(){
     return _P1;
 }
 
-bool BaseCad2D::intersectP0(sPoint p0, sPoint mouse){}
+bool BaseCad2D::intersectP0(sPoint p0, sPoint mouse){
+    if (intersect(mouse.x,mouse.y)) {
+        //
+    }
+}
 bool BaseCad2D::intersectP1(sPoint p1, sPoint mouse){}
 void BaseCad2D::OnClick() {}
 

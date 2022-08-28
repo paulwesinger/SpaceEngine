@@ -14,7 +14,7 @@
 //#include <glm/gtx/detail/type_mat4x4.hpp>
 
 #include "../shaders/shader.h"
-//#include "../camera/camera.h"
+#include "../Cad/cad2d.h"
 
 #include "../defines.h"
 
@@ -45,6 +45,8 @@ public:
     bool IsEnabled();
     sPoint Pos();
     void setDisablecolor(glm::vec4 disCol);
+
+    uint getColorShader();
 
     glm::vec4 color();
     virtual bool  intersect(int x, int y);
@@ -83,12 +85,10 @@ private:
     int _CurrentShader;
     std::string _ImagePath;
 
-
     GLint mv_projectloc;
     GLint uniform_colorloc;
     glm::mat4 projection;
     unsigned int texture;
-
 };
 
 #endif // BASE2D_H

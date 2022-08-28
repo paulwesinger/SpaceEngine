@@ -209,6 +209,8 @@ protected:
     GLuint cubeshaderprog_color_normal;
     GLuint sphereshader_color;
     GLuint lighttexture_shader;
+    // Derzeit noch nicht verwendbar !!!
+    GLuint line2DShader;
 
     GLuint textfeldshader, textshader;
 
