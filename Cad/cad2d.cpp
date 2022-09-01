@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+
+
 BaseCad2D::BaseCad2D() {}
 
 BaseCad2D::BaseCad2D(int resx, int resy, glm::mat4 perspektive,glm::mat4 ortho){
@@ -73,17 +75,17 @@ bool BaseCad2D::Init(int resx,int resy) {
     // -----------------------------------------------
     glGenVertexArrays(1,&_VAO);
     glBindVertexArray(_VAO);
+
+
     glGenBuffers(1,&_VBO);
     glBindBuffer(GL_ARRAY_BUFFER,_VBO);
-
     glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 2 * 3 ,
+                 sizeof(GLfloat) * MAX_POINTS * 3 ,
                  nullptr,
                  GL_DYNAMIC_DRAW);
 
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
     glEnableVertexAttribArray(0);
-
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
 
@@ -108,9 +110,11 @@ void BaseCad2D::Render(Camera * cam){
     GLfloat x1 = static_cast<GLfloat>(_P1.x);
     GLfloat y1 = static_cast<GLfloat>(_P1.y);
 
-    GLfloat vertices[2][3] = {
+    GLfloat vertices[4][3] = {
         {x, y, 0.0},
-        {x1, y1, 0.0}
+        {x1, y1, 0.0},
+        {200, 100, 0.0},
+        {200, 900, 0.0}
        };
 
     projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
@@ -124,9 +128,6 @@ void BaseCad2D::Render(Camera * cam){
     //glm::mat4 mvp =  matOrtho * cam ->GetView() *  Model;
     glm::mat4 mvp =  projection * Model;
 
-
-
-
     glUniformMatrix4fv(mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
     glUniform4f(color_loc,_Color.r,_Color.g,_Color.b,_Color.a);
 
@@ -134,13 +135,26 @@ void BaseCad2D::Render(Camera * cam){
     glGetIntegerv(GL_POLYGON_MODE,&oldMode);
 
     glBindVertexArray(_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBindBuffer(GL_ARRAY_BUFFER,_VBO);
 
 
+
+    glBufferSubData(GL_ARRAY_BUFFER,0,_Points.size() * sizeof(Point),&_Points[0]);
+
+    glLineWidth(5.0);
+
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    glDrawArrays( GL_LINES, 0, _Points.size());
+
+
+    glLineWidth(1.0);
+
+/*
     glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(vertices),vertices);
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    glDrawArrays( GL_LINES, 0,2);
+    glDrawArrays( GL_LINES, 0,4);
 
+*/
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glPolygonMode(GL_FRONT_AND_BACK,oldMode);
@@ -154,6 +168,15 @@ void BaseCad2D::setPoint0(sPoint p0) {
 void BaseCad2D::setPoint1(sPoint p1) {
     _P1.x = p1.x;
     _P1.y = p1.y;
+}
+
+void BaseCad2D::addPoint(Point p) {
+    _Points.push_back(p);
+}
+
+void BaseCad2D::addPoint(int x, int y) {
+    _Points.push_back(Point(x,y));
+
 }
 
 glm::vec2 BaseCad2D::Pos0(){

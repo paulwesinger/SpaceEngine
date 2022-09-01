@@ -80,7 +80,19 @@ typedef struct {
 typedef struct {
   int x;
   int y;
-} sPoint;
+ // sPoint(int _x, int _y) :  x(_x), y(_y)  {}
+
+}sPoint;
+
+struct POINT {
+
+    float x;
+    float y;
+    float z = 0.0f;
+
+    POINT(float _x, float _y) :  x(_x), y(_y)  {}
+};
+typedef struct POINT Point;
 
 struct sSize {
     int w;

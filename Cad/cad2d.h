@@ -4,13 +4,16 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
-
+#include <vector>
 
 #include "../shaders/shader.h"
 #include "../camera/camera.h"
 
 #include "../defines.h"
 #include "../Base/base.h"
+
+
+const int MAX_POINTS  = 100;
 
 
 using namespace glm;
@@ -24,6 +27,9 @@ public:
 
     virtual void setPoint0(sPoint p0);
     virtual void setPoint1(sPoint p1);
+
+    virtual void addPoint(Point p);
+    virtual void addPoint(int x, int y);
 
     virtual bool intersectP0(sPoint p0, sPoint mouse);
     virtual bool intersectP1(sPoint p1, sPoint mouse);
@@ -50,6 +56,8 @@ protected:
     glm::vec4 _DisableColor;
     glm::vec2 _P0;
     glm::vec2 _P1;
+
+    std::vector<Point> _Points;
 
     int _ResX;
     int _ResY;

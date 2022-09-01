@@ -842,6 +842,13 @@ void InitGL::Run() {
     sPoint p1{600,800};
     cad2->setPoint0(p0);
     cad2->setPoint1(p1);
+
+
+    cad2->addPoint(Point(900.0,200.0));
+    cad2->addPoint(200.0,300.0);
+    cad2->addPoint(Point(500.0,100.0));
+    cad2->addPoint(Point(200.0,900.0));
+
     //cad2->setColor(glm::vec4(1.0,1.0,1.0,1.0));
 
     while ( ! quit) {
@@ -1150,7 +1157,7 @@ void InitGL::Run() {
                 cockpit->setProjectionMatrix(projection->GetPerspective());
                 cockpit->Translate(camera->GetPos());
                 cockpit->Rotate(camera->MoveDirectionDEG());
-            //    cockpit->Draw(camera);
+                cockpit->Draw(camera);
             }
         }
 
