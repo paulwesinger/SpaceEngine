@@ -22,7 +22,6 @@ class BaseCad2D : public Base
 public:
     BaseCad2D();
     BaseCad2D(int resx, int resy,glm::mat4 perspektive,glm::mat4 ortho);
-
     virtual ~BaseCad2D();
 
     virtual void setPoint0(sPoint p0);
@@ -34,7 +33,7 @@ public:
     virtual bool intersectP0(sPoint p0, sPoint mouse);
     virtual bool intersectP1(sPoint p1, sPoint mouse);
 
-    virtual void Render(Camera * cam);
+    virtual void Render() override;
     virtual void OnClick();
 
     glm::vec2 Pos0();

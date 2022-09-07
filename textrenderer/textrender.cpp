@@ -280,7 +280,7 @@ void TextRender::SetHasHeader(bool hasheader) {
     if (hasheader) {
         interSectHeadline.x = _Textfeld.x + posX;
         interSectHeadline.x1 = _Textfeld.x + _Textfeld.w;
-        interSectHeadline.y = _Textfeld.y + posY - 20;
+        interSectHeadline.y = _Textfeld.y + posY - 30;
         interSectHeadline.y1 = _Textfeld.y + posY;
     }
 }

@@ -1201,7 +1201,7 @@ void InitGL::Run() {
         cad2->setPoint0(p0);
         cad2->setPoint1(p1);
 
-        cad2->Render(camera);
+        cad2->Render();
 
         Restore3D();
 

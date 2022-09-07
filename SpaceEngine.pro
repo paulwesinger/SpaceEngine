@@ -47,7 +47,8 @@ SOURCES += \
         textedit/textedit.cpp \
         textrenderer/textrender.cpp \
         utils/utils.cpp \
-        vecmath/vecmath.cpp
+        vecmath/vecmath.cpp \
+        window/window.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -226,4 +227,7 @@ HEADERS += \
     textedit/textedit.h \
     textrenderer/textrender.h \
     utils/utils.h \
-    vecmath/vecmath.h
+    vecmath/vecmath.h \
+    window/window.h
+
+

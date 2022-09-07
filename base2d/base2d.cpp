@@ -81,18 +81,6 @@ static const GLushort vertex_indices[] =
     0, 1, 2, 3,4, 5
 };
 
-    static const GLfloat vertex_positions[] =
-    {
-    //  Position             Texture
-        0.08f,  -0.5f,      0.0f,1.0f,  //0.0f,
-        0.08f,  0.1f,       0.0f,0.0f,  //1.0f,
-        0.58f, 0.1f,        0.0f,0.0f,  //1.0f,
-
-        0.58f, -0.5f,       1.0f, 1.0f, //0.0f,
-        0.8f, 0.1f,         1.0f, 0.0f, //1.0f,
-        0.95f, -0.5f,       1.0f, 1.0f //0.0f,
-    };
-
 Base2D::Base2D(int resx, int resy) {
     setImage("");
 
@@ -110,6 +98,7 @@ Base2D::Base2D(int resx, int resy, std::string path){
 
     Init(resx,resy);
 }
+
 
 Base2D::Base2D(const Base2D& orig) {
 }
@@ -133,57 +122,6 @@ void Base2D::useShader(int type) {
     }
 }
 
-void Base2D::setColor(glm::vec4 col) {
-    _Color = col;
-}
-void Base2D::setDisablecolor(glm::vec4 disCol) {
-    _DisableColor = disCol;
-}
-
-void Base2D::disable(){
-    _Enable = false;
-}
-void Base2D::enable(){
-    _Enable = true;
-}
-
-bool Base2D::IsEnabled(){
-    return _Enable;
-}
-
-glm::vec4 Base2D::color() { return  _Color; }
-
-
-void Base2D::setWidth(int w) {
-    _Size.w = w;
-}
-
-int Base2D::Width(){
-    return _Size.w;
-}
-
-int Base2D::Height() {
-    return _Size.h;
-}
-void Base2D::setHeight(int h) {
-    _Size.h = h;
-}
-
-void Base2D::setSize(int w, int h) {
-    _Size.w = w;
-    _Size.h = h;
-}
-
-void Base2D::setPos(int x, int y) {
-    _Pos.x = x;
-    _Pos.y = y;
-}
-
-bool Base2D::intersect(int x, int y) {
-    return  ( ((x > _Pos.x) && (x < _Pos.x + _Size.w) ) &&
-              ((y > _Pos.y) && (y < _Pos.y + _Size.h)) ) ? true : false;
-}
-
 bool Base2D::Init(int resx, int resy) {
 
     // ---------------------------
@@ -199,6 +137,10 @@ bool Base2D::Init(int resx, int resy) {
     _ResX = resx;
     _ResY = resy;
     shader = new Shader();
+
+    int vs;
+    int fs;
+
     if (shader ) {
         vs = shader -> compileVertexShader(vs2D_src);
         fs = shader -> compileFragmentShader(fs2D_src);
@@ -246,8 +188,8 @@ bool Base2D::Init(int resx, int resy) {
 
             glGenerateMipmap(GL_TEXTURE_2D);
             glActiveTexture(GL_TEXTURE0);
-            glGenTextures(1,&texture);
-            glBindTexture(GL_TEXTURE_2D,texture);
+            glGenTextures(1,&_Texture);
+            glBindTexture(GL_TEXTURE_2D,_Texture);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -310,12 +252,6 @@ void Base2D::setImage(std::string path) {
     _ImagePath = path;
 }
 
-sPoint Base2D::Pos() {
-    return _Pos;
-}
-
-
-
 void Base2D::OnClick(){}   // Im child überschreiben
 
 
@@ -329,13 +265,13 @@ void Base2D::Render( ) {
     glUseProgram(_CurrentShader);
 
     glActiveTexture(GL_TEXTURE0);
-    projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
+    _Projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
 
-    mv_projectloc = glGetUniformLocation(_CurrentShader,"projection");
+    _Uniform_mv_projectloc = glGetUniformLocation(_CurrentShader,"projection");
 
-    uniform_colorloc   = glGetUniformLocation(_CurrentShader,"col2D");
+    _Uniform_colorloc   = glGetUniformLocation(_CurrentShader,"col2D");
 
-    glUniform4f(uniform_colorloc, _Color.r, _Color.g, _Color.b, _Color.a);
+    glUniform4f(_Uniform_colorloc, _Color.r, _Color.g, _Color.b, _Color.a);
 
     GLfloat w = _Size.w;
     GLfloat h = _Size.h;
@@ -355,8 +291,8 @@ void Base2D::Render( ) {
     };
 
     glm::mat4 Model(1.0f);
-    glm::mat4 mvp = projection * Model ;
-    glUniformMatrix4fv(mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
+    glm::mat4 mvp = _Projection * Model ;
+    glUniformMatrix4fv(_Uniform_mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
 
 
     glBindVertexArray(_VAO);
@@ -364,7 +300,7 @@ void Base2D::Render( ) {
     glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(vertices),vertices);
     glBindBuffer(GL_ARRAY_BUFFER,0);
     // Texture
-    glBindTexture(GL_TEXTURE_2D,texture);
+    glBindTexture(GL_TEXTURE_2D,_Texture);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
     glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 

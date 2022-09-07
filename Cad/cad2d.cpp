@@ -100,8 +100,7 @@ void BaseCad2D::useShader(GLuint s) {
     _CurrentShader = s;
 }
 
-void BaseCad2D::Render(Camera * cam){
-
+void BaseCad2D::Render(){
 
     glUseProgram(_CurrentShader);
 
@@ -136,9 +135,6 @@ void BaseCad2D::Render(Camera * cam){
 
     glBindVertexArray(_VAO);
     glBindBuffer(GL_ARRAY_BUFFER,_VBO);
-
-
-
     glBufferSubData(GL_ARRAY_BUFFER,0,_Points.size() * sizeof(Point),&_Points[0]);
 
     glLineWidth(5.0);
