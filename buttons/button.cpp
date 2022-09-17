@@ -78,18 +78,6 @@ void CButton::setbuttonColors(glm::vec3 imagecol, glm::vec3 textcol) {
 
 void CButton::setScale(float s) {}
 
-int CButton::Height(){
-    return Base2D::Height();
-}
-
-int CButton::Width(){
-    return Base2D::Width();
-}
-
-void CButton::setPos(int x, int y){
-    Base2D::setPos(x,y);
-
-}
 // -----------------------------------------------
 // Event Handling
 // -----------------------------------------------

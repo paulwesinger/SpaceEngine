@@ -16,9 +16,9 @@
 
 
 class Window : public Base2D {
+public:
     Window(int resX, int resy);
     Window(int resX, int resy,std::string path);
-
 
     virtual void Render();
     virtual void OnClick();

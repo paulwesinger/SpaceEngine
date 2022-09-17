@@ -13,6 +13,7 @@
 #include "../defaults.h"
 #include "../controllcontainer/controllcontainer.h"
 #include "../menu/menu.h"
+#include "../window/window.h""
 
 
 
@@ -110,6 +111,9 @@ protected:
     TextEdit * camerayaw;
     TextEdit * cameradirZ;
     TextEdit * cameradirX;
+
+    // Toolboxes, sonstige Fenster
+    Window * testToolBox;
 
 
     std::string &getValueItem(std::string &s, std::string erasestring);

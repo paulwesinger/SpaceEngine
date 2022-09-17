@@ -39,13 +39,8 @@ public:
     // ********************************************
     // set
     void setText(std::string t);
-
-    void setPos(int x, int y);
     void enable();
     void disable();
-
-    int Height();
-    int Width();
 
     std::string Text();
     bool Enabled();

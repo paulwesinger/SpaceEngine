@@ -365,7 +365,15 @@ void CEngine::Init2D() {
     logimage("Erstelle TestIcon..........");
     base2d = new Base2D(_ResX, _ResY,"../SpaceEngine/icons/ibus-setup-hangul.png");
     base2d->setPos(500,400);
+
+
+    testToolBox = new Window(_ResX, _ResY);
+    testToolBox-> setPos(600,400);
+
+
+
     add2Dobject(base2d);
+    add2Dobject(testToolBox);
   }
 
 void CEngine::Init3D(){

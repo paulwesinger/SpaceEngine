@@ -12,10 +12,12 @@ Window::Window(int resx, int resy,std::string path) :
     Base2D(resx,resy,path)
 {
 
+
 }
 
+void Window::Render() {
+    Base2D::Render();
 
-
-void Window::Render() {}
+}
 
 void Window::OnClick() {}
