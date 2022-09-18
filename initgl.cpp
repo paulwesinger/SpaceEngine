@@ -398,7 +398,6 @@ bool InitGL::InitSDL2()  {
 
     // Alle Display modes auflisten:
 
-
      for(int j = 0; j < SDL_GetNumVideoDisplays(); j++)
      {
         for (int i = 0; i < numDisplaymodes; i++ ) {
@@ -643,7 +642,7 @@ void InitGL::InitEngineObject() {
     loginfo("Erstelle Sphere .........done");
     loginfo("=============================");
     cubeimages.push_back("../SpaceEngine/images/world.png");
-    sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),15,(GLfloat)4.0,shader);
+    sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),24,(GLfloat)4.0,shader);
     sphere1->addTexture(cubeimages,"InitGL::Sphere");
     cubeimages.clear();
 
@@ -1203,10 +1202,9 @@ void InitGL::Run() {
 
         cad2->Render();
 
+
         Restore3D();
-
         SDL_GL_SwapWindow(window);
-
         auto end = Clock::now();
         auto el = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000;
         elapsed =   static_cast<uint32>(el);//500;
@@ -1286,10 +1284,19 @@ void InitGL::OnMouseMove(int &x, int &y, uint32 buttonstate) {
 
     for (uint i = 0; i < textfields.size(); i++) {
 
-        if (textfields.at(0)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
-            textfields.at(0)->OnDrag(m.x, m.y);
+        if (textfields.at(i)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
+            textfields.at(i)->OnDrag(m.x, m.y);
         }
     }
+
+
+    for (uint i = 0; i < objects2D.size(); i++) {
+
+        if (objects2D.at(i)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
+            objects2D.at(i)->OnDrag(m.x, m.y);
+        }
+    }
+
 }
 
 void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
@@ -1304,7 +1311,16 @@ void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
     if ( ! buttons.empty()  ) {
         for (uint i = 0; i < buttons.size(); i++) {
             if (buttons[i]->intersect(m.x, m.y) )
-                buttons[i]->OnClick();
+                buttons[i]->OnStartDrag(m.x,m.y);
+        }
+    }
+
+    if (!objects2D.empty() ) {
+        for (uint i = 0; i < objects2D.size(); i++)
+        {
+            if (objects2D.at(i)->intersect(m.x,m.y))
+                objects2D[i]->OnStartDrag(m.x,m.y);
+
         }
     }
 
@@ -1368,6 +1384,13 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
             textfields.at(i)->OnEndDrag(m.x, m.y);
         }
     }
+
+    for (uint i = 0; i < objects2D.size(); i++) {
+        if (objects2D.at(i)->IsDragging() ) {
+            objects2D.at(i)->OnEndDrag(m.x, m.y);
+        }
+    }
+
 }
 
 

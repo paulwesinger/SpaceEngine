@@ -26,6 +26,7 @@ public:
     virtual void setSize( int w, int h);
     virtual void setPos(int x, int y);
     virtual void setColor(glm::vec4 col);
+    virtual void calcDragBar();
     virtual int Height();
     virtual int Width();
     virtual void disable();

@@ -20,11 +20,14 @@
 const std::string BUTTONS_CFG  = "../SpaceEngine/config/Buttons/";
 const std::string OBJECT3D_CFG = "../SpaceEngine/config/3DObjects/";
 const std::string COCKPIT_CFG  = "../SpaceEngine/config/3DObjects/Cockpits/";
+const std::string SPHERE_CFG   = "../SpaceEngine/config/3DObjects/TexturedSpheres/";
 
 
 
 const int CFG_BUTTON_SIZE = 11;
 const int CFG_3D_SIZE = 18;
+const int CFG_SPHERE_SIZE = 22;
+
 const glm::vec4 BTN_ENABLE = glm::vec4(0.2, 0.2, 0.2, 1.0);
 const glm::vec4 BTN_DISABLE = glm::vec4(0.2, 0.2, 0.2, 0.3);
 
@@ -63,6 +66,7 @@ protected:
     std::vector<std::string> object3DColoredList;
     std::vector<std::string> object3DLandscapeList;
     std::vector<std::string> objectCockpitList;
+    std::vector<std::string> objectTexturedSpheresList;
 
     CControllContainer *con1;
     CControllContainer *con2;
@@ -91,8 +95,9 @@ protected:
     bool initButtonStruct(sButtonStruct & bs,std::vector<std::string> cfg);
     bool init3DStruct(s3DStruct & d3s, std::vector<std::string> &cfg);
     bool initLandscape(sLandscape &ls, std::vector<std::string> &cfg);
+    bool initSphereStruct(sSphereStruct & sSphere, std::vector<std::string> &cfg);
 
-
+    bool loadSpheres();
     bool loadTexturedCubes();
     bool loadColorCubes();
     bool loadLandscape();

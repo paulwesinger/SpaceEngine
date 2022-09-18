@@ -267,6 +267,29 @@ typedef struct {
 
 }s3DStruct;
 
+// ------------------------------------------------------
+// needed for loading 2D and 3D objects from a file
+// ------------------------------------------------------
+typedef struct {
+
+    bool firstTranslate;
+    bool hasLight;
+    TRANSFORM trans;
+    FLOAT3 origin;
+    FLOAT4 color;
+    std::string textures;// for list
+
+    std::string texture0;
+    std::string texture1;
+    std::string texture2;
+    std::string texture3;
+    std::string texture4;
+
+    float radius;
+    int meshpoints;
+
+}sSphereStruct;
+
 typedef  struct {
     int patchX;
     int patchZ;
@@ -281,7 +304,6 @@ typedef  struct {
     FLOAT4 color;
     TRANSFORM trans;
     bool hasLight;
-
 }sLandscape ;
 
 

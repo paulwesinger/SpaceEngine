@@ -76,8 +76,12 @@ CSphere::CSphere() :
    float aspect = 4.0f / 3.0f;
    float near= 0.1f ;
    float far = 100.0f;
-   glm::mat4 pro = perspective(radians,aspect,near,far); //Standard
-   setUp();
+   glm::mat4 pro = perspective(radians,aspect,near,far);
+
+   //----------------------------------------------------------------------------------------------------
+   //Standard Constructor darf Setup noch _NICHT aufrufen! Radius und Anzahl sind hier noch nicht bekannt
+   //setUp();
+   //----------------------------------------------------------------------------------------------------
 }
 
 CSphere::CSphere( int points) :
@@ -156,6 +160,14 @@ CSphere::~CSphere() {
     glDeleteBuffers(1, &_VertexBuffer);
     //glDeleteBuffers(1, &index_buffer);
  //   glDeleteProgram(shaderprogram);
+}
+
+void CSphere::setRadius(GLfloat rad){
+    _Radius = rad;
+}
+
+void CSphere::setCountMeshPoints(int c) {
+    _CountPoints = c;
 }
 
 void CSphere::SetColor(vec4 color) {

@@ -17,6 +17,7 @@ bool Base::intersect(int x, int y) {
 
 void Base::setWidth(int w) {
     _Size.w = w;
+    calcDragBar();
 }
 
 int Base::Width(){
@@ -28,16 +29,30 @@ int Base::Height() {
 }
 void Base::setHeight(int h) {
     _Size.h = h;
+    calcDragBar();
 }
 
 void Base::setSize(int w, int h) {
     _Size.w = w;
     _Size.h = h;
+    calcDragBar();
 }
 
 void Base::setPos(int x, int y) {
     _Pos.x = x;
     _Pos.y = y;
+
+    calcDragBar();
+}
+
+void Base::calcDragBar() {
+    // -----------------------------------------------
+    // Bereich für Dragging
+    // -----------------------------------------------
+    interSectHeadline.x  = _Pos.x;
+    interSectHeadline.x1 = _Pos.x + _Size.w;
+    interSectHeadline.y  = _Pos.y;
+    interSectHeadline.y1 = _Pos.y + 40;
 }
 
 sPoint Base::Pos() {

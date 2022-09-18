@@ -209,7 +209,6 @@ bool Base2D::Init(int resx, int resy) {
         _Size.h = RECT_HEIGHT;
     }
 
-
     // -----------------------------------------------
     // VertexArraobject und VertexBufferObject
     // -----------------------------------------------

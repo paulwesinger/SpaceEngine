@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "../utils/utils.h"
 #include "../landscape/landscape.h"
+#include "../sphere/sphere.h"
 //#include "../defaults.h"
 
 // macro
@@ -368,7 +369,9 @@ void CEngine::Init2D() {
 
 
     testToolBox = new Window(_ResX, _ResY);
-    testToolBox-> setPos(600,400);
+   // testToolBox->setWidth(400);
+   // testToolBox->setHeight(80);
+    testToolBox-> setPos(1000,800);
 
 
 
@@ -396,6 +399,17 @@ void CEngine::Init3D(){
    else
        logwarn("Fehler: Datei  < config/TexCubes.cfg  > nicht gefunden !");
 
+
+   //--------------------------------------
+   // loading Textured Spheres
+   //--------------------------------------
+   ok = fileutil->readLine(SPHERE_CFG + "Spheres.cfg", objectTexturedSpheresList);
+   if (ok) {
+        if ( ! loadSpheres() )
+            logwarn("Fehler: Keine Textured Spheres gefunden oder Fehler im Pfad!");
+   }
+   else
+       logwarn("Fehler: Datei  < config/Spheres.cfg  > nicht gefunden !");
 
    // --------------------------------------
    // colored cubes loading
@@ -830,6 +844,106 @@ bool CEngine::loadColorCubes() {
     return true;
 }
 
+bool CEngine::loadSpheres(){
+    loginfo("Lade Datei | TexturedSpheres.cfg|","CEngine::loadTexturedSpheres");
+
+    // Liste mit Objekten abarbeiten :
+    if (objectTexturedSpheresList.empty() )
+        return false;
+
+    for (unsigned int i = 0; i < objectTexturedSpheresList.size(); i++) {
+
+         std::string path = SPHERE_CFG + objectTexturedSpheresList[i];
+
+         loginfo("Erstelle Textured Spheres: .......< " + path+ " >","Engine::LoadTexturedSpheres");
+
+         fileUtil * objreader = new fileUtil;
+         std::vector<std::string> objconfig;
+         objreader->readLine(path, objconfig);
+
+
+         if( ! objconfig.empty() ) {
+
+             sSphereStruct sphere;
+
+             if (initSphereStruct(sphere,objconfig)) {
+
+                 CSphere * obj = new CSphere();
+                 //obj->SetColor(glm::vec4(s3D.color.x, s3D.color.y, s3D.color.z, s3D.color.w));
+                 bool texturesok;
+                 std::vector<std::string> images;
+
+                 std::string path = sphere.textures;
+                 if ( sphere.textures != "none" ) {
+                     fileUtil fu;
+
+                     texturesok =  fu.readLine(path, images);
+                     if (texturesok)
+                         obj->addTexture(images,"InitGL::add3DObject");
+                     else
+                         logwarn("Engine::loadTexturedCube: Konnte Textures nicht laden ! ","CEngine::loadTexturedCube");
+                 }
+                 else {
+
+                     int count = 0;
+
+                     if (sphere.texture0 != "" ) {
+                         images.push_back(sphere.texture0);
+                         count ++;
+                     }
+
+                     if (sphere.texture1 != "" ) {
+                         images.push_back(sphere.texture1);
+                         count ++;
+                     }
+
+                     if (sphere.texture2 != "" ) {
+                         images.push_back(sphere.texture2);
+                         count ++;
+                     }
+
+                     if (sphere.texture3 != "" ) {
+                         images.push_back(sphere.texture3);
+                         count ++;
+                     }
+
+                     if (sphere.texture4 != "" ) {
+                         images.push_back(sphere.texture4);
+                         count ++;
+                     }
+
+                     if (count > 0) {
+                        obj->addTexture(images,"InitGL::add3DObject");
+                        loginfo("added " + IntToString(count) + " Textures ", "Engine::loadTexturedSphere");
+                     }
+                     else
+                         obj->SetHasTextures(false);
+                  }
+
+                 obj->SetColor(glm::vec4(sphere.color.x, sphere.color.y, sphere.color.z, sphere.color.w));
+                 obj->SetFirstTranslate( ( sphere.firstTranslate == 1) ? true: false);
+                 obj->Rotate(glm::vec3(sphere.trans.rotate.x, sphere.trans.rotate.y, sphere.trans.rotate.z) );
+                 obj->Translate(glm::vec3(sphere.trans.translate.x, sphere.trans.translate.y, sphere.trans.translate.z));
+                 obj->Scale(glm::vec3(sphere.trans.scale.x, sphere.trans.scale.y, sphere.trans.scale.z));
+                 obj->setRadius(sphere.radius);
+                 obj->setCountMeshPoints(sphere.meshpoints);
+
+                 obj->setUp();
+                 obj->SetFrontFace(GL_CCW);
+                 loginfo("Sphere initialisisert ","CEngine::initSphere");
+
+                 add2List(obj,LIGHT_COLOR_SHADER);
+             }
+             else
+                 logwarn("konnte Sphere nicht initialisieren !!", "CEngine::iniSpheres" );
+                // Hier die neuen stringpart functions einbauen
+
+             loginfo("Prepare for next Object: ","CEngine::initSpheres");
+             logEmptyLine();
+        }
+    }
+    return true;
+}
 
 void CEngine::InitButtons() {
 
@@ -1093,6 +1207,104 @@ bool CEngine::init3DStruct(s3DStruct &d3s, std::vector<std::string> &cfg){
     }
     return false;
 }
+
+bool CEngine::initSphereStruct(sSphereStruct &sSphere, std::vector<std::string> &cfg){
+    if (cfg.size() >= CFG_SPHERE_SIZE ) {
+
+        //+---------------------------------------------------------------------+
+        //+     VORGEHEN :                                                      |
+        //+     Liste abarbeiten, Teilstring bis " " ermitteln,                 |
+        //+     Variablen name = Teilstring --> 2. Teilstring in Wert wandeln   |
+        //+     und in der s3DStruct zuweisen                                   |
+        //+---------------------------------------------------------------------+
+
+        for (uint i = 0; i < cfg.size(); i++) {
+            std::vector<std::string> parts = split(cfg.at(i), SPACE);
+
+            if (parts.at(0) == "originX")
+                sSphere.origin.x = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "originY")
+                sSphere.origin.y = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "originZ")
+                sSphere.origin.z = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "colorRed")
+                sSphere.color.x = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "colorGreen")
+                sSphere.color.y = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "colorBlue")
+                sSphere.color.z = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "colorAlpha")
+                sSphere.color.w = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "hasLight")
+                sSphere.hasLight = StringToInt(parts.at(1));
+
+            if (parts.at(0) == "textures")
+                sSphere.textures = parts.at(1);
+
+            if (parts.at(0) == "translateX")
+                sSphere.trans.translate.x = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "translateY")
+                sSphere.trans.translate.y = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "translateZ")
+                sSphere.trans.translate.z = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "rotateX")
+                sSphere.trans.rotate.x = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "rotateY")
+                sSphere.trans.rotate.y = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "rotateZ")
+                sSphere.trans.rotate.z = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "scaleX")
+                sSphere.trans.scale.x = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "scaleY")
+                sSphere.trans.scale.y = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "scaleZ")
+                sSphere.trans.scale.z = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "firstTranslate")
+                sSphere.firstTranslate = StringToInt(parts.at(1));
+
+            if (parts.at(0) == "texture0")
+                sSphere.texture0 = parts.at(1);
+
+            if (parts.at(0) == "texture1")
+                sSphere.texture1 = parts.at(1);
+
+            if (parts.at(0) == "texture2")
+                sSphere.texture2 = parts.at(1);
+
+            if (parts.at(0) == "texture3")
+                sSphere.texture3 = parts.at(1);
+
+            if (parts.at(0) == "texture4")
+                sSphere.texture4 = parts.at(1);
+
+            if (parts.at(0) == "radius")
+                sSphere.radius = StringToFloat(parts.at(1));
+
+            if (parts.at(0) == "meshpoints")
+                sSphere.meshpoints = StringToFloat(parts.at(1));
+        }
+        return true;
+
+    }
+    return false;
+}
+
 
 bool CEngine::initButtonStruct(sButtonStruct &bs, std::vector<std::string> cfg) {
 

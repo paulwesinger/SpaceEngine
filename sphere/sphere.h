@@ -42,6 +42,11 @@ public:
     virtual void Draw(Camera * cam );//, GLuint &shaderprog);
     virtual void SetColor(vec4 color);
 
+    void setCountMeshPoints(int c);
+    void setRadius(GLfloat rad);
+
+    void setUp();
+
 protected:
     // einen Vektor für den GPU-Mem vorbereiten
     void Add2GPU(float*v, int &index, GLfloat vx, GLfloat vy, GLfloat vz);
@@ -63,7 +68,7 @@ private:
     GLfloat _Radius;
     int _CountPoints;
 
-    void setUp();
+
     // Neue Version für Vertex calculation:
     std::vector<sVertexTexture> vertsTexture;
     std::vector<sVertexColor> vertsColor;
