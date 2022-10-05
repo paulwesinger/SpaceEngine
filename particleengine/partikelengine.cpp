@@ -50,9 +50,9 @@ void PartikelEngine::init(){
         p.render    = false;
 
         p.cube = new CCube(p.actPos,p.color,projection);
-        p.cube->scaleX(0.2);
-        p.cube->scaleY(2.0);
-        p.cube->scaleZ(0.2);
+     //   p.cube->scaleX(0.2);
+     //   p.cube->scaleY(2.0);
+     //   p.cube->scaleZ(0.2);
         //p.cube->translateX(1.0);
         //p.cube->StepTranslate(glm::vec3(0,p.emissionPoint.y  + static_cast<float>(i),0));
         p.cube->Translate(p.actPos);
@@ -118,7 +118,7 @@ void PartikelEngine::Render(Camera *camera,Uint32 el) {
 }
 
 void PartikelEngine::emit(int id, Camera * camera) {
-    partikel.at(id).cube->StepTranslate(glm::vec3(0.0,0.4,0));
+ //   partikel.at(id).cube->StepTranslate(glm::vec3(0.0,0.4,0));
     partikel.at(id).cube->Draw(camera);
 }
 

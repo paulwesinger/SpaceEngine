@@ -63,11 +63,22 @@ CEngine::CEngine(std::string titel) :
     cameraX             = nullptr;
     cameraY             = nullptr;
     cameraZ             = nullptr;
-}
 
+
+  //  _FullScreen = true;
+  //  _ResX = FULLSCREEN_WIDTH;
+  //  _ResY = FULLSCREEN_HEIGHT;
+
+
+    _FullScreen = false;
+    _ResX = SD_WIDTH;
+    _ResY = SD_HEIGHT;
+
+}
 CEngine::~CEngine(){
-    safeDelete (con1)
-    safeDelete (con2)
+
+    safeDelete (con1);
+    safeDelete (con2);
 
     //safeDelete(fogBtn);
 }

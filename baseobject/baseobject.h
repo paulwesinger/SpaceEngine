@@ -40,17 +40,18 @@ public:
     virtual bool HasAnimation();
 
     virtual vec4 GetColor();
+    virtual void SetColor(vec4 col);
+
     virtual void Draw( Camera * cam);
 
     virtual void Translate(vec3 trans);
-    virtual void Rotate(vec3 rotate);  // ACHTUN : Hält nur den aktuell zu drehenden
-                                //Winkel für jede Achse
+    virtual void Rotate(vec3 rotate);  // ACHTUN : Hält nur den aktuell zu drehenden Winkel für jede Achse
     virtual void Scale(vec3 scale);
 
-    virtual void SetColor(vec4 col);
-    virtual void StepTranslate(vec3 step);
-    virtual void StepRotate(vec3 step);
-    virtual void StepScale(vec3 step);
+
+    virtual void StepTranslate(vec3 step ,uint elapsed);
+    virtual void AnimateRotate(uint32);
+    virtual void StepScale(vec3 step,uint elapsed);
     virtual bool addTexture(std::vector<std::string> path, std::string obj);
     virtual void setActiveShader(ShaderType t);
     virtual void initShader(ShaderType s,GLuint prog);
@@ -97,11 +98,6 @@ protected:
     vec3 _rotate;
     vec3 _translate;
     vec3 _scale;
-    //Steps for animations,will be added to the vecors _rotate,
-    //_translate,_scale
-    vec3 _trans_step;
-    vec3 _rotate_step;
-    vec3 _scale_step;
 
     vec4 _color; // inkl. Alpha
     bool _FirstTranslate;  // Flag ,ob erst veschoben oder rotiert werden soll
@@ -114,6 +110,9 @@ protected:
     bool _UseBlending;
     glm::vec3 _AlphaColor;
 
+    uint _Elapsed;
+
+
     uint _CountTextures;  // die Anzehl = Listen länge
     GLuint  _Textures[5];
 
@@ -124,6 +123,7 @@ protected:
      light *  _Light;
 
 private:
+
     void init();
 };
 

@@ -13,7 +13,7 @@
 #include "../defaults.h"
 #include "../controllcontainer/controllcontainer.h"
 #include "../menu/menu.h"
-#include "../window/window.h""
+#include "../window/window.h"
 
 
 
@@ -129,5 +129,6 @@ protected:
     //-----------------------------------------------------------------
     void setupTemplate(int i);
 };
+
 
 #endif // CENGINE_H

@@ -52,6 +52,10 @@ typedef std::chrono::high_resolution_clock Clock;
 const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
 const std::string SPACE = " ";
 
+const int  SD_WIDTH     =  1600;
+const int  SD_HEIGHT    =  1200;
+const int  FULLSCREEN_WIDTH = 3200;//1680.0f//1920.0f
+const int  FULLSCREEN_HEIGHT = 1800;//1050.0f//1200.0f
 
 typedef struct {
     GLfloat x;
@@ -72,6 +76,7 @@ static bool showPanel;   // DrawPanel für 2D
 
 class InitGL {
 public:
+
     InitGL( std::string titel = "OpenGL");
     InitGL(const InitGL& orig);
     // Create Context and Init SDL2
@@ -99,10 +104,13 @@ protected:
     // Look and feel
     //----------------------------------
     virtual void Render(glm::mat4 cam);
+    virtual void SetResolution(int resx,int resy);
+
 
     void SetClearColor(float r, float g, float b, float a);
     void setClearColor(float r, float g, float b);
     void toogleFullScreen();
+
 
 
     void LoadConfiguration();
@@ -237,6 +245,7 @@ private:
     void DeleteUtils();
     void DeleteMatrices();
     void DeleteShaders();
+    void PrintDisplayModes();
 
     MOUSE convertMouse(int x, int y);
 

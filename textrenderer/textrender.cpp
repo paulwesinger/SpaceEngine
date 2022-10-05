@@ -125,6 +125,7 @@ TextRender::TextRender(int resx, int resy) {
     _PathHeadLine = "";
     _PathTextField = "";
     _PathBottomLine = "";
+    _Font = GNU_DEFAULT_FONT;
    Init(resx, resy);
 }
 
@@ -135,6 +136,7 @@ TextRender::TextRender(int resx, int resy, sPoint pos) {
     _PathHeadLine = "";
     _PathTextField = "";
     _PathBottomLine = "";
+    _Font = GNU_DEFAULT_FONT;
     Init(resx, resy);
 }
 
@@ -145,6 +147,7 @@ TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagetextfield
     _PathHeadLine = "";
     _PathTextField = imagetextfield;
     _PathBottomLine = "";
+    _Font = GNU_DEFAULT_FONT;
     Init(resx, resy);
 }
 
@@ -154,6 +157,7 @@ TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std
     _PathHeadLine = imagehead;
     _PathTextField = imagetextfield;
     _PathBottomLine = "";
+    _Font = GNU_DEFAULT_FONT;
     Init(resx, resy);
 }
 
@@ -163,6 +167,7 @@ TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std
     _PathHeadLine = imagehead;
     _PathTextField = imagetextfield;
     _PathBottomLine = imagebottom;
+    _Font = GNU_DEFAULT_FONT;
     Init(resx, resy);
 }
 
@@ -213,6 +218,13 @@ bool TextRender::intersect(int x, int y) {
 
 bool TextRender::IsDragging() {
     return  _Dragging;
+}
+
+// -----------------------------------------------------------------------
+// Font
+// -----------------------------------------------------------------------
+bool TextRender::setFont(std::string s) {
+    _Font = s;
 }
 
 // -----------------------------------------------------------------------
@@ -310,8 +322,7 @@ bool TextRender::Init(int resx, int resy) {
     _BackgroundColor = glm::vec4(0.0f,0.0f,0.8f,0.3f);
     _TextColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
     _Scale = 1.0f;
-
-    _Pixelsize = 16;
+      _Pixelsize = 16;
     _MarginLeft = 5.0f;
     _MarginRight= 5.0f;
     _MarginY = 5.0f;
@@ -365,8 +376,9 @@ bool TextRender::Init(int resx, int resy) {
     else
         loginfo("Freetype2 initialisiert ","TextRender::Init");
 
-    if (FT_New_Face(ft, "/usr/share/fonts/adobe-source-code-pro/SourceCodePro-Medium.otf", 0, &face))
-    //if (FT_New_Face(ft, "/usr/share/fonts/liberation-mono/LiberationMono-Regular.ttf", 0, &face))
+
+    if (FT_New_Face(ft, _Font.c_str(), 0, &face))
+
         logwarn("Konnte Freetype2 Face nicht initialisieren","RenderText::Init");
     else
         loginfo("Freetype2 Face initialisiert ... ","TextRender::Init");

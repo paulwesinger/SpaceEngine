@@ -1,4 +1,5 @@
 #include "animate.h"
+#include "../vecmath/vecmath.h"
 
 Animate::Animate() :
     BaseObject()
@@ -15,23 +16,52 @@ Animate::Animate(vec3 pos,glm::vec3 rotate,vec3 scale,vec4 col):
 
 void Animate::init() {
     _HasAnimation = true;
+    _RotSpeed.x = 0.0;
+    _RotSpeed.y = 0.1;  // 1/10el grad prosec
+    _RotSpeed.z = 0.05;
+
+    _TransSpeed.x = 1.0;
+    _TransSpeed.y = 1.0;
+    _TransSpeed.z = 1.0;
+
+    _ScaleSpeed.x = 1.0;
+    _ScaleSpeed.y = 1.0;
+    _ScaleSpeed.z = 1.0;
 }
 
 void Animate::TranlateFirst() { _FirstTranslate = true; }
 void Animate::RotateFirst(){ _FirstTranslate = false; }
+void Animate::setElapsed(uint el) {_Elapsed = el;}
 
-void Animate::rotateX(float step) {}   //     vec3 _trans_step;//vec3 _rotate_step;//vec3 _scale_step; von Baseobject löschen
-void Animate::rotateY(float step) {}
-void Animate::rotateZ(float step) {}
+void Animate::AnimateRotate(uint32 elapsed){
 
-void Animate::translateX(float step) {}
-void Animate::translateY(float step) {}
-void Animate::translateZ(float step) {}
+    glm::vec3 v;
 
-void Animate::scaleX(float step) {}
-void Animate::scaleY(float step) {}
-void Animate::scaleZ(float step) {}
+    _rotate.x += _RotSpeed.x * elapsed;
+    _rotate.y += _RotSpeed.y * elapsed;
+    _rotate.z += _RotSpeed.z * elapsed;
+    checkdegree(_rotate);
 
-void Animate::scale(float stepx, float stepy, float stepz) {}
-void Animate::translate(float stepx,float stepy, float stepz) {}
-void Animate::rotate(float stepx, float stepy, float stepz) {}
+//    BaseObject::AnimateRotate(v);
+}
+
+void Animate::StepTranslate(vec3 step, uint elapsed){
+    BaseObject::StepTranslate(step,elapsed);
+}
+
+void Animate::StepScale(vec3 step, uint elapsed){
+    BaseObject::StepScale(step,elapsed);
+}
+
+void Animate::Scale(glm::vec3 s) {
+    BaseObject::Scale(s);
+}
+
+void Animate::Translate(glm::vec3 t){
+    BaseObject::Translate(t);
+}
+
+void Animate::Rotate(glm::vec3 r) {
+    BaseObject::Rotate(r);
+}
+

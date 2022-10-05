@@ -19,9 +19,9 @@ BaseObject::BaseObject() {
     Rotate(v);
     SetColor(vec4(v,1.0));
 
-    StepTranslate(v);
-    StepRotate(v);
-    StepScale(v);
+  //  StepTranslate(v);
+  //  StepRotate(v);
+  //  StepScale(v);
     init();
 }
 
@@ -46,6 +46,8 @@ void BaseObject::init( ) {
     _FirstTranslate = true;
     _HasTextures = false;
     _HasAlpha = false;
+
+    _Elapsed = 0;
 
     // Standard wert für Alpha: Black
     _AlphaColor.r = 0.0;
@@ -146,17 +148,16 @@ void BaseObject::setActiveShader(ShaderType t){
  vec3 BaseObject::GetScale()        { return _scale ; }
  vec3 BaseObject::GetTranslate ()    { return _translate;}
 
- void BaseObject::Rotate(vec3 rotate)    {  _rotate    = rotate; }
+ void BaseObject::Rotate(vec3 rotate)    { _rotate    = rotate; }
  void BaseObject::Scale(vec3 scale)      {  _scale     = scale;  }
  void BaseObject::Translate(vec3 trans)  {  _translate = trans;  }
 
  void BaseObject::SetColor( vec4 col)       { _color = col;         }
  vec4 BaseObject::GetColor()                { return _color;        }
 
- void BaseObject::StepRotate(vec3 step)     {
-     _rotate_step = step;
-     _rotate += step;
-     checkdegree(_rotate);
+ void BaseObject::AnimateRotate(uint32)     {
+     //_rotate += step;
+     //checkdegree(_rotate);
  }
  void BaseObject::setGlasShader(bool useglas) {
      if (useglas) {
@@ -171,8 +172,8 @@ void BaseObject::setActiveShader(ShaderType t){
 
  }
 
- void BaseObject::StepTranslate(vec3 step)  { _trans_step = step; _translate += step; }
- void BaseObject::StepScale(vec3 step)      { _scale_step = step; _scale += step;  }
+ void BaseObject::StepTranslate(vec3 step ,uint elapsed)  { _translate += step; }
+ void BaseObject::StepScale(vec3 step,uint elapsed)      { _scale += step;  }
 
  void BaseObject::SetFirstTranslate(bool ok){ _FirstTranslate = ok;    }
  bool BaseObject::GetFirstTranslate()       { return _FirstTranslate;  }

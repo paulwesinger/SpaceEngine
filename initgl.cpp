@@ -16,10 +16,6 @@
 
 // Res for windowed Mode
 
-#define SD_WIDTH    1600
-#define SD_HEIGHT   1200
-#define FULLSCREEN_WIDTH  1680.0f//3200//1680.0f//1920.0f
-#define FULLSCREEN_HEIGHT 1050.0f//1800//1050.0f//1200.0f
 
 const std::string PATH_HEADLINE     = "../SpaceEngine/images/darkgray.png";
 const std::string PATH_TEXTFIELD    = "../SpaceEngine/images/Textfeld.png";
@@ -60,7 +56,7 @@ InitGL::InitGL (const std::string titel){
 
     _CameraSpeed = 1.0f;
 
-    LoadConfiguration();
+    //LoadConfiguration();
     InitUtils();
     InitMatrices();
     _HasSound = initSoundMachine();
@@ -138,7 +134,7 @@ void InitGL::setHasSkybox(bool enable) { _HasSkyBox = enable; }
 
 void InitGL::LoadConfiguration(){
 
-
+/*
     _FullScreen = false;
     _ResX = SD_WIDTH;
     _ResY = SD_HEIGHT;
@@ -168,14 +164,18 @@ void InitGL::LoadConfiguration(){
                         _ResY = StringToInt(parts.at(2));
                         loginfo("Setting Resolution " +parts.at(1) + "x" + parts.at(2) + ".......Done");
                     }
-                    else
+                    else {
+                        _ResX = SD_WIDTH;
+                        _ResY = SD_HEIGHT;
                         logwarn("Warnung: konnte Resolution nich lesen -> verwende Default 1920x1200");
+                    }
                 }
             }
         }
     }
     else
         logwarn("Konnte keine .cfg Datei finden ","CEngine::LoadConfiguration");
+        */
 
 }
 
@@ -372,26 +372,15 @@ void InitGL::InitMatrices() {
     }
 }
 
+void InitGL::SetResolution(int resx,int resy) {
+    _ResX = resx;
+    _ResY = resy;
+}
+
 // ******************************************
-// Heier der graphische Teil
+// Display-Modi anzeigen
 // ------------------------------------------
-bool InitGL::InitSDL2()  {
-
-
-    if (  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO ) != 0 )
-    {
-            logwarn("Konnte SDL nicht initialisieren ! " + (std::string) SDL_GetError());
-            return(false);
-    }
-    atexit(SDL_Quit);
-
-    printf("Init success \n");
-    SDL_GL_LoadLibrary(NULL);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,5);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
-    //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
+void InitGL::PrintDisplayModes() {
 
     int numDisplaymodes = SDL_GetNumDisplayModes(0);
     loginfo("Num Display modes: " + IntToString(numDisplaymodes), "InitGL::Init");
@@ -417,13 +406,41 @@ bool InitGL::InitSDL2()  {
 
         }
      }
-    SDL_GetDesktopDisplayMode(0, &DesktopDisplayMode );
+}
 
-//    _ResX = FULLSCREEN_WIDTH;
-//    _ResY = FULLSCREEN_HEIGHT;
+// ******************************************
+// Heier der graphische Teil
+// ------------------------------------------
+bool InitGL::InitSDL2()  {
 
+
+    if (  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO ) != 0 )
+    {
+            logwarn("Konnte SDL nicht initialisieren ! " + (std::string) SDL_GetError());
+            return(false);
+    }
+    atexit(SDL_Quit);
+
+    printf("Init success \n");
+    SDL_GL_LoadLibrary(NULL);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,5);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+    //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
+
+    PrintDisplayModes();
+
+     //------------------------------------------------------------
+     // Get the current Displaymode for restore after ending
+     //------------------------------------------------------------
+     SDL_GetDesktopDisplayMode(0, &DesktopDisplayMode );
+
+
+    //------------------------------------------------------------
+    // _ResX und _ResY werden im Constructor von Engine gesetzt !!
+    //------------------------------------------------------------
     if ( _FullScreen) {
-
 
         window = SDL_CreateWindow(
                 caption.c_str(),
@@ -438,8 +455,6 @@ bool InitGL::InitSDL2()  {
     }
     else {
 
-            _ResX = SD_WIDTH;
-            _ResY = SD_HEIGHT;
             window = SDL_CreateWindow(
                 caption.c_str(),
                 SDL_WINDOWPOS_UNDEFINED,
@@ -452,8 +467,8 @@ bool InitGL::InitSDL2()  {
 }
 
 
+   if ( window == nullptr)  {
 
-    if ( window == nullptr)  {
         sdl_die("Konnte Fenster nicht erzeugen");
         return false;
     }
@@ -514,21 +529,6 @@ bool InitGL::InitSDL2()  {
     MouseResY = (float)_ResY / (float)current.h;
 
     InitEngineObject();
-
-
-    // --------------------------------
-    // Test Loader:
-    //---------------------------------
-
-    //me = new CMeshObject();
-    //me->Load3DSMesh("Meshes/spaceship.3ds");
-
-    //objLoader = new COBJLoader("Meshes/Quad.obj");
-
-    //int errorid = objLoader->LoadOBJ();
-
-    //logwarn(" OBJLoader return ID: " + IntToString(errorid));
-
 
     return true;
 }
@@ -863,7 +863,7 @@ void InitGL::Run() {
             ms = 0;
          }
 
-        ShowFramesPerSec(ms);
+        ShowFramesPerSec(_FramerateOut);
         ShowCameraPos();
 
         MousePositions->setText(0,"Mouse X " + IntToString(_Mouse.x) );
@@ -874,7 +874,10 @@ void InitGL::Run() {
         // abhängig von verbrauchter zeit
         // -------------------------------
 
-       double ups = 5.0f;  // umdrehung per sec...... min
+       double ups = 0.1f;  // umdrehung per sec...... min
+
+
+
 
        /*
         * TODO:
@@ -1070,9 +1073,6 @@ void InitGL::Run() {
 
        if ( ! showPanel) {
 
-           vec3 dummy;
-           dummy = vec3(0.0,0.2,0.0);
-
            if (_UseBlend)
                lightSource->UseBlending(true);
               // glDisable(GL_DEPTH_TEST);
@@ -1084,7 +1084,7 @@ void InitGL::Run() {
            lightSource->SetProjection(projection->GetPerspective());
            lightSource->SetFirstTranslate(true);
            if (_Animate && lightSource->HasAnimation() )
-               lightSource ->StepRotate( glm::vec3(0.0,0.2,0.2));
+               lightSource ->AnimateRotate(elapsed);
 
             lightSource->Draw(camera);
 
@@ -1107,18 +1107,17 @@ void InitGL::Run() {
 
              if (! list3D.empty() ) {
                 for (unsigned int i=0;i < list3D.size(); i++ ) {
-                    dummy = vec3(1.0 * (float) i ,2.0,3.0);
-                    list3D[i]->SetProjection(projection->GetPerspective());
-                    float hlp = 0.1; //(float) (i+1);
-                    glm::vec3 rv(hlp * 0.5);
 
                     glm::vec3 vt(0.001,0.002,0.003);
 
-                    //list3D[0]->Translate(camera->GetPos() + camera->GetDir());
-
                     if (_Animate && list3D[i]->HasAnimation()) {
-                        list3D[i]->StepTranslate(vt);
-                        list3D[i]->StepRotate(rv);
+
+                        list3D[i]->StepTranslate(vt,elapsed);
+
+
+                       // list3D[i]->AnimateScale(elapsed);
+                       // list3D[i]->AnimateTranslate(elapsed);
+                        list3D[i]->AnimateRotate(elapsed);
                     }
 
                     if (_UseBlend)
@@ -1126,7 +1125,7 @@ void InitGL::Run() {
                     else
                         list3D[i]->UseBlending(false);
 
-                    //list3D[i]->setActiveShader(ShaderType::LIGHT_SHADER);
+
                     list3D[i]->Draw(camera);
                 }
 
@@ -1289,14 +1288,14 @@ void InitGL::OnMouseMove(int &x, int &y, uint32 buttonstate) {
         }
     }
 
-
+/*
     for (uint i = 0; i < objects2D.size(); i++) {
 
         if (objects2D.at(i)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
             objects2D.at(i)->OnDrag(m.x, m.y);
         }
     }
-
+*/
 }
 
 void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
@@ -1314,16 +1313,19 @@ void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
                 buttons[i]->OnStartDrag(m.x,m.y);
         }
     }
-
+/*
     if (!objects2D.empty() ) {
+
+
         for (uint i = 0; i < objects2D.size(); i++)
         {
             if (objects2D.at(i)->intersect(m.x,m.y))
                 objects2D[i]->OnStartDrag(m.x,m.y);
 
         }
-    }
 
+    }
+*/
     if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
 
         for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
@@ -1384,13 +1386,13 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
             textfields.at(i)->OnEndDrag(m.x, m.y);
         }
     }
-
+/*
     for (uint i = 0; i < objects2D.size(); i++) {
         if (objects2D.at(i)->IsDragging() ) {
             objects2D.at(i)->OnEndDrag(m.x, m.y);
         }
     }
-
+*/
 }
 
 

@@ -15,25 +15,28 @@ public:
 
     void TranlateFirst();
     void RotateFirst();
-    virtual void rotateX(float step);
-    virtual void rotateY(float step);
-    virtual void rotateZ(float step);
+    void setElapsed(uint el);
 
-    virtual void translateX(float step);
-    virtual void translateY(float step);
-    virtual void translateZ(float step);
+    virtual void StepTranslate(vec3 step, uint elapsed) override;
+    void AnimateRotate(uint32 elapsed);
+    virtual void StepScale(vec3 step, uint elapsed) override;
 
-    virtual void scaleX(float step);
-    virtual void scaleY(float step);
-    virtual void scaleZ(float step);
-
-    virtual void scale(float stepx, float stepy, float stepz);
-    virtual void translate(float stepx,float stepy, float stepz);
-    virtual void rotate(float stepx, float stepy, float stepz);
+    void Scale(glm::vec3 s) override;
+    void Translate(glm::vec3 t) override;
+    void Rotate(glm::vec3 r) override;
 
 protected:
     void init();
     bool _TranslateFirst;   // im Baseoibject löschen !!!
+
+    void setSpeedPerSecond_RotX(float sx);
+    void setSpeedPerSecond_RotY(float sy);
+    void setSpeedPerSecond_RotZ(float sz);
+
+private:
+    glm::vec3 _RotSpeed;
+    glm::vec3 _TransSpeed;
+    glm::vec3 _ScaleSpeed;
 };
 
 #endif // ANIMATE_H

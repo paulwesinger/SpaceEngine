@@ -25,6 +25,13 @@
 #include "../shaders/shader.h"
 #include "../defines.h"
 
+const std::string GNU_DEFAULT_FONT = "/usr/share/fonts/gnu-free/FreeSans.ttf";
+const std::string GNU_DEFAULT_FONT_BOLD = "/usr/share/fonts/gnu-free/FreeSansBold.ttf";
+
+const std::string GNU_DEFAULT_OBLIQUE_FONT = "/usr/share/fonts/gnu-free/FreeSansOblique.ttf";
+const std::string GNU_DEFAULT_OBLIQUE_FONT_BOLD = "/usr/share/fonts/gnu-free/FreeSansBoldOblique.ttf";
+
+
 
 struct Character {
     GLuint     TextureID;  // ID handle of the glyph texture
@@ -70,6 +77,7 @@ public:
 
     void SetTextShader(GLuint s);
     void SetTextfeldShader(GLuint s);
+    bool setFont(std::string s);
 
     uint getStringCount();
     int getTextAreaHeight();
@@ -147,6 +155,7 @@ private:
     // Includes und libs für Freetype2
     FT_Library ft;
     FT_Face face;
+    std::string _Font;
     // Einige Felder für look and feel:
     FT_UInt _Pixelsize;
     GLfloat _MarginLeft,_MarginRight, _MarginY;
