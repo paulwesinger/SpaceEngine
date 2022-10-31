@@ -170,6 +170,7 @@ typedef struct {
     int lasty,y;
 } MOUSE;
 
+/*
 enum Events{
 
     NO_INPUT                = 0,
@@ -237,6 +238,7 @@ enum Events{
 
     MOUSE_Wheel 
 };
+*/
 
 enum ShaderType {
     COLOR_SHADER = 0,

@@ -295,22 +295,12 @@ void CEngine::initMenu(){
     MainMenu->addConatiner(con2);
 }
 
-void CEngine::ShowFramesPerSec(uint32 sec) {
-
-    static uint32 ms = 0;
-
-    ms += sec;
-    if (ms > 1000) {
-        if (txtFrameperSec != nullptr) {
-
-            ms = 0;
+void CEngine::ShowFramesPerSec() {
             TextRender * t = txtFrameperSec->getTextPtr();
 
-            if (t != nullptr) {
-                t->setText(0,IntToString(_FramerateOut));
-                t->Render();
-            }
-        }
+    if (t != nullptr) {
+        t->setText(0,IntToString(_FramerateOut));
+        t->Render();
     }
 }
 

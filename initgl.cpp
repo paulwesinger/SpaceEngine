@@ -59,13 +59,15 @@ InitGL::InitGL (const std::string titel){
     //LoadConfiguration();
     InitUtils();
     InitMatrices();
-    _HasSound = initSoundMachine();
+
+    InitHandler();
+   // _HasSound = initSoundMachine();
     InitFX();
 
     // Irrklan init
- //   soundengine = createIrrKlangDevice();
- //   if ( soundengine )
- //       loginfo(" SoundEngine created ","InitGL::InitGL");
+   // soundengine = createIrrKlangDevice();
+   // if ( soundengine )
+   //     loginfo(" SoundEngine created ","InitGL::InitGL");
 }
 
 InitGL::InitGL(const InitGL& orig) {
@@ -76,8 +78,8 @@ InitGL::~InitGL() {
     // Alten Videomode wiederherstellen
     SDL_SetWindowDisplayMode(window,&DesktopDisplayMode);
 
-//    if (soundengine)
-//        soundengine->drop();
+    //if (soundengine)
+    //    soundengine->drop();
 
     safeDelete(sphere1);
     safeDelete(lightSource);
@@ -220,6 +222,15 @@ void InitGL::setFog(bool enable) {
 }
 
 
+
+
+
+// ******************************************
+// Handlers
+// ------------------------------------------
+bool InitGL::InitHandler() {
+
+}
 
 
 // ******************************************
@@ -414,7 +425,7 @@ void InitGL::PrintDisplayModes() {
 bool InitGL::InitSDL2()  {
 
 
-    if (  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO ) != 0 )
+    if (  SDL_Init(SDL_INIT_VIDEO) != 0 )
     {
             logwarn("Konnte SDL nicht initialisieren ! " + (std::string) SDL_GetError());
             return(false);
@@ -457,10 +468,10 @@ bool InitGL::InitSDL2()  {
 
             window = SDL_CreateWindow(
                 caption.c_str(),
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
+                500,
+                200,
                 _ResX,_ResY,
-                SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+                SDL_WINDOW_OPENGL
             );
 
     glViewport(0,0,_ResX, _ResY);
@@ -750,7 +761,7 @@ void InitGL::toogleFullScreen (){
     }
 }
 
-void InitGL::ShowFramesPerSec(uint32 sec){
+void InitGL::ShowFramesPerSec(){
 
 }
 
@@ -797,32 +808,197 @@ bool InitGL::initSoundMachine() {
 //    }
     return false;
 }
+
+bool InitGL::HandleMessage() {
+
+    SDL_PollEvent(&_Event);
+
+    switch(_Event.type) {
+
+    case SDL_KEYDOWN:
+    case SDL_KEYUP : {
+            switch(_Event.key.keysym.sym) {
+
+                case SDLK_ESCAPE : _QuitGame = true;
+                    break;
+
+                case SDLK_a : camera->MoveLeft(_Elapsed);
+                   break;
+
+                case SDLK_m :
+                    showMenu = toggleVal(showMenu);
+                    MainMenu->setActive(showMenu);
+                    break;
+
+                case SDLK_q: toggleAnimation();
+                    break;
+
+                case SDLK_d:
+                    camera->MoveRight(_Elapsed);
+                    //cockpit->setPosition(camera);
+                    //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
+                    break;
+
+
+                case SDLK_e:
+                     camera->MoveForward(_Elapsed);
+                     //cockpit->setPosition(camera);
+                     //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
+                     break;
+
+
+                case SDLK_s:
+                    camera->MoveBackward(_Elapsed);
+                    //cockpit->setPosition(camera);
+                    //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+
+                    break;
+
+                case SDLK_c     : _CurrentShader = ShaderType::COLOR_SHADER;    _ShaderChanged = true;  break;
+                case SDLK_t     : _CurrentShader = ShaderType::TEXTURE_SHADER;  _ShaderChanged = true;  break;
+
+                case SDLK_F7    : _CurrentShader = ShaderType::GLASS_SHADER;    _ShaderChanged = true;  break;
+                case SDLK_F8    : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER;  _ShaderChanged = true; break;
+                case SDLK_F9    : _CurrentShader = ShaderType::LIGHT_SHADER;    _ShaderChanged = true;  break;
+                case SDLK_F10   : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;    _ShaderChanged = true;  break;
+                case SDLK_F11   : toogleFullScreen(); break;
+
+
+                // ORtho oder perspective mode:
+                case SDLK_o :
+
+                    for (uint i = 0; i < list3D.size(); i++) {
+                        list3D[i]->SetProjection(projection->GetOrtho(), true);
+                    }
+                    break;
+
+                case SDLK_p:
+                    for (uint i = 0; i < list3D.size(); i++) {
+                        list3D[i]->SetProjection(projection->GetPerspective(),false);
+                    }
+                    break;
+
+                //------------------------------------------------------------------------------
+                // Num pad
+                //------------------------------------------------------------------------------
+                case SDLK_KP_1:
+                    camera->YawEyeLeft(_Elapsed);
+                    break;
+
+                // Roll Eye right
+                case SDLK_KP_3:
+                    camera-> YawEyeRight(_Elapsed);
+                    break;
+
+                case SDLK_KP_2:
+                    // Pitch Eye Doun
+                    camera -> PitchEyeDown(_Elapsed);
+                    break;
+
+                case SDLK_KP_5:
+                    // Pitch eye Up
+                    camera -> PitchEyeUp(_Elapsed);//
+                    break;
+
+                case SDLK_KP_PLUS:{
+                    float s = camera->GetSpeed();
+                    camera -> SetSpeed(++s);//
+                    break;
+                }
+
+                case SDLK_KP_MINUS:{
+                    float s = camera->GetSpeed();
+                    s--;
+                    (s < 0.0f) ? camera -> SetSpeed(0.0f) : camera->SetSpeed(s);//
+                    break;
+                }
+
+                case SDLK_LEFT:
+                     camera->YawCameraLeft(_Elapsed);
+
+                     //cockpit->SetDir(camera->GetDir());
+                     //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                     //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
+                     //cockpit->setPosition(camera);
+                     break;
+
+                case SDLK_RIGHT:
+                     camera->YawCameraRight(_Elapsed);
+
+                     //cockpit->SetDir(camera->GetDir());
+                     //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                     //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                     //cockpit->setPosition(camera);
+                     break;
+
+                case SDLK_UP:
+                     camera->PitchCameraUp(_Elapsed);
+
+                     //cockpit->SetDir(camera->GetDir());
+                     //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                     //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                     //cockpit->setPosition(camera);
+                     break;
+
+                case SDLK_DOWN:
+                    camera ->PitchCameraDown(_Elapsed);
+
+                    //cockpit->SetDir(camera->GetDir());
+                    //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
+                    //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
+                    //cockpit->setPosition(camera);
+                    break;
+
+            }  // case KeyDown
+        }
+
+        //------------------------------------------------------------------------------
+        // Mause Events
+        //------------------------------------------------------------------------------
+        case      SDL_MOUSEMOTION : {
+
+            _Mouse.x = _Event.motion.x;
+            _Mouse.y = _Event.motion.y;
+
+            _MouseButtons = SDL_GetMouseState(&_Event.motion.x, &_Event.motion.y);
+            OnMouseMove(_Event.motion.x, _Event.motion.y, _MouseButtons);
+            break;
+        }
+
+        case SDL_MOUSEBUTTONDOWN: {
+
+            if ( _Event.button.button == SDL_BUTTON_LEFT ) {
+                OnLeftMouseButtonDown(_Event.motion.x, _Event.motion.y);
+            }
+            break;
+        }
+
+        case SDL_MOUSEBUTTONUP: {
+
+            if ( _Event.button.button == SDL_BUTTON_LEFT ) {
+                OnLeftMouseButtonUp(_Event.motion.x, _Event.motion.y);
+            }
+            break;
+        }
+    }
+    return true;
+}
+
+
 void InitGL::Run() {
 
     bool quit = false;
     // Diese transformations vectoren enthalten die "steps" für die Animation
-    vec3 steptrans;
-    vec3 steprotate;
-    vec3 stepscale;
-
-
-    steptrans  = vec3(0.0,-0.5,0.0);
-    steprotate = vec3(0.5,0.8,0.0);
-    stepscale  = vec3(0.0,0.0,0.0);
 
     sphere1->Translate(vec3(0.0,-4.0,0.0));
-
-    // timetest
-    //Uint32 tickstart = SDL_GetTicks();
-    //Uint32 tickend   = tickstart;
-    Uint32 elapsed = 0;
-    int event = 0;
 
     //--------------------------------------------------
     // framerate berechene
     //--------------------------------------------------
     int frames = 0;
-    Uint32 ms = 0;
+    Uint64 ms = 0;
     showMenu = true;
 
     glEnable(GL_DEPTH_TEST);
@@ -848,14 +1024,15 @@ void InitGL::Run() {
     cad2->addPoint(Point(500.0,100.0));
     cad2->addPoint(Point(200.0,900.0));
 
-    //cad2->setColor(glm::vec4(1.0,1.0,1.0,1.0));
+    _Elapsed = 0;
 
-    while ( ! quit) {
+    while ( ! _QuitGame) {
+
+        HandleMessage();
 
         auto start = Clock::now();
 
-       // tickstart =  SDL_GetTicks();
-        ms += elapsed;
+        ms += _Elapsed;
         frames++;
         if (ms > 1000) {
             _FramerateOut = frames;
@@ -863,210 +1040,14 @@ void InitGL::Run() {
             ms = 0;
          }
 
-        ShowFramesPerSec(_FramerateOut);
+        ShowFramesPerSec();
         ShowCameraPos();
 
         MousePositions->setText(0,"Mouse X " + IntToString(_Mouse.x) );
         MousePositions->setText(1,"Mouse Y " + IntToString(_Mouse.y) );
-        //tickstart = tickend;
-        // -------------------------------
-        // Test für dynamische winkel
-        // abhängig von verbrauchter zeit
-        // -------------------------------
 
-       double ups = 0.1f;  // umdrehung per sec...... min
-
-
-
-
-       /*
-        * TODO:
-        * Klasse für SDL_GetTicks() erstellen ,
-        * Funktionen für U/min bzw. U/sec. erstellen
-        * verstrichene Zeit ist eben dann max. 60000 für Minute
-        * oder 1000 für Secunde !!!
-        */
-       /* Dieser Bereich für DauerRotation der KAmeara
-       double frames = 6000000.0 / second ;
-
-       double mmin = 10.0f;
-       double speed  = 0.2f; // geschwindigkeit
-
-       second += elapsed;
-
-       angleX = 360.0f * ups / frames   ;   // upm jetzt
-       float ax = static_cast<float> (angleX);
-
-       //checkdegree(ax);
-       if (ax > 360.0f )
-           ax -= 360;
-
-       if ( second > 60000 )
-          second = 0;
-
-       glm::vec3 pos = camera -> GetOrgPos();
-       pos = glm::rotateY(pos,ax);
-
-       camera -> SetPos(pos);
-       camera -> UpdateCamera();
-       */
-       uint motionX =0;
-       uint motionY =0;
-
-       e.type = 0;
-       SDL_PollEvent( &e );
-       SDL_PumpEvents();
-       event = HandleInput(e,motionX,motionY );
-       HandleEvent(e); // Mouseevents
-
-       switch ( event) {
-           case KEY_Esc  : quit = true;
-               break;
-
-           case KEY_M :{
-
-                showMenu = this->toggleVal(showMenu);
-                MainMenu->setActive(showMenu);
-               break;
-           }
-
-           case KEY_A:{
-               camera->MoveLeft(elapsed);
-               //cockpit->setPosition(camera);
-               //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-
-
-               break;
-           }
-       case KEY_Left :  {
-                camera->YawCameraLeft(elapsed);
-
-                //cockpit->SetDir(camera->GetDir());
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));  //
-                //cockpit->setPosition(camera);
-                break;
-            }
-
-       case KEY_Right: {
-                camera->YawCameraRight(elapsed);
-
-                //cockpit->SetDir(camera->GetDir());
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-                //cockpit->setPosition(camera);
-                break;
-            }
-
-       case KEY_D: {
-               camera->MoveRight(elapsed);
-               //cockpit->setPosition(camera);
-               //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-
-               break;
-           }
-
-       case KEY_E: {
-                camera->MoveForward(elapsed);
-                //cockpit->setPosition(camera);
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-
-                break;
-           }
-
-       case KEY_S: {
-            camera->MoveBackward(elapsed);
-            //cockpit->setPosition(camera);
-            //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-
-            break;
-            }
-
-       case KEY_Up: {
-                camera->PitchCameraUp(elapsed);
-
-                //cockpit->SetDir(camera->GetDir());
-                //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-                //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-                //cockpit->setPosition(camera);
-
-                break;
-            }
-
-
-       case KEY_Down:
-           camera ->PitchCameraDown(elapsed);
-
-           //cockpit->SetDir(camera->GetDir());
-           //cockpit->Translate(glm::vec3(0.0,0.0,-15.0));
-           //cockpit->Rotate(glm::vec3(camera->PitchCameraDEG(),camera->YawCameraDEG(),camera->RollCameraDEG()));   //
-           //cockpit->setPosition(camera);
-           break;
-
-        //case KEY_Q: toggleAnimation();
-        //   break;
-
-           // Shader select
-           case KEY_C   : _CurrentShader = ShaderType::COLOR_SHADER;            _ShaderChanged = true;  break;
-           case KEY_T   : _CurrentShader = ShaderType::TEXTURE_SHADER;          _ShaderChanged = true;  break;
-
-           case KEY_F7  : _CurrentShader = ShaderType::GLASS_SHADER;            _ShaderChanged = true;  break;
-           case KEY_F8  : _CurrentShader = ShaderType::LIGHT_TEXTURE_SHADER;    _ShaderChanged = true; break;
-           case KEY_F9  : _CurrentShader = ShaderType::LIGHT_SHADER;            _ShaderChanged = true;  break;
-           case KEY_F10 : _CurrentShader = ShaderType::LIGHT_COLOR_SHADER;      _ShaderChanged = true;  break;
-           case KEY_F11 : {
-                toogleFullScreen(); break;
-           }
-
-           // ORtho oder perspective mode:
-           case KEY_O : {
-
-           for (uint i = 0; i < list3D.size(); i++) {
-                    list3D[i]->SetProjection(projection->GetOrtho(), true);
-                }
-                break;
-           }
-           case KEY_P: {  // Wired
-
-                for (uint i = 0; i < list3D.size(); i++) {
-                    list3D[i]->SetProjection(projection->GetPerspective(),false);
-                }
-               break;
-           }
-
-           // Roll Camera left
-           case NUM_1: {
-               camera->YawEyeLeft(elapsed);
-               break;
-           }
-           // Roll Camera right
-           case NUM_3: {
-               camera-> YawEyeRight(elapsed);
-               break;
-           }
-           case NUM_2: {
-               // Pitch Camera Doun
-               camera -> PitchEyeDown(elapsed);
-               break;
-           }
-
-           case NUM_5: {
-               // Pitch camera Up
-               camera -> PitchEyeUp(elapsed);//
-               break;
-           }
-           case NUM_PLUS: {
-                float s = camera->GetSpeed();
-                camera -> SetSpeed(++s);//
-                break;
-           }
-           case NUM_MINUS: {
-                float s = camera->GetSpeed();
-                s--;
-                (s < 0.0f) ? camera -> SetSpeed(0.0f) : camera->SetSpeed(s);//
-                break;
-           }
-       }
+        uint motionX =0;
+        uint motionY =0;
 
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1084,7 +1065,7 @@ void InitGL::Run() {
            lightSource->SetProjection(projection->GetPerspective());
            lightSource->SetFirstTranslate(true);
            if (_Animate && lightSource->HasAnimation() )
-               lightSource ->AnimateRotate(elapsed);
+               lightSource ->AnimateRotate(_Elapsed);
 
             lightSource->Draw(camera);
 
@@ -1112,12 +1093,12 @@ void InitGL::Run() {
 
                     if (_Animate && list3D[i]->HasAnimation()) {
 
-                        list3D[i]->StepTranslate(vt,elapsed);
+                        list3D[i]->StepTranslate(vt,_Elapsed);
 
 
                        // list3D[i]->AnimateScale(elapsed);
                        // list3D[i]->AnimateTranslate(elapsed);
-                        list3D[i]->AnimateRotate(elapsed);
+                        list3D[i]->AnimateRotate(_Elapsed);
                     }
 
                     if (_UseBlend)
@@ -1167,8 +1148,6 @@ void InitGL::Run() {
         //------------------------------------
         // MainMenu rendern
         // -----------------------------------
-
-
         if ( MainMenu != nullptr  && showMenu) {
             MainMenu ->Render();
         }
@@ -1188,7 +1167,6 @@ void InitGL::Run() {
         if ( ! buttons.empty() ) {
             for ( uint i = 0; i < buttons.size(); i++) {
                 buttons[i]->Render();
-
             }
         }
 
@@ -1198,15 +1176,14 @@ void InitGL::Run() {
         sPoint p1{1500,500};
         cad2->setPoint0(p0);
         cad2->setPoint1(p1);
-
         cad2->Render();
 
-
         Restore3D();
+
         SDL_GL_SwapWindow(window);
         auto end = Clock::now();
-        auto el = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1000000;
-        elapsed =   static_cast<uint32>(el);//500;
+        auto el = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        _Elapsed =   static_cast<uint32>(el);//500;
      }
 }
 
@@ -1231,33 +1208,33 @@ void InitGL::Restore3D() {
 
 
 uint InitGL::HandleEvent(SDL_Event e) {
-    switch (e.type) {
+    switch (_Event.type) {
         case      SDL_MOUSEMOTION :
 
-            _Mouse.x = e.motion.x;
-            _Mouse.y = e.motion.y;
+            _Mouse.x = _Event.motion.x;
+            _Mouse.y = _Event.motion.y;
 
-            _MouseButtons = SDL_GetMouseState(&e.motion.x, &e.motion.y);
-            OnMouseMove(e.motion.x, e.motion.y, _MouseButtons);
+            _MouseButtons = SDL_GetMouseState(&_Event.motion.x, &_Event.motion.y);
+            OnMouseMove(_Event.motion.x, _Event.motion.y, _MouseButtons);
             break;
 
         case SDL_MOUSEBUTTONDOWN: {
 
-            if ( e.button.button == SDL_BUTTON_LEFT ) {
-                OnLeftMouseButtonDown(e.motion.x, e.motion.y);
+            if ( _Event.button.button == SDL_BUTTON_LEFT ) {
+                OnLeftMouseButtonDown(_Event.motion.x, _Event.motion.y);
             }
             break;
          }
 
         case SDL_MOUSEBUTTONUP: {
 
-        if ( e.button.button == SDL_BUTTON_LEFT ) {
-                OnLeftMouseButtonUp(e.motion.x, e.motion.y);
+        if ( _Event.button.button == SDL_BUTTON_LEFT ) {
+                OnLeftMouseButtonUp(_Event.motion.x, _Event.motion.y);
             }
             break;
         }
     }
-    return  e.type; // Falls wo gebraucht wird
+    return  _Event.type; // Falls wo gebraucht wird
 }
 
 //-------------------------------------------------
@@ -1396,14 +1373,17 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
 }
 
 
-int InitGL::HandleInput(SDL_Event e, uint &mox, uint &moy) {
 
+
+int InitGL::HandleInput(SDL_Event e, uint &mox, uint &moy) {
+/*
     switch (e.type) {
    //
         case SDL_MOUSEWHEEL :   return  MOUSE_Wheel;
 
         // Keyboard
         case SDL_KEYDOWN : {
+
             switch(e.key.keysym.sym ) {
                 case SDLK_RIGHT     : return KEY_Right;     break;
                 case SDLK_LEFT      : return KEY_Left;      break;
@@ -1478,8 +1458,9 @@ int InitGL::HandleInput(SDL_Event e, uint &mox, uint &moy) {
         }
         default : return NO_INPUT;
     }
+    */
 
-    return NO_INPUT;
+    return 0;
 }
 
 void InitGL::sdl_die( std::string msg)

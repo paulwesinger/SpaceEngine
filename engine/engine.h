@@ -89,7 +89,7 @@ protected:
     void initLandscape();
 
     // virtuelle functions
-    void ShowFramesPerSec(uint32 sec) override;
+    void ShowFramesPerSec() override;
     void ShowCameraPos() override;
 
     bool initButtonStruct(sButtonStruct & bs,std::vector<std::string> cfg);

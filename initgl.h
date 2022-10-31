@@ -13,14 +13,9 @@
 
 
 #include <GL/glew.h>
-//#include <glad.h>
-
-
-
-//#include <glm/mat4x4.hpp>
-//#include "glm/gtc/matrix_transform.hpp"
 
 #include <SDL2/SDL.h>
+#include <map>
 #include <irrklang/irrKlang.h>
 #include "logs/logs.h"
 #include "utils/utils.h"
@@ -72,7 +67,6 @@ static bool _Animate;
 static bool _UseBlend;
 static bool _ShowCockpit;
 static bool showPanel;   // DrawPanel für 2D
-
 
 class InitGL {
 public:
@@ -136,7 +130,7 @@ protected:
     void add2List(BaseObject * obj, ShaderType s);
     void add2Dobject(Base2D * obj);
     void addButton(CButton* obj);
-    virtual void ShowFramesPerSec(uint32 sec);
+    virtual void ShowFramesPerSec();
     virtual void ShowCameraPos();
 
     bool hasSkyBox();
@@ -189,8 +183,6 @@ protected:
     //Liste für Textfelder
     std::vector<TextRender*> textfields;
 
-
-    SDL_Event e;
     // Members for navigating with the  mouse...
     MOUSE _Mouse;
     float MouseResX;
@@ -202,12 +194,9 @@ protected:
     irrklang::ISoundEngine * soundengine1;
     irrklang::ISoundEngine * soundengine2;
     irrklang::ISoundEngine * soundengine3;
-
-    */
-
     irrklang::ISound       * _Sound;
     bool _HasSound;
-
+*/
     // Test Shader
     Shader * shader;
     GLuint glasshader;
@@ -221,11 +210,14 @@ protected:
     GLuint line2DShader;
 
     GLuint textfeldshader, textshader;
-
     ShaderType _CurrentShader;
-    bool _ShaderChanged;
 
+    bool _ShaderChanged;
     bool _FullScreen ;
+    bool _QuitGame;
+    uint32_t _Elapsed;
+
+
     // Global Resolution vars
     int _ResX;
     int _ResY;
@@ -242,10 +234,15 @@ private:
     void InitShaders();
     void InitMatrices();
     bool initSoundMachine();
+    bool InitHandler();
     void DeleteUtils();
     void DeleteMatrices();
     void DeleteShaders();
     void PrintDisplayModes();
+    bool HandleMessage();
+    bool HandleEvent();
+
+
 
     MOUSE convertMouse(int x, int y);
 
@@ -254,6 +251,8 @@ private:
 
     SDL_DisplayMode DesktopDisplayMode;
     SDL_DisplayMode newDisplayMode;
+
+    SDL_Event       _Event;
 
 };
 
