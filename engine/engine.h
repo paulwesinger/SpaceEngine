@@ -26,7 +26,7 @@ const std::string SPHERE_CFG   = "../SpaceEngine/config/3DObjects/TexturedSphere
 
 const int CFG_BUTTON_SIZE = 11;
 const int CFG_3D_SIZE = 18;
-const int CFG_SPHERE_SIZE = 22;
+const int CFG_SPHERE_SIZE = 26;
 
 const glm::vec4 BTN_ENABLE = glm::vec4(0.2, 0.2, 0.2, 1.0);
 const glm::vec4 BTN_DISABLE = glm::vec4(0.2, 0.2, 0.2, 0.3);

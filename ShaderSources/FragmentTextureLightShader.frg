@@ -32,7 +32,7 @@ void main()
     }
     else
     {
-        color = triangleColor;
+        color = triangleColor.rgb;
     }
 
         // ambient

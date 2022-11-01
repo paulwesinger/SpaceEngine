@@ -1210,7 +1210,7 @@ bool CEngine::init3DStruct(s3DStruct &d3s, std::vector<std::string> &cfg){
 }
 
 bool CEngine::initSphereStruct(sSphereStruct &sSphere, std::vector<std::string> &cfg){
-    if (cfg.size() >= CFG_SPHERE_SIZE ) {
+    if (cfg.size() <= CFG_SPHERE_SIZE ) {
 
         //+---------------------------------------------------------------------+
         //+     VORGEHEN :                                                      |

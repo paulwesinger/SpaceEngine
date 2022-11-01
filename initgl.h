@@ -41,6 +41,7 @@
 #include "lights/light.h"
 #include "cockpit/cockpit.h"
 #include "particleengine/partikelengine.h"
+#include "3DLoader/load3ds.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -114,11 +115,7 @@ protected:
     static void toggleBlend();
     static void togglePanel2D();
     static bool toggleVal(bool val);
-    // HandleInput wird wahrscheinlich überflussig....
-    virtual int HandleInput(SDL_Event e , uint &mox, uint &moy);
 
-    // .... ersetzt durch HandleEvent und die virtuellen Handler dazu
-    virtual uint HandleEvent(SDL_Event e);
     // HandlerFuncs for Mouse
     virtual void OnMouseMove(int &x, int &y, uint32 buttonstate);
     virtual void OnLeftMouseButtonUp(int &x, int &y);
@@ -227,6 +224,8 @@ protected:
     std::string caption;
     GLFLOAT4 _ClearColor;
 
+    C3DSLoad * load3DS;
+
 private:
 
     void InitEngineObject();
@@ -240,9 +239,6 @@ private:
     void DeleteShaders();
     void PrintDisplayModes();
     bool HandleMessage();
-    bool HandleEvent();
-
-
 
     MOUSE convertMouse(int x, int y);
 

@@ -6,10 +6,10 @@ colorGreen 0.0
 colorBlue 1.0
 colorAlpha 1.0
 hasLight 1
-textures none
-translateX 2.0
+textures ../SpaceEngine/config/Sphere1Textures.cfg
+translateX -12.0
 translateY 3.0
-translateZ -5.0
+translateZ -10.0
 rotateX 1.0
 rotateY 1.0
 rotateZ 1.0
@@ -19,4 +19,3 @@ scaleZ 1.0
 firstTranslate 0
 radius 2
 meshpoints 24
-texture0 ..SpaceEngine/images/Tajmahal.png

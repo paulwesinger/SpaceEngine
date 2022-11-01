@@ -16,6 +16,4 @@ scaleX 115.0
 scaleY 10.0
 scaleZ 58.0
 firstTranslate 0
-textures none
-texture0 ../SpaceEngine/images/wallAlpha.png
-texture1 ../SpaceEngine/images/Tajmahal.png
+textures ../SpaceEngine/config/cube2textures.cfg

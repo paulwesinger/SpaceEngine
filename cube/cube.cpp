@@ -246,9 +246,6 @@ void CCube::Init() {
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&units);
     loginfo("Maximale Texture Units: " + IntToString(units) ,"Cube::Init");
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
@@ -347,9 +344,15 @@ void CCube::Draw(Camera * cam) {
 
     if (_HasTextures) {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,_Textures[1]);
+        glBindTexture(GL_TEXTURE_2D,_Textures[0]);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _Textures[0]);
+        glBindTexture(GL_TEXTURE_2D, _Textures[1]);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, _Textures[2]);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, _Textures[3]);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, _Textures[4]);
     }
 
     glBindVertexArray(vao);

@@ -64,6 +64,12 @@ InitGL::InitGL (const std::string titel){
    // _HasSound = initSoundMachine();
     InitFX();
 
+
+    load3DS = new C3DSLoad();
+
+
+
+
     // Irrklan init
    // soundengine = createIrrKlangDevice();
    // if ( soundengine )
@@ -83,6 +89,7 @@ InitGL::~InitGL() {
 
     safeDelete(sphere1);
     safeDelete(lightSource);
+    delete load3DS;
     //safeDelete(land);
 
     if ( skybox != NULL)
@@ -1026,6 +1033,15 @@ void InitGL::Run() {
 
     _Elapsed = 0;
 
+
+    if (load3DS->Load3DS("../SpaceEngine/models/32-sting-sword-lowpoly.3ds"))
+        loginfo("Modell geladen");
+    else
+        logwarn("Modell nicht geladen");
+
+
+
+
     while ( ! _QuitGame) {
 
         HandleMessage();
@@ -1067,7 +1083,7 @@ void InitGL::Run() {
            if (_Animate && lightSource->HasAnimation() )
                lightSource ->AnimateRotate(_Elapsed);
 
-            lightSource->Draw(camera);
+           lightSource->Draw(camera);
 
             // ===================================
             // Engine Objekte
@@ -1203,38 +1219,6 @@ void InitGL::Restore3D() {
     glFrontFace(GL_CCW);
     glEnable(GL_BLEND);
     glDepthMask(1);
-}
-
-
-
-uint InitGL::HandleEvent(SDL_Event e) {
-    switch (_Event.type) {
-        case      SDL_MOUSEMOTION :
-
-            _Mouse.x = _Event.motion.x;
-            _Mouse.y = _Event.motion.y;
-
-            _MouseButtons = SDL_GetMouseState(&_Event.motion.x, &_Event.motion.y);
-            OnMouseMove(_Event.motion.x, _Event.motion.y, _MouseButtons);
-            break;
-
-        case SDL_MOUSEBUTTONDOWN: {
-
-            if ( _Event.button.button == SDL_BUTTON_LEFT ) {
-                OnLeftMouseButtonDown(_Event.motion.x, _Event.motion.y);
-            }
-            break;
-         }
-
-        case SDL_MOUSEBUTTONUP: {
-
-        if ( _Event.button.button == SDL_BUTTON_LEFT ) {
-                OnLeftMouseButtonUp(_Event.motion.x, _Event.motion.y);
-            }
-            break;
-        }
-    }
-    return  _Event.type; // Falls wo gebraucht wird
 }
 
 //-------------------------------------------------
@@ -1373,95 +1357,6 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
 }
 
 
-
-
-int InitGL::HandleInput(SDL_Event e, uint &mox, uint &moy) {
-/*
-    switch (e.type) {
-   //
-        case SDL_MOUSEWHEEL :   return  MOUSE_Wheel;
-
-        // Keyboard
-        case SDL_KEYDOWN : {
-
-            switch(e.key.keysym.sym ) {
-                case SDLK_RIGHT     : return KEY_Right;     break;
-                case SDLK_LEFT      : return KEY_Left;      break;
-                case SDLK_UP        : return KEY_Up;        break;
-                case SDLK_DOWN      : return KEY_Down;      break;
-                case SDLK_ESCAPE    : return KEY_Esc;       break;
-                // Ziffernblock:
-                case SDLK_KP_0      : return NUM_0;         break;
-                case SDLK_KP_1      : return NUM_1;         break;
-                case SDLK_KP_2      : return NUM_2;         break;
-                case SDLK_KP_3      : return NUM_3;         break;
-                case SDLK_KP_4      : return NUM_4;         break;
-                case SDLK_KP_5      : return NUM_5;         break;
-                case SDLK_KP_6      : return NUM_6;         break;
-                case SDLK_KP_7      : return NUM_7;         break;
-                case SDLK_KP_8      : return NUM_8;         break;
-                case SDLK_KP_9      : return NUM_9;         break;
-                case SDLK_KP_PLUS   : return NUM_PLUS;      break;
-                case SDLK_KP_MINUS  : return NUM_MINUS;     break;
-
-                case SDLK_a         : return KEY_A;         break;
-                case SDLK_s         : return KEY_S;         break;
-                case SDLK_d         : return KEY_D;         break;
-                case SDLK_e         : return KEY_E;         break;
-                case SDLK_p         : return KEY_P;         break;// PerspectiveMode
-                case SDLK_o         : return KEY_O;         break;// Orthomode
-                case SDLK_c         : return KEY_C;         break;// Colored Draw
-                case SDLK_t         : return KEY_T;         break;// Textured Draw
-                case SDLK_q         : return KEY_Q;         break;
-                case SDLK_m         : return KEY_M;         break;
-
-                case SDLK_F1        : return KEY_F1;        break;
-                case SDLK_F2        : return KEY_F2;        break;
-                case SDLK_F3        : return KEY_F3;        break;
-                case SDLK_F4        : return KEY_F4;        break;
-                case SDLK_F5        : return KEY_F5;        break;
-                case SDLK_F6        : return KEY_F6;        break;
-                case SDLK_F7        : return KEY_F7;        break;
-                case SDLK_F8        : return KEY_F8;        break;
-                case SDLK_F9        : return KEY_F9;        break;
-                case SDLK_F10       : return KEY_F10;       break;
-                case SDLK_F11       : return KEY_F11;       break;
-                case SDLK_F12       : return KEY_F12;       break;
-
-                default : return NO_INPUT;break;
-            }
-       }
-        // Mouse Buttons
-        case SDL_MOUSEBUTTONUP : {
-            switch (e.button.button) {
-                case SDL_BUTTON_LEFT    :   return MOUSE_BTN_Left_UP;      break;
-                case SDL_BUTTON_MIDDLE  :   return MOUSE_BTN_MiddLe_UP;    break;
-                case SDL_BUTTON_RIGHT   :   return MOUSE_BTN_Right_UP;     break;
-            }
-        }
-
-        case SDL_MOUSEBUTTONDOWN : {
-            switch (e.button.button) {
-                case SDL_BUTTON_LEFT    :   return MOUSE_BTN_Left_DOWN;      break;
-                case SDL_BUTTON_MIDDLE  :   return MOUSE_BTN_MiddLe_DOWN;    break;
-                case SDL_BUTTON_RIGHT   :   return MOUSE_BTN_Right_DOWN;     break;
-            }
-        }
-
-        case SDL_MOUSEMOTION: {
-
-            mox = e.motion.x;
-            moy = e.motion.y;
-         //   _Mouse.lastx = e.motion.x;
-         //   _Mouse.lasty = e.motion.y;
-            return MOUSE_Move;
-        }
-        default : return NO_INPUT;
-    }
-    */
-
-    return 0;
-}
 
 void InitGL::sdl_die( std::string msg)
 {

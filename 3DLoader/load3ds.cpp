@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 #include <sys/stat.h>
+#include <iostream>
 
 #include "../3DLoader/load3ds.h"
 #include "../logs/logs.h"
@@ -56,12 +58,12 @@ bool C3DSLoad::Load3DS(std::string filename){
     logEmptyLine();
 
 
-    if ((l_file=fopen (filename.c_str(), "rb"))== NULL)
+    if ((l_file=fopen (filename.c_str(), "rb"))== NULL) {
+
+        std::cout << "Fehler : " << errno << " Datei oder Verzeichniss nicht gefunden !" << std::endl;
         return 0;
+    }
     //Open the file:
-
-
-
 
     while (ftell (l_file) < filelength (fileno (l_file))) //Loop to scan the whole file
     //while(!EOF)
