@@ -208,6 +208,14 @@ void CSphere::Draw(Camera* cam ){
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
     int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
+    int hasTextureLocation = glGetUniformLocation(currentShader,"hasTexture");
+
+
+    if (_HasTextures) {
+
+    }
+
+
 
     glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
 

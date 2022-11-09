@@ -100,15 +100,16 @@ bool BaseObject::addTexture(std::vector<std::string> path, std::string obj) {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
                 logimage("Texture "+ path[i]+ " geladen. Index = " + IntToString(i),obj);
-            }
-        }  // if surface
-        else
-            logwarn("Texture  nicht geladen !"," BaseObject::addTexture");
 
-        if ( _CountTextures ++ > MAX_TEXTURES ) {
-            logwarn( "No more Textures available ! MAX_TEXTURES = 5","BaseObject::addTextures");
-            break;
-        }
+                _CountTextures ++ ;
+                if ( _CountTextures > MAX_TEXTURES ) {
+                    logwarn( "No more Textures available ! MAX_TEXTURES = 5","BaseObject::addTextures");
+                    break;
+                }
+            }  // if data
+            else
+            logwarn("Texture  nicht geladen !"," BaseObject::addTexture");
+        } //if surface
     }  // for
 
     loginfo("addTexture :: _CountTextures: " + IntToString(_CountTextures-1),"Baseobjec::Init");
