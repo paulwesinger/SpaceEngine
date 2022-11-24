@@ -3,13 +3,13 @@
 #include "../defaults.h"
 #include "../utils/utils.h"
 
-CButton::CButton(int resx, int resy) :
-    Base2D(resx,resy) {
+CButton::CButton(int resx, int resy, Shader * sh) :
+    Base2D(resx,resy, sh) {
 
     init();
 }
-CButton::CButton(int resx, int resy, std::string path, std::string text) :
-    Base2D(resx, resy,path){
+CButton::CButton(int resx, int resy, std::string path, std::string text, Shader * sh) :
+    Base2D(resx, resy,path, sh){
     _Text = text;
     init();
 }
@@ -99,20 +99,20 @@ void CButton::Render( ) {}
 // Defaullt Buttons for use
 // -------------------------------------------------
 
-CTextButton::CTextButton( int resx, int  resy) :
-    CButton(resx, resy)
+CTextButton::CTextButton( int resx, int  resy, Shader * sh) :
+    CButton(resx, resy, sh)
 
 {
     _Text = "NO";
     _Pos.x = 0;
     _Pos.y = 0;
-    btnText = new TextRender(resx, resy);
+    btnText = new TextRender(resx, resy,sh);
     textPos.x = _Pos.x + BUTTON::X_MARGIN;
     textPos.y = _Pos.y + BUTTON::Y_MARGIN;
 }
 
-CTextButton::CTextButton(int resx, int resy, std::string path, std::string text, sPoint pos):
-    CButton(resx, resy, path,text){
+CTextButton::CTextButton(int resx, int resy, std::string path, std::string text, sPoint pos, Shader * sh):
+    CButton(resx, resy, path,text,sh){
 
     _Pos = pos;
 
@@ -120,15 +120,19 @@ CTextButton::CTextButton(int resx, int resy, std::string path, std::string text,
     textPos.y = _Pos.y + BUTTON::Y_MARGIN;
 
     setText(text);
-    btnText = new TextRender(resx, resy);
+    btnText = new TextRender(resx, resy,sh);
     btnText->AddString(text);
-    btnText->setPos(textPos);
+    btnText->SetPos(textPos);
     btnText->SetTextColor(glm::vec4(_TextCol,1.0));
     btnText->SetHasBottom(false);
     btnText->SetHasHeader(false);
     btnText->SetHasBackground(false);
     btnText->SetHasTexture(false);
     btnText->SetAlignRight(false);
+
+  //  btnText->SetGlyphShader(getGlyphShader());
+  //  btnText->SetColorShader(getColorShader());
+  //  btnText->SetTextureShader(getTextureShader());
 
 }
 
@@ -139,7 +143,7 @@ void CTextButton::animateClick() {
         p.x += 2;
         p.y += 2;
 
-        btnText->setPos(p);
+        btnText->SetPos(p);
     }
 }
 
@@ -149,7 +153,7 @@ void CTextButton::releaseClick() {
         p = btnText->Pos();
         p.x -= 2;
         p.y -= 2;
-        btnText->setPos(p);
+        btnText->SetPos(p);
     }
 }
 
@@ -161,7 +165,7 @@ void CTextButton::setbuttonColors(glm::vec3 imagecol, glm::vec3 textcol)  {
 
 void CTextButton::alignToSize(int w, int h){
     if (btnText != nullptr)
-        btnText->alignToRectSize(w,h);
+        btnText->AlignToRectSize(w,h);
 }
 
 void CTextButton::setScale(float s) {
@@ -181,7 +185,7 @@ void CTextButton::setPos(int x, int y) {
     sPoint p;
     p.x = (int) textPos.x;
     p.y = (int) textPos.y;
-    btnText->setPos(p);
+    btnText->SetPos(p);
 }
 
 void CTextButton::setSize(int w, int h) {
@@ -196,6 +200,7 @@ void CTextButton::Render() {
 
     Base2D::setColor(glm::vec4(1.0,1.0,1.0,_Alpha_Image));
     Base2D::Render();
+
     btnText->Render();
 
     //textImage->Base2D::setColor(glm::vec4(1.0,1.0,1.0,_AlphaText));
@@ -216,20 +221,20 @@ void CTextButton::OnRelease(){
 // Image Button for use
 // -------------------------------------------------
 
-CImageButton::CImageButton( int resx, int  resy) :
-    CButton(resx, resy)
+CImageButton::CImageButton( int resx, int  resy, Shader * sh) :
+    CButton(resx, resy, sh)
 
 {
     textPos.x = _Pos.x + BUTTON::X_MARGIN;
     textPos.y = _Pos.y + BUTTON::Y_MARGIN;
     // init stuff
-    textImage = new Base2D(resx, resy, "images/Add.png");
+    textImage = new Base2D(resx, resy, "images/Add.png",sh);
     textImage->setPos(0,0);
 
 }
 
-CImageButton::CImageButton(int resx, int resy, std::string pathbg, std::string pathtext, sPoint pos):
-    CButton(resx, resy, pathbg,""){
+CImageButton::CImageButton(int resx, int resy, std::string pathbg, std::string pathtext, sPoint pos,Shader * sh):
+    CButton(resx, resy, pathbg,"",sh){
 
     _TextPath = pathtext;
     _Pos = pos;
@@ -241,7 +246,7 @@ CImageButton::CImageButton(int resx, int resy, std::string pathbg, std::string p
     p.x = (int) textPos.x;
     p.y = (int) textPos.y;
 
-    textImage = new Base2D(resx, resy,_TextPath);
+    textImage = new Base2D(resx, resy,_TextPath,sh);
     textImage->setColor(glm::vec4(BUTTON::COLOR_DEFAULT_TEXT,_AlphaText));
     textImage->setPos(0,0);
     // init stuff
@@ -256,12 +261,9 @@ void CImageButton::animateClick() {
         p = textImage->Pos();
         textImage->setPos(p.x+2, p.y+2);
     }
-
-
 }
 
 void CImageButton::releaseClick() {
-
 
     if (textImage != nullptr) {
         sPoint p = textImage->Pos();

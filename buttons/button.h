@@ -30,8 +30,8 @@ typedef struct {
 class CButton : public Base2D
 {
 public:
-    CButton(int resx, int resy);
-    CButton(int resx, int resy, std::string path, std::string text);
+    CButton(int resx, int resy, Shader * sh);
+    CButton(int resx, int resy, std::string path, std::string text, Shader *sh);
     ~CButton();
 
     // ********************************************
@@ -62,9 +62,6 @@ public:
 
     virtual void alignToSize(int w, int h);
 
-
-
-
 protected:
 
     virtual void animateClick();
@@ -94,8 +91,8 @@ private:
 class CTextButton: public CButton {
   public:
 
-    CTextButton( int resx, int resy);
-    CTextButton( int resx, int resy, std::string path, std::string text, sPoint pos);
+    CTextButton( int resx, int resy, Shader *sh);
+    CTextButton( int resx, int resy, std::string path, std::string text, sPoint pos, Shader * sh);
 
 
     void setbuttonColors(glm::vec3 imagecol, glm::vec3 textcol) override;
@@ -125,8 +122,8 @@ protected:
 class CImageButton: public CButton {
   public:
 
-    CImageButton( int resx, int resy);
-    CImageButton( int resx, int resy, std::string pathbg, std::string pathtext, sPoint pos);
+    CImageButton( int resx, int resy, Shader * sh);
+    CImageButton( int resx, int resy, std::string pathbg, std::string pathtext, sPoint pos, Shader * sh);
 
     void setbuttonColors(glm::vec3 imagecol, glm::vec3 textcol) override;
 

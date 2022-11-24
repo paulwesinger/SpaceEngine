@@ -1,4 +1,4 @@
-#include "textrender.h"
+
 /*
  * File:   TextRender.cpp
  * Author: paul
@@ -14,6 +14,7 @@
 #include "../logs/logs.h"
 #include "../utils/utils.h"
 #include "../imageloader/loadimage.h"
+#include "../error/error.h"
 
 #define RECT_WIDTH  500
 #define RECT_HEIGHT 200
@@ -121,15 +122,16 @@ static const GLushort vertex_indices[] =
     0, 1, 2, 3, 4, 5
 };
 
-TextRender::TextRender(int resx, int resy) {
+TextRender::TextRender(int resx, int resy,Shader *sh) {
     _PathHeadLine = "";
     _PathTextField = "";
     _PathBottomLine = "";
     _Font = GNU_DEFAULT_FONT;
-   Init(resx, resy);
+    shader = sh;
+    Error::Failed(Init(resx,resy),"Fehler beim Initialissieren",_FAILED);
 }
 
-TextRender::TextRender(int resx, int resy, sPoint pos) {
+TextRender::TextRender(int resx, int resy, sPoint pos, Shader * sh) {
 
     posX = (GLfloat) pos.x;
     posY = (GLfloat) pos.y;
@@ -137,10 +139,11 @@ TextRender::TextRender(int resx, int resy, sPoint pos) {
     _PathTextField = "";
     _PathBottomLine = "";
     _Font = GNU_DEFAULT_FONT;
-    Init(resx, resy);
+    shader = sh;
+    Error::Failed(Init(resx,resy),"Fehler beim Initialissieren",_FAILED);
 }
 
-TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagetextfield) {
+TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagetextfield, Shader * sh) {
 
     posX = (GLfloat) pos.x;
     posY = (GLfloat) pos.y;
@@ -148,43 +151,50 @@ TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagetextfield
     _PathTextField = imagetextfield;
     _PathBottomLine = "";
     _Font = GNU_DEFAULT_FONT;
-    Init(resx, resy);
+    shader = sh;
+    Error::Failed(Init(resx,resy),"Fehler beim Initialissieren",_FAILED);
 }
 
-TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield) {
+TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield, Shader * sh) {
     posX = (GLfloat) pos.x;
     posY = (GLfloat) pos.y;
     _PathHeadLine = imagehead;
     _PathTextField = imagetextfield;
     _PathBottomLine = "";
     _Font = GNU_DEFAULT_FONT;
-    Init(resx, resy);
+    shader = sh;
+    Error::Failed(Init(resx,resy),"Fehler beim Initialissieren",_FAILED);
 }
 
-TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,std::string imagebottom) {
+TextRender::TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,std::string imagebottom, Shader * sh) {
     posX = (GLfloat) pos.x;
     posY = (GLfloat) pos.y;
     _PathHeadLine = imagehead;
     _PathTextField = imagetextfield;
     _PathBottomLine = imagebottom;
     _Font = GNU_DEFAULT_FONT;
-    Init(resx, resy);
+    shader = sh;
+    Error::Failed(Init(resx,resy),"Fehler beim Initialissieren",_FAILED);
 }
 
-void TextRender::SetTextShader(GLuint s) {
-   // _TextShader = s;
+void TextRender::SetColorShader(GLuint s) {
+    _ColorShader = s;
 }
 
-void TextRender::SetTextfeldShader(GLuint s) {
-    //_TextFeldShader = s;
+void TextRender::SetTextureShader(GLuint s) {
+
+    _TextureShader = s;
 }
+
+void TextRender::SetGlyphShader(GLuint s) {
+    _GlyphShader = s;
+}
+
 
 TextRender::TextRender(const TextRender& orig) {
 }
 
 TextRender::~TextRender() {
-    if ( shader )
-        delete shader;
 }
 
 //------------------------------------------------------------------------
@@ -205,12 +215,12 @@ void TextRender::OnDrag(int mx, int my) {
     posY = my + distY;
 }
 
-void TextRender::OnEndDrag(int mx, int my) {
+void TextRender::OnEndDrag(int, int) {
 
     _Dragging = false;
 }
 
-bool TextRender::intersect(int x, int y) {
+bool TextRender::Intersect(int x, int y) {
     //bool var = (x > interSectHeadline.x && x < interSectHeadline.x1 && y > interSectHeadline.y && y < interSectHeadline.y1);
    bool var = (x > posX && x < posX + _Textfeld.w) && (y < posY && y > posY - 35);
     return var;
@@ -223,17 +233,17 @@ bool TextRender::IsDragging() {
 // -----------------------------------------------------------------------
 // Font
 // -----------------------------------------------------------------------
-bool TextRender::setFont(std::string s) {
+void TextRender::SetFont(std::string s) {
     _Font = s;
 }
 
 // -----------------------------------------------------------------------
 // Look and feel
 // -----------------------------------------------------------------------
-uint TextRender::getStringCount() { return _StringList.size(); }
+uint TextRender::GetStringCount() { return _StringList.size(); }
 
 
-void TextRender::setText(uint index, std::string newString) {
+void TextRender::SetText(uint index, std::string newString) {
     try {
         _StringList.at(index) = newString;
     }
@@ -242,7 +252,7 @@ void TextRender::setText(uint index, std::string newString) {
     }
 }
 
-void TextRender::setPos(sPoint pos) {
+void TextRender::SetPos(sPoint pos) {
     posX = (GLfloat)pos.x;
     posY = (GLfloat)pos.y; //_ResY - posY;
     //posY = (GLfloat) _ResY - pos.y;
@@ -253,21 +263,19 @@ sPoint TextRender::Pos() {
     return _Pos;
 }
 
-int TextRender::getTextAreaHeight(){
+int TextRender::GetTextAreaHeight(){
     return _StringList.size() * _Scale * _Pixelsize + _MarginY * 2;
 }
 
-int TextRender::getWidth() {
+int TextRender::GetWidth() {
     return (int)_Textfeld.w;
 }
 
-int TextRender::getHeight() {
+int TextRender::GetHeight() {
    return (int)_Textfeld.h;
 }
 
-
-
-void TextRender::alignToRectSize(int w, int h) {
+void TextRender::AlignToRectSize(int w, int h) {
     int margX = (w - _Textfeld.w) / 2;
     int margY = (h - _Textfeld.h) / 2;
 
@@ -309,9 +317,7 @@ void TextRender::SetScale(GLfloat scale){ _Scale = scale; }
 
 
 bool TextRender::Init(int resx, int resy) {
-    // ---------------------------
-    // Shader init :
-    // ---------------------------
+
     _ResX = resx;
     _ResY = resy;
     _RenderBottom = false;
@@ -326,47 +332,48 @@ bool TextRender::Init(int resx, int resy) {
     _MarginLeft = 5.0f;
     _MarginRight= 5.0f;
     _MarginY = 5.0f;
-
+/*
     shader = new Shader();
     if (shader ) {
         vs = shader -> compileVertexShader(vs2D_src);
         fs = shader -> compileFragmentShader(fs2D_src);
-        shader2D = shader -> CreateProgram(vs,fs);
+        _TextShader = shader -> CreateProgram(vs,fs);
 
         if ( ( vs == 0 ) ||
              ( fs == 0 ) ||
-             (shader2D == 0 ) )
-            logwarn("Fehler in den Shadern !!!","TextRender; ;Init" );
+             (_TextShader == 0 ) )
+            logwarn("Konnte TextShader nicht erzeugen ! ","TextRender; ;Init" );
         else
-            logwarn( "Shader erstellt ID = " + IntToString(shader2D),"TextRender::Init");
+            logwarn( "TextShader erstellt ID = " + IntToString(_TextShader),"TextRender::Init");
 
         // ------------------------------------------------
         // Vertex und Fragment Shader für Textfeld erzeugen
         // ------------------------------------------------
         vs_textfeld = shader -> compileVertexShader(vertex_textfeld_src);
         fs_textfeld = shader -> compileFragmentShader(fragment_textfeld_src);
-        shader_textfeld = shader ->CreateProgram(vs_textfeld,fs_textfeld);
+        _GlyphShader = shader ->CreateProgram(vs_textfeld,fs_textfeld);
         if ( ( vs_textfeld == 0 ) ||
              ( fs_textfeld == 0 ) ||
-             (shader_textfeld == 0 ) )
-            logwarn("Fehler: Konnte Textfeld - Shader nicht erzeugen !!!","TextRender;;Init" );
+             (_GlyphShader == 0 ) )
+            logwarn("Konnte TextureShader nicht erzeugen !!!","TextRender;;Init" );
         else
-            logwarn( "Textfeld Shader erstellt ID = " + IntToString(shader2D),"TextRender::Init");
+            logwarn( "Textureshader  erstellt ID = " + IntToString(_GlyphShader),"TextRender::Init");
 
+        // Color Shader erzeugen
+        fs = shader->compileFragmentShader(fragment_textfeld_Color);
+        _ColorShader = shader->CreateProgram(vs_textfeld,fs);
+        if ( _ColorShader == 0)
+            logwarn("Konnte ColorShader nicht erzeugen ","TextRender::compileColorShader");
+        else
+            loginfo("ColorShader erzeugt! ","TextRender::compilecolorshader");
 
     }
-    else
-        logwarn("Konnte shader nicht erzeurgen","TextRender::Init");
+    else {
+        logwarn("Shader - Init Failed");
+        return false;  // make assertion
+    }
 
-    // Color Shader erzeugen
-    fs = shader->compileFragmentShader(fragment_textfeld_Color);
-    shaderColorTextfeld = shader->CreateProgram(vs_textfeld,fs);
-    if ( shaderColorTextfeld == 0)
-        logwarn("Konnte TextfeldColorShader nicht erzeugen ","TextRender::compileColorShader");
-    else
-        loginfo("Texfeld Color Shader erzeugt! ","TextRender::compilecolorshader");
-
-
+*/
 
     // ---------------------------------------
     //  Freetype2 init.
@@ -377,9 +384,10 @@ bool TextRender::Init(int resx, int resy) {
         loginfo("Freetype2 initialisiert ","TextRender::Init");
 
 
-    if (FT_New_Face(ft, _Font.c_str(), 0, &face))
-
+    if (FT_New_Face(ft, _Font.c_str(), 0, &face)) {
         logwarn("Konnte Freetype2 Face nicht initialisieren","RenderText::Init");
+        return false;
+    }
     else
         loginfo("Freetype2 Face initialisiert ... ","TextRender::Init");
 
@@ -477,7 +485,7 @@ bool TextRender::Init(int resx, int resy) {
     glEnableVertexAttribArray(1);
     // Nicht benutzt - säre für Color !
     //glVertexAttribPointer(2,2,GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat),(void*)(5* sizeof(float)));
-    // glEnableVertexAttribArray(2);
+    //glEnableVertexAttribArray(2);
     // --------------   Index
     glGenBuffers(1,&_EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
@@ -487,7 +495,7 @@ bool TextRender::Init(int resx, int resy) {
                   GL_DYNAMIC_DRAW);
     // ---------------------------------------------------------------
     // Das ganze jetzt für Background
-    // Es werden 5 Textuuren benötigt --> Links oben, Rechts oben, Rahmen, Links unten, Rechts unten.
+    // Es werden 5 Texturen benötigt --> Links oben, Rechts oben, Rahmen, Links unten, Rechts unten.
     // An die Textlänge wird nur der Mittelteil angepast.
     // ----------------------------------------------------------------
     // VertexArray für Headline
@@ -523,7 +531,6 @@ bool TextRender::Init(int resx, int resy) {
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
     return true;
-
  }
 
 bool TextRender::GenTextfeldSegment(std::string image, unsigned int &tex) {
@@ -619,7 +626,7 @@ void TextRender::RenderFrame(GLfloat x, GLfloat y, uint tex) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void TextRender::calcSize(int &weite, int &height) {
+void TextRender::CalcSize(int &weite, int &height) {
     // Breite ermitteln:
     std::string::const_iterator c;
     GLfloat feldweite = 0.0f;
@@ -660,28 +667,10 @@ void TextRender::Render() {
 
     // Breite ermitteln:
     std::string::const_iterator c;
-    /*
-    GLfloat feldweite = 0.0f;
-    GLfloat feldhoehe = 20.0f; // Standard höhe 16 Pixel
-    GLfloat width = 0.0f;
-    int count = 0;
-    for ( uint i = 0; i < _StringList.size(); i ++ ) {
-        for (c = _StringList[i].begin(); c != _StringList[i].end(); c++) {
-            Character ch = Characters[*c];
-            feldweite += static_cast<GLfloat> ( (ch.Advance >> 6) * _Scale);
-        }
-        count ++;
-
-        if ( width < feldweite )
-            width = feldweite;
-        feldweite = 0.0f;
-    }
-    feldhoehe = feldhoehe * count * _Scale;
-*/
     int width;
     int height;
 
-    calcSize(width,height);
+    CalcSize(width,height);
     _Textfeld.x = posX;
     _Textfeld.y = posY;
     _Textfeld.w = width * _Scale + _MarginLeft + _MarginRight;
@@ -698,16 +687,14 @@ void TextRender::Render() {
 
 
     if (_HasTexture)
-        currentshader =shader_textfeld ;
-      //  _CurrentShader = _TextFeldShader;
+        _CurrentShader = shader ->getTexture2DShader();
     else
-      //  _CurrentShader = _TextShader;
-        currentshader = shaderColorTextfeld;
+        _CurrentShader = shader->getColor2DShader();
 
-    glUseProgram(currentshader);
+    glUseProgram(_CurrentShader);
 
-    projection_loc = glGetUniformLocation(currentshader,"projection_textfeld");
-    framecolor_loc = glGetUniformLocation(currentshader,"color");
+    projection_loc = glGetUniformLocation(_CurrentShader,"projection_textfeld");
+    framecolor_loc = glGetUniformLocation(_CurrentShader,"color");
     // IDentity
     glm::mat4 Model(1.0f);
 
@@ -744,10 +731,10 @@ void TextRender::Render() {
     // Text Rendern
     //--------------------
     glActiveTexture(GL_TEXTURE0);
-    glUseProgram(shader2D);
+    glUseProgram( shader->getGlyphShader());
     glBindVertexArray(_VAO);
-    mv_projectloc = glGetUniformLocation(shader2D,"projection");
-    uniform_colorloc   = glGetUniformLocation(shader2D,"col2D");
+    mv_projectloc = glGetUniformLocation(_GlyphShader,"projection");
+    uniform_colorloc   = glGetUniformLocation(_GlyphShader,"col2D");
 
     //glm::mat4 Model(1.0f);
     glm::mat4 mvp = projection * Model ;

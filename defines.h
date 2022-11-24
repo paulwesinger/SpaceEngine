@@ -19,6 +19,7 @@
 
 #include <glm/glm.hpp>
 
+
 const int MAX_SCHEMES = 6;   // siehe COLOR_SCHEMES
 const std::string NO_FILE  = "NO FILE";
 

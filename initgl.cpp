@@ -65,7 +65,7 @@ InitGL::InitGL (const std::string titel){
     InitFX();
 
 
-    load3DS = new C3DSLoad();
+ //   load3DS = new C3DSLoad();
 
 
 
@@ -89,7 +89,7 @@ InitGL::~InitGL() {
 
     safeDelete(sphere1);
     safeDelete(lightSource);
-    delete load3DS;
+    //delete load3DS;
     //safeDelete(land);
 
     if ( skybox != NULL)
@@ -113,6 +113,10 @@ void InitGL::DeleteShaders() {
     glDeleteProgram(sphereshader_color);
     glDeleteProgram(cubeshaderprog_color_normal);
 
+}
+
+Shader * InitGL::getShaderPtr() {
+    return shader;
 }
 
 void InitGL::safeDelete(BaseObject * bo) {
@@ -236,7 +240,7 @@ void InitGL::setFog(bool enable) {
 // Handlers
 // ------------------------------------------
 bool InitGL::InitHandler() {
-
+    return true;
 }
 
 
@@ -573,6 +577,11 @@ void InitGL::InitEngineObject() {
 // Hier werden alle Objeckte initialisiert
 // ===============================================================
 
+    loginfo("===========================");
+    loginfo("Erstelle Shaders...........");
+    loginfo("===========================");
+    InitShaders();
+
     loginfo("Setze ClearColor auf Hell Blau ...... done","InitGL::InitEngineObject");
     setClearColor(0.57f,0.72f,0.92f);
     // ---------------------------------------
@@ -608,10 +617,7 @@ void InitGL::InitEngineObject() {
     skybox -> Load(faces);
     loginfo("Erstelle Skybox ........Done","InitGL::InitEngineObject");
 
-    loginfo("===========================");
-    loginfo("Erstelle Shaders...........");
-    loginfo("===========================");
-    InitShaders();
+
     loginfo("..... done all");
     loginfo("============================");
 
@@ -624,19 +630,20 @@ void InitGL::InitEngineObject() {
     p.x =   100;
     p.y =   400;
 
-    MousePositions = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD);
+    MousePositions = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD,getShaderPtr());
 
-    MousePositions->SetTextShader(textshader);
-    MousePositions->SetTextfeldShader(textfeldshader);
+    MousePositions->SetGlyphShader(shader->getGlyphShader());
+    MousePositions->SetTextureShader(shader->getTexture3DShader());
+    MousePositions->SetColorShader(shader->getColor3DShader());
 
     MousePositions->AddString("Das ist die 1. Zeile");
     MousePositions->AddString("Das ist die 2. Zeile");
     MousePositions->AddString("Das ist die 3. Zeile");
 
-    MousePositions->SetHasBottom(true);
+    MousePositions->SetHasBottom(false);
     MousePositions->SetHasHeader(true);
     MousePositions->SetHasBackground(true);
-    MousePositions->SetHasTexture(true);
+    MousePositions->SetHasTexture(false);
     MousePositions->SetAlignRight(false);
 
     textfields.push_back(MousePositions);
@@ -768,31 +775,14 @@ void InitGL::toogleFullScreen (){
     }
 }
 
-void InitGL::ShowFramesPerSec(){
+void InitGL::ShowFramesPerSec(){}
+void InitGL::ShowCameraPos() {}
+void InitGL::toggleAnimation() { _Animate = toggleVal(_Animate); }
+void InitGL::toogleCockpit() { _ShowCockpit = toggleVal(_ShowCockpit); }
+void InitGL::toggleBlend() {_UseBlend = toggleVal(_UseBlend); }
+void InitGL::togglePanel2D() {showPanel = toggleVal(showPanel);}
+bool InitGL::toggleVal(bool val){return ! val; }
 
-}
-
-void InitGL::ShowCameraPos() {
-}
-
-void InitGL::toggleAnimation() {
-    _Animate = toggleVal(_Animate);
-}
-
-void InitGL::toogleCockpit() {
-    _ShowCockpit = toggleVal(_ShowCockpit);
-}
-
-void InitGL::toggleBlend() {
-    _UseBlend = toggleVal(_UseBlend);
-}
-void InitGL::togglePanel2D() {
-    showPanel = toggleVal(showPanel);
-}
-
-bool InitGL::toggleVal(bool val){
-    return ! val;
-}
 
 bool InitGL::initSoundMachine() {
   //  soundengine = irrklang::createIrrKlangDevice();
@@ -1033,12 +1023,12 @@ void InitGL::Run() {
 
     _Elapsed = 0;
 
-
+/*
     if (load3DS->Load3DS("../SpaceEngine/models/32-sting-sword-lowpoly.3ds"))
         loginfo("Modell geladen");
     else
         logwarn("Modell nicht geladen");
-
+*/
 
 
 
@@ -1059,8 +1049,8 @@ void InitGL::Run() {
         ShowFramesPerSec();
         ShowCameraPos();
 
-        MousePositions->setText(0,"Mouse X " + IntToString(_Mouse.x) );
-        MousePositions->setText(1,"Mouse Y " + IntToString(_Mouse.y) );
+        MousePositions->SetText(0,"Mouse X " + IntToString(_Mouse.x) );
+        MousePositions->SetText(1,"Mouse Y " + IntToString(_Mouse.y) );
 
         uint motionX =0;
         uint motionY =0;
@@ -1071,11 +1061,11 @@ void InitGL::Run() {
        if ( ! showPanel) {
 
            if (_UseBlend)
-               lightSource->UseBlending(true);
+               lightSource->SetUseBlending(true);
               // glDisable(GL_DEPTH_TEST);
            else
                //glEnable(GL_DEPTH_TEST);
-               lightSource->UseBlending(false);
+               lightSource->SetUseBlending(false);
 
            lightSource->SetColor(glm::vec4(0.5,0.5,0.5,0.3));
            lightSource->SetProjection(projection->GetPerspective());
@@ -1118,9 +1108,9 @@ void InitGL::Run() {
                     }
 
                     if (_UseBlend)
-                        list3D[i]->UseBlending(true);
+                        list3D[i]->SetUseBlending(true);
                     else
-                        list3D[i]->UseBlending(false);
+                        list3D[i]->SetUseBlending(false);
 
 
                     list3D[i]->Draw(camera);
@@ -1147,7 +1137,7 @@ void InitGL::Run() {
 
             if (cockpit->HasMesh()  && _ShowCockpit) {
 
-                cockpit->getCockpitMesch()->UseBlending(true);
+                cockpit->getCockpitMesch()->SetUseBlending(true);
                 cockpit->getCockpitMesch()->setGlasShader(true);
                 cockpit->setProjectionMatrix(projection->GetPerspective());
                 cockpit->Translate(camera->GetPos());
@@ -1264,7 +1254,7 @@ void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
     MOUSE m = convertMouse(x,y);
 
     for (uint i = 0; i < textfields.size(); i++) {
-        if (textfields.at(i)->intersect(m.x,m.y))
+        if (textfields.at(i)->Intersect(m.x,m.y))
             textfields.at(i)->OnStartDrag(m.x, m.y);
     }
 

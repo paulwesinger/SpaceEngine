@@ -23,17 +23,27 @@ using namespace glm;
 
 class Base2D  : public Base {
 public:
-    Base2D(int resx, int resy);
-    Base2D(int resx, int resy,std::string path);
+    Base2D(int resx, int resy, Shader * sh);
+ //   Base2D(int resx, int resy,std::string path);
+    Base2D(int resx, int resy, std::string path, Shader * sh);
     Base2D(const Base2D& orig);
 
     virtual ~Base2D();
     bool Init(int resx,int resy);
     void setImage(std::string path);
     void useShader(int type);
+    void setShaderPtr(Shader * pt);
+    Shader * getShaderPtr();
 
-    uint getColorShader();
+/*
+    void setGlyphShader(GLuint sh, bool current = false);
+    void setTextureShader (GLuint sh,bool current = false);
+    void setColorShader(GLuint sh, bool current = false);
 
+    GLuint getGlyphShader();
+    GLuint getColorShader();
+    GLuint getTextureShader();
+*/
     virtual void Render();
     virtual void OnClick();
 
@@ -48,9 +58,11 @@ protected:
     Shader * shader;
     // ints for shader returns
 
-    int _TextureShader;  // the linked shaders
-    int _ColorShader;
-    int _CurrentShader;
+    GLuint _TextureShader;  // the linked shaders
+    GLuint _ColorShader;
+    GLuint _CurrentShader;
+    GLuint _GlyphShader;
+
 
     unsigned int _Texture;
 

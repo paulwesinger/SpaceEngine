@@ -108,6 +108,7 @@ protected:
     TextEdit * txtFrameperSec;
     CheckBox * checkBoxAnimation;
     CheckBox * checkBoxBlending;
+    CheckBox * checkBoxCockpit;
 
     // Label für CameraPos :
     TextEdit * cameraX;

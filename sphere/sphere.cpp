@@ -171,7 +171,7 @@ void CSphere::setCountMeshPoints(int c) {
 }
 
 void CSphere::SetColor(vec4 color) {
-    _color = color; // in Baseobject
+    _Color = color; // in Baseobject
 }
 //virtuale MEthoden
 void CSphere::Draw(Camera* cam ){

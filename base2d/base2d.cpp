@@ -24,6 +24,7 @@
 const int RECT_WIDTH = 200;
 const int RECT_HEIGHT = 50;
 
+/*
 
 static const GLchar * vs2D_src = {
     "#version 440 core                                              \n"
@@ -74,24 +75,37 @@ static const GLchar * fs2D_ColorSrc = {
     "}                                                                "
 };
 
-
+*/
 
 static const GLushort vertex_indices[] =
 {
     0, 1, 2, 3,4, 5
 };
 
-Base2D::Base2D(int resx, int resy) {
+Base2D::Base2D(int resx, int resy, Shader * sh) {
     setImage("");
 
     _Size.w = RECT_WIDTH;
     _Size.h = RECT_HEIGHT;
-
+    shader = sh;
     Init(resx, resy);
 }
 
+/*
 Base2D::Base2D(int resx, int resy, std::string path){
     setImage(path);
+    shader = nullptr;
+    _Size.w = RECT_WIDTH;
+    _Size.h = RECT_HEIGHT;
+
+    Init(resx,resy);
+}
+*/
+
+Base2D::Base2D(int resx, int resy, std::string path, Shader * sh){
+
+    setImage(path);
+    shader = sh;
 
     _Size.w = RECT_WIDTH;
     _Size.h = RECT_HEIGHT;
@@ -103,9 +117,15 @@ Base2D::Base2D(int resx, int resy, std::string path){
 Base2D::Base2D(const Base2D& orig) {
 }
 
-Base2D::~Base2D() {
-    if ( shader )
-        delete shader;
+Base2D::~Base2D() {}
+
+void Base2D::setShaderPtr(Shader*pt) {
+    // Pointer from initGL
+    shader = pt;
+}
+
+Shader * Base2D::getShaderPtr() {
+    return shader;
 }
 
 void Base2D::useShader(int type) {
@@ -122,6 +142,36 @@ void Base2D::useShader(int type) {
     }
 }
 
+/*
+
+void Base2D::setColorShader(GLuint sh, bool current) {
+    _ColorShader = sh;
+    _CurrentShader = (current) ? _ColorShader : 0;
+}
+
+void Base2D::setTextureShader(GLuint sh, bool current) {
+    _TextureShader = sh;
+    _CurrentShader = (current) ? _GlyphShader : 0;
+}
+
+void Base2D::setGlyphShader(GLuint sh, bool current) {
+    _GlyphShader = sh;
+    _CurrentShader = (current) ? _TextureShader : 0;
+}
+
+GLuint Base2D::getColorShader() {
+    return _ColorShader;
+}
+
+GLuint Base2D::getTextureShader() {
+    return _TextureShader;
+}
+
+GLuint Base2D::getGlyphShader() {
+    return _GlyphShader;
+}
+
+*/
 bool Base2D::Init(int resx, int resy) {
 
     // ---------------------------
@@ -136,6 +186,8 @@ bool Base2D::Init(int resx, int resy) {
     // ---------------------------
     _ResX = resx;
     _ResY = resy;
+
+    /*
     shader = new Shader();
 
     int vs;
@@ -154,6 +206,7 @@ bool Base2D::Init(int resx, int resy) {
     else
         logwarn("Konnte shader nicht erzeurgen","Base2D");
 
+
     // -------------------------------
     // Color Shader init
     //--------------------------------
@@ -169,7 +222,7 @@ bool Base2D::Init(int resx, int resy) {
     }
     else
         logwarn("Klasse Shader konnte nicht initialisiert werden ","Base2D::Init");
-
+    */
 
     if ( _ImagePath != "") {
 
@@ -200,13 +253,21 @@ bool Base2D::Init(int resx, int resy) {
             glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             glBindTexture(GL_TEXTURE_2D, 0);
 
-            _CurrentShader = _TextureShader;
+            if (shader != nullptr)
+                _CurrentShader = shader->getTexture2DShader();
+            else
+                _CurrentShader = 0;
         }
     }
     else {
-        _CurrentShader = _ColorShader;
         _Size.w = RECT_WIDTH;
         _Size.h = RECT_HEIGHT;
+
+        if (shader != nullptr)
+            _CurrentShader = shader->getColor2DShader();
+        else
+            _CurrentShader = 0;
+
     }
 
     // -----------------------------------------------
@@ -245,8 +306,6 @@ bool Base2D::Init(int resx, int resy) {
     return true;
  }
 
-uint Base2D::getColorShader() { return _CurrentShader; }
-
 void Base2D::setImage(std::string path) {
     _ImagePath = path;
 }
@@ -261,54 +320,56 @@ void Base2D::OnClick(){}   // Im child überschreiben
 // ---------------------------------------------------
 void Base2D::Render( ) {
 
-    glUseProgram(_CurrentShader);
 
-    glActiveTexture(GL_TEXTURE0);
-    _Projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
+    if (_CurrentShader) {
+        glUseProgram(_CurrentShader);
 
-    _Uniform_mv_projectloc = glGetUniformLocation(_CurrentShader,"projection");
+        glActiveTexture(GL_TEXTURE0);
+        _Projection =  glm::ortho(0.0f,static_cast<float>(_ResX),static_cast<float>(_ResY), 0.0f,  -1.0f, 1.0f);
 
-    _Uniform_colorloc   = glGetUniformLocation(_CurrentShader,"col2D");
+        _Uniform_mv_projectloc = glGetUniformLocation(_CurrentShader,"projection");
 
-    glUniform4f(_Uniform_colorloc, _Color.r, _Color.g, _Color.b, _Color.a);
+        _Uniform_colorloc   = glGetUniformLocation(_CurrentShader,"col2D");
 
-    GLfloat w = _Size.w;
-    GLfloat h = _Size.h;
+        glUniform4f(_Uniform_colorloc, _Color.r, _Color.g, _Color.b, _Color.a);
 
-    GLfloat px = static_cast<GLfloat>(_Pos.x);
-    GLfloat py = static_cast<GLfloat>(_Pos.y);
+        GLfloat w = _Size.w;
+        GLfloat h = _Size.h;
 
-
-    GLfloat vertices[6][4] = {
-            { px,     py  + h,        0.0, 1.0},//0.0 },
-            { px,     py,             0.0, 0.0},//1.0 },
-            { px + w, py,             1.0, 0.0},//1.0 },
-
-            { px, py + h,             0.0, 1.0},//0.0 }, // w muss weg für 6  uv = 0,0 !!
-            { px + w, py,             1.0, 0.0},//1.0 },
-            { px + w, py + h,         1.0, 1.0} //0.0 }
-    };
-
-    glm::mat4 Model(1.0f);
-    glm::mat4 mvp = _Projection * Model ;
-    glUniformMatrix4fv(_Uniform_mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
+        GLfloat px = static_cast<GLfloat>(_Pos.x);
+        GLfloat py = static_cast<GLfloat>(_Pos.y);
 
 
-    glBindVertexArray(_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER,_VBO);
-    glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(vertices),vertices);
-    glBindBuffer(GL_ARRAY_BUFFER,0);
-    // Texture
-    glBindTexture(GL_TEXTURE_2D,_Texture);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
-    glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
+        GLfloat vertices[6][4] = {
+                { px,     py  + h,        0.0, 1.0},//0.0 },
+                { px,     py,             0.0, 0.0},//1.0 },
+                { px + w, py,             1.0, 0.0},//1.0 },
+
+                { px, py + h,             0.0, 1.0},//0.0 }, // w muss weg für 6  uv = 0,0 !!
+                { px + w, py,             1.0, 0.0},//1.0 },
+                { px + w, py + h,         1.0, 1.0} //0.0 }
+        };
+
+        glm::mat4 Model(1.0f);
+        glm::mat4 mvp = _Projection * Model ;
+        glUniformMatrix4fv(_Uniform_mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
 
 
-    // Aufräumen
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D,0);
+        glBindVertexArray(_VAO);
+        glBindBuffer(GL_ARRAY_BUFFER,_VBO);
+        glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(vertices),vertices);
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+        // Texture
+        glBindTexture(GL_TEXTURE_2D,_Texture);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
+        glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 
+
+        // Aufräumen
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D,0);
+    }
 }
 
 static inline mat4 ortho(float left, float right, float bottom, float top, float n, float f)

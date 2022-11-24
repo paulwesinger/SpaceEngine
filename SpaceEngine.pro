@@ -26,6 +26,7 @@ SOURCES += \
         cube/colorcube.cpp \
         cube/cube.cpp \
         engine/engine.cpp \
+        error/error.cpp \
         fileutils/fileutil.cpp \
         imageloader/loadimage.cpp \
         initgl.cpp \
@@ -206,6 +207,7 @@ HEADERS += \
     defaults.h \
     defines.h \
     engine/engine.h \
+    error/error.h \
     fileutils/fileutil.h \
     functions.h \
     imageloader/loadimage.h \

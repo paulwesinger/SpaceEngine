@@ -11,7 +11,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -24,6 +23,9 @@
 
 #include "../shaders/shader.h"
 #include "../defines.h"
+
+
+
 
 const std::string GNU_DEFAULT_FONT = "/usr/share/fonts/gnu-free/FreeSans.ttf";
 const std::string GNU_DEFAULT_FONT_BOLD = "/usr/share/fonts/gnu-free/FreeSansBold.ttf";
@@ -50,11 +52,11 @@ struct sTextfeld{
 
 class TextRender {
 public:
-    TextRender(int resx, int resy);
-    TextRender(int resx, int resy, sPoint pos);
-    TextRender(int resx, int resy, sPoint pos,std::string imagetextfield);
-    TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield);
-    TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,std::string imagebottom);
+    TextRender(int resx, int resy,Shader * sh);
+    TextRender(int resx, int resy, sPoint pos, Shader * sh);
+    TextRender(int resx, int resy, sPoint pos,std::string imagetextfield,Shader * sh);
+    TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,Shader * sh);
+    TextRender(int resx, int resy, sPoint pos,std::string imagehead, std::string imagetextfield,std::string imagebottom, Shader * sh);
 
     TextRender(const TextRender& orig);
     virtual ~TextRender();
@@ -75,28 +77,28 @@ public:
     void SetAlignRight(bool align);
     void SetScale(GLfloat scale);
 
-    void SetTextShader(GLuint s);
-    void SetTextfeldShader(GLuint s);
-    bool setFont(std::string s);
+    void SetColorShader(GLuint s);
+    void SetTextureShader(GLuint s);
+    void SetGlyphShader(GLuint s);
+    void SetFont(std::string s);
 
-    uint getStringCount();
-    int getTextAreaHeight();
-    int getHeight();
-    int getWidth();
+    uint GetStringCount();
+    int GetTextAreaHeight();
+    int GetHeight();
+    int GetWidth();
 
-    void alignToRectSize(int w, int h);
-    void setText(uint index, std::string newString);  // starts qt 0 !!
-    void setPos(sPoint pos);
+    void AlignToRectSize(int w, int h);
+    void SetText(uint index, std::string newString);  // starts qt 0 !!
+    void SetPos(sPoint pos);
     sPoint Pos();
-    bool intersect(int x, int y);
+    bool Intersect(int x, int y);
     bool IsDragging();
-    void calcSize(int &weite, int &height);
+    void CalcSize(int &weite, int &height);
     void Render();
 
 protected:
     void RenderPaintarea(GLfloat x, GLfloat y, GLfloat height);
     void RenderFrame(GLfloat x, GLfloat y, uint tex);  // Header und/oder Bottom
-
 
 private:
 
@@ -105,6 +107,9 @@ private:
     bool _HasBackground;
     bool _HasTexture;
     bool _AlignRight;
+
+    bool _FAILED;
+
     GLfloat _Scale;
 
     glm::vec4 _TextColor;
@@ -131,13 +136,13 @@ private:
     // ints for shader returns
     int vs;
     int fs;
-    int shader2D;  // the linked shaders
+
     // -----------------------
     // Shader für das Textfeld
     //------------------------
     int vs_textfeld;
     int fs_textfeld;
-    int shader_textfeld, shaderColorTextfeld,currentshader;
+    uint _TextureShader,_GlyphShader,_ColorShader,_CurrentShader;
 
     //GLuint _TextShader, _TextFeldShader, _CurrentShader;
 

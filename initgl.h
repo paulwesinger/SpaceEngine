@@ -76,6 +76,7 @@ public:
     InitGL(const InitGL& orig);
     // Create Context and Init SDL2
     bool InitSDL2();
+    Shader * getShaderPtr();
 
     virtual void Run();
     virtual void Done();
@@ -105,8 +106,6 @@ protected:
     void SetClearColor(float r, float g, float b, float a);
     void setClearColor(float r, float g, float b);
     void toogleFullScreen();
-
-
 
     void LoadConfiguration();
     void InitFX();
@@ -224,7 +223,7 @@ protected:
     std::string caption;
     GLFLOAT4 _ClearColor;
 
-    C3DSLoad * load3DS;
+  //  C3DSLoad * load3DS;
 
 private:
 

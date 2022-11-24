@@ -25,10 +25,10 @@ typedef struct {
 class CMenu
 {
 public:
-    CMenu(int resX, int resY);
-    CMenu(int resX, int resY, int w, int h);
-    CMenu(int resX, int resY, int w, int h, glm::vec4 bg, glm::vec4 fg);
-    CMenu(int resX, int resY, int px, int py, int w, int h, glm::vec4 bg, glm::vec4 fg);
+    CMenu(int resX, int resY,Shader * sh);
+    CMenu(int resX, int resY, int w, int h,Shader * sh);
+    CMenu(int resX, int resY, int w, int h, glm::vec4 bg, glm::vec4 fg,Shader * sh);
+    CMenu(int resX, int resY, int px, int py, int w, int h, glm::vec4 bg, glm::vec4 fg, Shader *sh);
 
     void Render();
     void setMenuHeader(std::string name);
@@ -71,10 +71,12 @@ protected:
 private:
     void init();
 
+    Shader * shader;
     int _currentY; //hilfsvariable für nächste freie y-positon im Menu - relativ zu bildschirm
     int _resX;
     int _resY;
     bool _Active;
+
 };
 
 #endif // CMENU_H

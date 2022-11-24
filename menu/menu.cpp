@@ -5,9 +5,11 @@
 
 
 
-CMenu::CMenu(int resX, int resY) {
+CMenu::CMenu(int resX, int resY, Shader * sh) {
     _resY = resY;
     _resX = resX;
+
+    shader = sh;
 
     posX = 0;
     posY = 0;
@@ -21,9 +23,11 @@ CMenu::CMenu(int resX, int resY) {
     init();
 }
 
-CMenu::CMenu(int resX, int resY, int w, int h) {
+CMenu::CMenu(int resX, int resY, int w, int h, Shader * sh) {
     _resY = resY;
     _resX = resX;
+
+    shader  = sh;
 
     posX = 0;
     posY = 0;
@@ -37,12 +41,13 @@ CMenu::CMenu(int resX, int resY, int w, int h) {
     init();
 }
 
-CMenu::CMenu(int resX, int resY, int w, int h, glm::vec4 bg, glm::vec4 fg) {
+CMenu::CMenu(int resX, int resY, int w, int h, glm::vec4 bg, glm::vec4 fg, Shader * sh) {
 
     _resY = resY;
     _resX = resX;
     _currentY = 0;
 
+    shader = sh;
     posX = 0;
     posY = 0;
 
@@ -55,11 +60,13 @@ CMenu::CMenu(int resX, int resY, int w, int h, glm::vec4 bg, glm::vec4 fg) {
     init();
 }
 
-CMenu::CMenu(int resX, int resY, int px, int py, int w, int h, glm::vec4 bg, glm::vec4 fg) {
+CMenu::CMenu(int resX, int resY, int px, int py, int w, int h, glm::vec4 bg, glm::vec4 fg, Shader * sh) {
 
     _resY = resY;
     _resX = resX;
     _currentY = 0;
+
+    shader = sh;
 
     posX = px;
     posY = py;
@@ -75,7 +82,7 @@ CMenu::CMenu(int resX, int resY, int px, int py, int w, int h, glm::vec4 bg, glm
 
 void CMenu::init() {
 
-    menuBackground = new Base2D(_resX, _resY);
+    menuBackground = new Base2D(_resX, _resY, shader);
     menuBackground->setPos(posX, posY);
     menuBackground->setSize(width, height);
     menuBackground->setColor(backgroundColor);
@@ -132,10 +139,10 @@ void CMenu::Render() {
 
 void CMenu::setMenuHeader(std::string name) {
     sMenuStruct ms;
-    ms.text = new TextRender(_resX,_resY);
+    ms.text = new TextRender(_resX,_resY, shader);
     ms.text->AddString(name);
 
-    _currentY += ms.text->getTextAreaHeight();
+    _currentY += ms.text->GetTextAreaHeight();
 }
 
 void CMenu::addButton(CControllContainer* con, CButton *btn) {

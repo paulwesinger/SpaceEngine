@@ -18,9 +18,9 @@
 class CheckBox : public Base2D
 {
 public:
-    CheckBox(int resx, int resy);
-    CheckBox(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol);
-    CheckBox(int resx, int resy,std::string path, sPoint p, sSize s, glm::vec4 labelcol);
+    CheckBox(int resx, int resy, Shader * sh);
+    CheckBox(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol, Shader * sh);
+    CheckBox(int resx, int resy,std::string path, sPoint p, sSize s, glm::vec4 labelcol, Shader* sh);
     ~CheckBox() override;
     void Render() override;
 
@@ -47,6 +47,8 @@ private:
 
     sSize _SizeLabel;
     sSize _SizeCheck;
+
+    Shader * glyphShader;
 
     void init();
 

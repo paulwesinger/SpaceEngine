@@ -7,7 +7,7 @@
 #include "../buttons/button.h"
 #include "../textrenderer/textrender.h"
 #include "../defines.h"
-
+#include "../shaders/shader.h"
 
 
 
@@ -18,8 +18,8 @@ const int SPACER = 10;
 class CControllContainer
 {
 public:
-    CControllContainer();
-    CControllContainer(int px=0, int py=0, int w=100, int h=100);
+    CControllContainer(Shader * sh);
+    CControllContainer(Shader * sh, int px=0, int py=0, int w=100, int h=100);
     ~CControllContainer();
 
     bool removeContainer(CControllContainer *container);
@@ -63,6 +63,8 @@ private:
     sSize _Dimensions; // von user seite
     sPoint _Pos; // absoluter wert
 
+
+    Shader * shader;
 
 
 };

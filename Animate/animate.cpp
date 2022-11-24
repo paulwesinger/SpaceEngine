@@ -31,26 +31,30 @@ void Animate::init() {
 
 void Animate::TranlateFirst() { _FirstTranslate = true; }
 void Animate::RotateFirst(){ _FirstTranslate = false; }
-void Animate::setElapsed(uint el) {_Elapsed = el;}
 
-void Animate::AnimateRotate(uint32 elapsed){
+void Animate::AnimateRotate(uint elapsed){
 
-    glm::vec3 v;
-
-    _rotate.x += _RotSpeed.x * elapsed;
-    _rotate.y += _RotSpeed.y * elapsed;
-    _rotate.z += _RotSpeed.z * elapsed;
-    checkdegree(_rotate);
-
-//    BaseObject::AnimateRotate(v);
+    float factor = static_cast<float>(elapsed);
+    _Rotate.x += _RotSpeed.x * factor;
+    _Rotate.y += _RotSpeed.y * factor;
+    _Rotate.z += _RotSpeed.z * factor;
+    checkdegree(_Rotate);
 }
 
-void Animate::StepTranslate(vec3 step, uint elapsed){
-    BaseObject::StepTranslate(step,elapsed);
+void Animate::AnimateTranslate( uint elapsed){
+
+    float factor = static_cast<float>(elapsed);
+    _Translate.x += _TransSpeed.x * factor;
+    _Translate.y += _TransSpeed.y * factor;
+    _Translate.z += _TransSpeed.z * factor;
 }
 
-void Animate::StepScale(vec3 step, uint elapsed){
-    BaseObject::StepScale(step,elapsed);
+void Animate::AnimateScale( uint elapsed){
+
+    float factor = static_cast<float>(elapsed);
+    _Scale.x += _ScaleSpeed.x * factor;
+    _Scale.y += _ScaleSpeed.y * factor;
+    _Scale.z += _ScaleSpeed.z * factor;
 }
 
 void Animate::Scale(glm::vec3 s) {

@@ -3,25 +3,30 @@
 #include "../utils/utils.h"
 #include "../defaults.h"
 
-CControllContainer::CControllContainer() {
+CControllContainer::CControllContainer(Shader * sh) {
 
     _Height = 10;
     _Width = 10;
     _CurrentY = 5;
     _CurrentX = 5;
+
+    shader = sh;
 }
 
-CControllContainer::~CControllContainer() {
-    releaseConterItems();
-}
-CControllContainer::CControllContainer(int px, int py, int w, int h) {
+
+CControllContainer::CControllContainer(Shader * sh, int px, int py, int w, int h) {
 
     _Height = h;
     _Width = w ;   // 2* 5
     _CurrentY = py + 5;
     _CurrentX = px + 5;
+
+    shader = sh;
 }
 
+CControllContainer::~CControllContainer() {
+    releaseConterItems();
+}
 
 void CControllContainer::disableControll(Base2D *con){
     if (con != nullptr) {
@@ -151,12 +156,12 @@ bool CControllContainer::addText(std::string text, int resx, int resy){
     p.y = _CurrentY;
 
 
-    TextRender * t = new TextRender(resx,resy);
-    t->setPos(p);
+    TextRender * t = new TextRender(resx,resy,shader);
+    t->SetPos(p);
     t->AddString(text);
 
 
-    _CurrentY += t->getTextAreaHeight() + 1;
-    _Height += t->getTextAreaHeight();
+    _CurrentY += t->GetTextAreaHeight() + 1;
+    _Height += t->GetTextAreaHeight();
     return  true;
 }

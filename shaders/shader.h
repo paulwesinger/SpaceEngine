@@ -6,13 +6,33 @@
 #include <stdio.h>
 #include "../fileutils/fileutil.h"
 
-
 class Shader
 {
 
 public:
     Shader();
 
+    // Standard shaders for rendering
+    void CreateStandardShaders();
+    void CreatStandardShaderFromFile(std::string path);
+
+    bool CreateStandardGlyphShader();
+    bool CreateStandard2DColorShader();
+    bool CreateStandard2DTextureShader();
+
+    bool CreateStandard3DTextureShader();
+    bool CreateStandard3DColorShader();
+
+    GLuint getGlyphShader();
+    GLuint getTexture2DShader();
+    GLuint getColor2DShader();
+
+
+
+    GLuint getTexture3DShader();
+    GLuint getColor3DShader();
+
+    int compileShader(const char* source, GLint type);
     int compileVertexShader(const char* source); // Vertex und Fragment Shader von Datei
     int compileFragmentShader(const char* source);
     int CreateProgram(int &vs,int &fs); //in vertexshader fragmentshader ret Programmindex
@@ -26,7 +46,19 @@ public:
 
     ~Shader();
 protected:
-    int _TextShader;
+    // Shaders for text and 2D
+    GLuint _GlyphShader2D,_TextureShader2D,_ColorShader2D;
+
+    //Shaders for 3D
+    GLuint _TextureShader,_ColorShader,_LightShader;
+
+private:
+    bool _FAILED_GlyphShader;
+    bool _FAILED_2DTextureShader;
+    bool _FAILED_2DColorShader;
+
+    bool _FAILED_3DTextureShader;
+    bool _FAILED_3DColorShader;
 
 };
 

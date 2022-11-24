@@ -2,14 +2,14 @@
 #include "window.h"
 
 
-Window::Window(int resx, int resy) :
-    Base2D(resx,resy)
+Window::Window(int resx, int resy, Shader * sh) :
+    Base2D(resx,resy,sh)
 {
 
 }
 
-Window::Window(int resx, int resy,std::string path) :
-    Base2D(resx,resy,path)
+Window::Window(int resx, int resy,std::string path, Shader * sh) :
+    Base2D(resx,resy,path, sh)
 {
 
 

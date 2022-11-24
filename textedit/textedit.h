@@ -17,9 +17,9 @@
 class TextEdit : public Base2D
 {
 public:
-    TextEdit(int resx, int resy);
-    TextEdit(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol, glm::vec4 editcol);
-    TextEdit(int resx, int resy,std::string path, sPoint p, sSize s, glm::vec4 labelcol, glm::vec4 editcol);
+    TextEdit(int resx, int resy,Shader * sh);
+    TextEdit(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol, glm::vec4 editcol,Shader * sh);
+    TextEdit(int resx, int resy,std::string path, sPoint p, sSize s, glm::vec4 labelcol, glm::vec4 editcol,Shader * sh);
 
     void Render();
     void showLabel (bool show);
@@ -33,6 +33,8 @@ protected:
     TextRender * editLabel;
 
 private:
+
+    Shader * glyphShader;
     glm::vec4 _LabelTextColor;
     glm::vec4 _TextEditColor;
 

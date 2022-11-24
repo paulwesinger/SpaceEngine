@@ -15,11 +15,10 @@ public:
 
     void TranlateFirst();
     void RotateFirst();
-    void setElapsed(uint el);
 
-    virtual void StepTranslate(vec3 step, uint elapsed) override;
-    void AnimateRotate(uint32 elapsed);
-    virtual void StepScale(vec3 step, uint elapsed) override;
+    void AnimateTranslate( uint elapsed) override;
+    void AnimateRotate( uint32 elapsed) override;
+    void AnimateScale( uint elapsed) override;
 
     void Scale(glm::vec3 s) override;
     void Translate(glm::vec3 t) override;

@@ -1,14 +1,15 @@
 #include "checkbox.h"
 #include "../defaults.h"
 
-CheckBox::CheckBox(int resx, int resy) :
-    Base2D(resx,resy)
+CheckBox::CheckBox(int resx, int resy, Shader * sh) :
+    Base2D(resx,resy,sh)
 {
+    glyphShader = sh;
     init();
 }
 
-CheckBox::CheckBox(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol):
-        Base2D(resx,resy)
+CheckBox::CheckBox(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol, Shader * sh):
+        Base2D(resx,resy,sh)
 {
     resX = resx;
     resY = resy;
@@ -16,12 +17,14 @@ CheckBox::CheckBox(int resx, int resy,sPoint p, sSize s, glm::vec4 labelcol):
     _Size   = s;
     _LabelTextColor = labelcol;
     textLabel = nullptr;
+    _X = nullptr;
 
+    glyphShader = sh;
     init();
 }
 
-CheckBox::CheckBox(int resx, int resy,std::string path, sPoint p, sSize s, glm::vec4 labelcol) :
-    Base2D(resx,resy,path)
+CheckBox::CheckBox(int resx, int resy,std::string path, sPoint p, sSize s, glm::vec4 labelcol, Shader * sh) :
+    Base2D(resx,resy,path,sh)
 {
     resX = resx;
     resY = resy;
@@ -29,7 +32,8 @@ CheckBox::CheckBox(int resx, int resy,std::string path, sPoint p, sSize s, glm::
     _Size   = s;
     _LabelTextColor = labelcol;
      textLabel = nullptr;
-
+    _X = nullptr;
+    glyphShader = sh;
     init();
 }
 
@@ -43,22 +47,22 @@ void CheckBox::init() {
 
     _PosLabel.x = _Pos.x + LABEL::MARGIN_X;
     _PosLabel.y = _Pos.y + LABEL::MARGIN_Y;
-    textLabel = new TextRender(resX, resY, _PosLabel);
+    textLabel = new TextRender(resX, resY, _PosLabel,glyphShader);
 
     _SizeLabel.w = 20;
     _SizeLabel.h = 20;
 
-    _SizeLabel.h = textLabel->getTextAreaHeight();
+    _SizeLabel.h = textLabel->GetTextAreaHeight();
     textLabel->SetScale(TEXT::SCALE_SMALL);
     textLabel->AddString("<>");
     textLabel->SetAlignRight(false);
-    textLabel->setPos(_PosLabel);
+    textLabel->SetPos(_PosLabel);
     textLabel->SetTextColor(_LabelTextColor);
 
     _PosCheck.x = _PosLabel.x + 100;// _Size.w / 2 ;
     _PosCheck.y = _Pos.y + LABEL::MARGIN_Y;
 
-    _X = new TextRender(resX,resY,_PosCheck);
+    _X = new TextRender(resX,resY,_PosCheck,glyphShader);
 
     _SizeCheck.w = _Size.w / 2;
     _SizeCheck.h = 20;
@@ -66,7 +70,7 @@ void CheckBox::init() {
     _X->SetScale(TEXT::SCALE_SMALL);
     _X->AddString("X");
     _X->SetAlignRight(false);
-    _X->setPos(_PosCheck);
+    _X->SetPos(_PosCheck);
     _X->SetTextColor(_LabelTextColor);
 }
 
@@ -95,16 +99,16 @@ void CheckBox::showLabel (bool show) {
 
 void CheckBox::setLabel(std::string label) {
     if (textLabel != nullptr)
-        textLabel->setText(0, label);
+        textLabel->SetText(0, label);
 }
 
 void CheckBox::setChecked() {
 
     _Checked = ! _Checked;
     if (_Checked )
-        _X-> setText(0,"X");
+        _X-> SetText(0,"X");
     else
-        _X->setText(0," ");
+        _X->SetText(0," ");
 }
 
 void CheckBox::AddHandler(FPB Handler) {

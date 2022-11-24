@@ -47,12 +47,20 @@ public:
     virtual void Translate(vec3 trans);
     virtual void Rotate(vec3 rotate);  // ACHTUN : Hält nur den aktuell zu drehenden Winkel für jede Achse
     virtual void Scale(vec3 scale);
+    virtual void SetPosition(vec3 pos);
+
+    virtual void StepTranslate(vec3 step, uint elapsed);
+    virtual void StepRotate(vec3 step,  uint elapsed);
+    virtual void StepScale(vec3 step, uint elapsed);
+
+    virtual void AnimateRotate(uint elapsed);
+    virtual void AnimateTranslate(uint elapsed);
+    virtual void AnimateScale(uint elapsed);
 
 
-    virtual void StepTranslate(vec3 step ,uint elapsed);
-    virtual void AnimateRotate(uint32);
-    virtual void StepScale(vec3 step,uint elapsed);
     virtual bool addTexture(std::vector<std::string> path, std::string obj);
+    virtual bool addTexture(std::string path, uint activtexture = 0);
+
     virtual void setActiveShader(ShaderType t);
     virtual void initShader(ShaderType s,GLuint prog);
     virtual void addLight(light * l);
@@ -66,18 +74,18 @@ public:
     void SetHasTextures(bool hasATexture);
     void SetHasAlpha(bool yes);
     void SetFrontFace(uint mode);
+    void SetUseBlending(bool useblending);
 
     bool HasAlpha();
     bool UseGlasShader();
-    bool UseBlending(bool useblend);
+    bool UseBlending();
     bool GetFirstTranslate();
     bool HasTextures();
 
-
-    glm::vec3 AlphaColor();
-
+    vec3 Position();
+    vec3 AlphaColor();
     void SetProjection(glm::mat4 pro,bool orthomode = false);
-    glm::mat4 & GetProjection();
+    mat4 & GetProjection();
 
 
 protected:
@@ -95,11 +103,12 @@ protected:
     uint _FrontFace_Mode;
 
     // This vectors holds the current translation,rotation,scale
-    vec3 _rotate;
-    vec3 _translate;
-    vec3 _scale;
+    vec3 _Rotate;
+    vec3 _Translate;
+    vec3 _Scale;
+    vec3 _Position;
 
-    vec4 _color; // inkl. Alpha
+    vec4 _Color; // inkl. Alpha
     bool _FirstTranslate;  // Flag ,ob erst veschoben oder rotiert werden soll
 
     glm::mat4 _Projection;

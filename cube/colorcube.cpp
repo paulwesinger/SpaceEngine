@@ -213,12 +213,8 @@ void CColorCube::addLight(light *l) {
    BaseObject::addLight(l);
 }
 
-void CColorCube::Calc( float roty,float trans_x) {
-
-}
-
 void CColorCube::SetColor( vec4 color){
-    _color = color;
+    _Color = color;
 }
 void CColorCube::Draw(Camera * cam) {
 
@@ -241,7 +237,7 @@ void CColorCube::Draw(Camera * cam) {
     int lightlocation = glGetUniformLocation(currentShader,"lightpos");
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
 
-    glUniform4f(color_location,_color.r,_color.g, _color.b, _color.a);
+    glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
 
     //Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model= glm::mat4(1.0f);
