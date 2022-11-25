@@ -60,16 +60,9 @@ InitGL::InitGL (const std::string titel){
     InitUtils();
     InitMatrices();
 
-    InitHandler();
-   // _HasSound = initSoundMachine();
     InitFX();
 
-
- //   load3DS = new C3DSLoad();
-
-
-
-
+  // _HasSound = initSoundMachine();
     // Irrklan init
    // soundengine = createIrrKlangDevice();
    // if ( soundengine )
@@ -112,7 +105,6 @@ void InitGL::DeleteShaders() {
     glDeleteProgram(cubeshaderprog_tex);
     glDeleteProgram(sphereshader_color);
     glDeleteProgram(cubeshaderprog_color_normal);
-
 }
 
 Shader * InitGL::getShaderPtr() {
@@ -124,7 +116,7 @@ void InitGL::safeDelete(BaseObject * bo) {
         delete bo;
         bo = NULL;
     }
- }
+}
 
 //------------------------------------------
 //  Abstracts Render
@@ -215,7 +207,6 @@ void InitGL::InitFX(){
 
 }
 
-
 // fog
 void InitGL::fogParam(){
     float col[4] = {0.5f,0.5f,0.5f,1.0f};
@@ -231,18 +222,6 @@ void InitGL::fogParam(){
 void InitGL::setFog(bool enable) {
         //Shader use forfogging
 }
-
-
-
-
-
-// ******************************************
-// Handlers
-// ------------------------------------------
-bool InitGL::InitHandler() {
-    return true;
-}
-
 
 // ******************************************
 // Utils
@@ -734,8 +713,8 @@ void InitGL::InitEngineObject() {
 // --------------------------------------------
 void InitGL::add2List(BaseObject *obj, ShaderType s) {
 
-    obj->initShader(COLOR_SHADER,cubeshaderprog_color);
-    obj->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
+    obj->initShader(COLOR_SHADER,shader->getColor3DShader()); //   cubeshaderprog_color);
+    obj->initShader(TEXTURE_SHADER,shader->getTexture3DShader());//     cubeshaderprog_tex);
     obj->initShader(LIGHT_SHADER, cubeshaderprog_normals);
     obj->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
     obj->initShader(GLASS_SHADER,glasshader);

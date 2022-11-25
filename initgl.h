@@ -145,9 +145,6 @@ protected:
 
     void safeDelete(BaseObject * bo);
 
-    //CMeshObject *me;
-    //COBJLoader * objLoader;
-
     CSphere *sphere1;
     CSphere *lightSource;   // Damit wir wissen wo die ichtquekke wirjkich  ist
 
@@ -232,7 +229,6 @@ private:
     void InitShaders();
     void InitMatrices();
     bool initSoundMachine();
-    bool InitHandler();
     void DeleteUtils();
     void DeleteMatrices();
     void DeleteShaders();

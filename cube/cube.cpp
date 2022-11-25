@@ -285,7 +285,12 @@ void CCube::Draw(Camera * cam) {
 
 
     glUniform1i(useBlinnLocation,true);
-    glUniform1i(useTex2Location,1);
+
+    if (_CountTextures >1 )
+        glUniform1i(useTex2Location,true);
+    else
+        glUniform1i(useTex2Location,false);
+
     glUniform1i(hasTextureloc,_HasTextures);
     glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
 
