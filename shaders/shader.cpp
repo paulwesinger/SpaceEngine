@@ -7,9 +7,9 @@
 #include "../logs/logs.h"
 #include "../error/error.h"
 
-//----------------------------
-// Shader für Text Rendering
-// ---------------------------
+//--------------------------------------------------------------------
+// Standard Shaders
+// -------------------------------------------------------------------
 static const GLchar * Standard2D_VertexSrc = {
     "#version 440 core                                              \n"
     "layout (location = 0) in vec2 vertex;                          \n"
@@ -28,6 +28,26 @@ static const GLchar * Standard2D_VertexSrc = {
 };
 
 static const GLchar * Standard2DTexture_FragmentSrc = {
+    "#version 440 core                                              \n"
+
+    "in VS_OUT {                                                    \n"
+    "   vec2 uv;                                                    \n"
+    "} fs_in;                                                       \n"
+
+    "out vec4 fragcolor;                                            \n"
+    "uniform sampler2D text;                                        \n"
+    "uniform vec4 col2D;                                            \n"
+
+    "void main()                                                    \n"
+    "{                                                              \n"
+    "   vec4 texel = texture(text,fs_in.uv);                        \n"
+    "   if(texel.a == 0.0)                                          \n"
+    "       discard;                                                \n"
+    "   fragcolor =   col2D * texel ;                               \n"
+    "}                                                                "
+};
+
+static const GLchar * Standard2DGlyph_FragmentSrc = {
     "#version 440 core                                              \n"
 
     "in VS_OUT {                                                    \n"
@@ -154,14 +174,6 @@ const GLchar * Standard3DColored_FragmentSrc = {
 };
 
 
-
-
-//----------------------------
-// Shader für Color Rendering
-// ---------------------------
-
-
-
 Shader::Shader()
 {
     _FAILED_GlyphShader         = false;
@@ -176,7 +188,6 @@ Shader::Shader()
 
 void Shader::CreatStandardShaderFromFile(std::string path) {
 
-
 }
 
 void Shader::CreateStandardShaders() {
@@ -187,7 +198,6 @@ void Shader::CreateStandardShaders() {
     Error::Failed(CreateStandardGlyphShader(),"Creating GlyphShader failed",_FAILED_GlyphShader);
     Error::Failed(CreateStandard2DTextureShader(),"Creating 2D TextureShader failed !", _FAILED_2DTextureShader);
     Error::Failed(CreateStandard2DColorShader(),"Creating 2D ColorShader failed !", _FAILED_2DColorShader);
-
 
     //------------------------------------------------------
     //Create Shader for 3D rendering with texture, no lights
@@ -201,20 +211,23 @@ void Shader::CreateStandardShaders() {
 }
 
 
+bool Shader::CreateShaderProgram(GLuint & prg, const GLchar * vertexsource, const GLchar * fragmentsource) {
+    //------------------------------------------------------
+    //Shader for text printing
+    //------------------------------------------------------
+    int vs = compileShader(vertexsource,GL_VERTEX_SHADER);
+    int fs = compileShader(fragmentsource,GL_FRAGMENT_SHADER);
+    prg = CreateProgram(vs,fs);
+
+   return  (vs == 0 ||  fs == 0  || prg == 0 ) ? false : true;
+}
 
 bool Shader::CreateStandardGlyphShader() {
 
     //------------------------------------------------------
     //Shader for text printing
     //------------------------------------------------------
-    int vs = compileShader(Standard2D_VertexSrc,GL_VERTEX_SHADER);
-    int fs = compileShader(Standard2DTexture_FragmentSrc,GL_FRAGMENT_SHADER);
-    _GlyphShader2D = CreateProgram(vs,fs);
-
-    if (  vs == 0 ||  fs == 0  || _GlyphShader2D == 0 )
-        return false;
-
-     return true;
+    return CreateShaderProgram(_GlyphShader2D,Standard2D_VertexSrc, Standard2DGlyph_FragmentSrc);
 }
 
 bool Shader::CreateStandard2DTextureShader() {

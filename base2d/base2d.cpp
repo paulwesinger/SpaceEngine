@@ -135,10 +135,10 @@ void Base2D::useShader(int type) {
     }
 
     switch( type) {
-        case TEXTURE_SHADER: _CurrentShader = _TextureShader; break;
-        case COLOR_SHADER: _CurrentShader = _ColorShader;  break;
+        case TEXTURE_SHADER: _CurrentShader = shader->getTexture2DShader(); break;
+        case COLOR_SHADER: _CurrentShader = shader->getColor2DShader();  break;
     default:
-        _CurrentShader = _TextureShader;
+        _CurrentShader = shader->getTexture2DShader();
     }
 }
 

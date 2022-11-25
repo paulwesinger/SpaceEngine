@@ -16,12 +16,7 @@ public:
     void CreateStandardShaders();
     void CreatStandardShaderFromFile(std::string path);
 
-    bool CreateStandardGlyphShader();
-    bool CreateStandard2DColorShader();
-    bool CreateStandard2DTextureShader();
 
-    bool CreateStandard3DTextureShader();
-    bool CreateStandard3DColorShader();
 
     GLuint getGlyphShader();
     GLuint getTexture2DShader();
@@ -53,6 +48,14 @@ protected:
     GLuint _TextureShader,_ColorShader,_LightShader;
 
 private:
+
+    bool CreateShaderProgram(GLuint & prg,const GLchar * vertexsource, const GLchar * fragmentsource);
+    bool CreateStandardGlyphShader();
+    bool CreateStandard2DColorShader();
+    bool CreateStandard2DTextureShader();
+
+    bool CreateStandard3DTextureShader();
+    bool CreateStandard3DColorShader();
     bool _FAILED_GlyphShader;
     bool _FAILED_2DTextureShader;
     bool _FAILED_2DColorShader;

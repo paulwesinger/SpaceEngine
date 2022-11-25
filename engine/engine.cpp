@@ -173,7 +173,7 @@ void CEngine::initMenu(){
   //  butn1->setColorShader(shader->getColor2DShader());
   //  butn1->setTextureShader(shader->getTexture2DShader(),true);
 
-    butn1->useShader(TEXTURE_SHADER);
+    //butn1->useShader(TEXTURE_SHADER);
     butn1->setColor(BTN_ENABLE);
     butn1->setDisablecolor(BTN_DISABLE);
     butn1->setSize(BTN_WIDTH,BTN_HEIGHT);
