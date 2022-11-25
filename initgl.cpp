@@ -633,7 +633,7 @@ void InitGL::InitEngineObject() {
     MousePositions = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD,getShaderPtr());
 
     MousePositions->SetGlyphShader(shader->getGlyphShader());
-    MousePositions->SetTextureShader(shader->getTexture3DShader());
+    MousePositions->SetTextureShader(shader->getTexture2DShader());
     MousePositions->SetColorShader(shader->getColor3DShader());
 
     MousePositions->AddString("Das ist die 1. Zeile");

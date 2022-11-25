@@ -211,6 +211,7 @@ void Shader::CreateStandardShaders() {
 }
 
 
+
 bool Shader::CreateShaderProgram(GLuint & prg, const GLchar * vertexsource, const GLchar * fragmentsource) {
     //------------------------------------------------------
     //Shader for text printing
@@ -235,65 +236,37 @@ bool Shader::CreateStandard2DTextureShader() {
     //------------------------------------------------------
     //Shader for text printiing and background with alpha
     //------------------------------------------------------
-    int vs = compileShader(Standard2D_VertexSrc,GL_VERTEX_SHADER);
-    int fs = compileShader(Standard2DTexture_FragmentSrc,GL_FRAGMENT_SHADER);
-    _TextureShader2D = CreateProgram(vs,fs);
-
-    if (  vs == 0 ||  fs == 0  || _TextureShader2D == 0 )
-        return false;
-
-     return true;
+    return CreateShaderProgram(_TextureShader2D,Standard2D_VertexSrc, Standard2DTexture_FragmentSrc);
 }
 
 bool Shader::CreateStandard2DColorShader() {
 
     //------------------------------------------------------
-    //Shader for text printing
+    //Shader for 2d Color
     //------------------------------------------------------
-    int vs = compileShader(Standard2D_VertexSrc,GL_VERTEX_SHADER);
-    int fs = compileShader(Standard2DColor_FragmentSrc,GL_FRAGMENT_SHADER);
-    _ColorShader2D = CreateProgram(vs,fs);
-
-    if (  vs == 0 ||  fs == 0  || _ColorShader2D == 0 )
-        return false;
-
-     return true;
+    return CreateShaderProgram(_ColorShader2D,Standard2D_VertexSrc, Standard2DColor_FragmentSrc);
 }
 
 bool Shader::CreateStandard3DTextureShader() {
     //------------------------------------------------------
     //Shader for text printing
     //------------------------------------------------------
-    int vs = compileShader(Standard3D_VertexSrc,GL_VERTEX_SHADER);
-    int fs = compileShader(Standard3DTextured_FragmentSrc,GL_FRAGMENT_SHADER);
-    _TextureShader = CreateProgram(vs,fs);
-
-    if (  vs == 0 ||  fs == 0  || _TextureShader == 0 )
-        return false;
-
-    return true;
+    return CreateShaderProgram(_TextureShader3D,Standard3D_VertexSrc, Standard3DTextured_FragmentSrc);
 }
 
 bool Shader::CreateStandard3DColorShader() {
     //------------------------------------------------------
     //Shader for text printing
     //------------------------------------------------------
-    int vs = compileShader(Standard3D_VertexSrc,GL_VERTEX_SHADER);
-    int fs = compileShader(Standard3DColored_FragmentSrc,GL_FRAGMENT_SHADER);
-    _ColorShader = CreateProgram(vs,fs);
-
-    if (  vs == 0 ||  fs == 0  || _ColorShader == 0 )
-        return false;
-
-    return true;
+    return CreateShaderProgram(_ColorShader3D,Standard3D_VertexSrc, Standard3DColored_FragmentSrc);
 }
 
 GLuint Shader::getTexture3DShader() {
-   return ( _FAILED_3DTextureShader) ?  0 : _TextureShader;
+   return ( _FAILED_3DTextureShader) ?  0 : _TextureShader3D;
 }
 
 GLuint Shader::getColor3DShader() {
-   return ( _FAILED_3DColorShader) ?  0 : _ColorShader;
+   return ( _FAILED_3DColorShader) ?  0 : _ColorShader3D;
 }
 
 GLuint Shader::getGlyphShader() {

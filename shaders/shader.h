@@ -17,15 +17,13 @@ public:
     void CreatStandardShaderFromFile(std::string path);
 
 
-
     GLuint getGlyphShader();
     GLuint getTexture2DShader();
     GLuint getColor2DShader();
 
-
-
     GLuint getTexture3DShader();
     GLuint getColor3DShader();
+
 
     int compileShader(const char* source, GLint type);
     int compileVertexShader(const char* source); // Vertex und Fragment Shader von Datei
@@ -45,7 +43,7 @@ protected:
     GLuint _GlyphShader2D,_TextureShader2D,_ColorShader2D;
 
     //Shaders for 3D
-    GLuint _TextureShader,_ColorShader,_LightShader;
+    GLuint _TextureShader3D,_ColorShader3D,_LightShader;
 
 private:
 
