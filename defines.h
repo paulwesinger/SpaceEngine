@@ -67,6 +67,13 @@ typedef struct {
 
 typedef struct {
     glm::vec3 vector;
+    glm::vec3 normals;
+    glm::vec3 color;
+    glm::vec2 tex;
+} sVertexNormals ;
+
+typedef struct {
+    glm::vec3 vector;
     glm::vec3 color;
 } sVertexColor;
 

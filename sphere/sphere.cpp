@@ -21,52 +21,6 @@
 using namespace glm;
 
 
-static const GLchar * vs_source = {
-"#version 440 core                              \n"
-"layout (location=0) in vec3 vertex;            \n"
-"layout (location=1) in vec3 color;             \n"
-"layout (location=2) in vec2 tex;               \n"
-
-"uniform mat4 mv;                               \n"
-
-"out VS_OUT{                                    \n"
-"       vec4 color;                             \n"
-"       vec2 TexCoord;                          \n"
-"} vs_out;                                      \n"
-
-"void main(void) {                              \n"
-"    float alpha = 1.0f;                         \n"
-"    gl_Position = mv * vec4(vertex,1.0);       \n"
-"    if (vertex.z < 0 ) {                       \n"
-"       alpha = 0.3f;                           \n"
-"    }                                          \n"
-"    //vs_out.color = vec4(color,1.0);          \n"
-"    vs_out.color = vec4(color,alpha);          \n"
-"    vs_out.TexCoord =  tex;                    \n"
-"}"
-};
-
-static const GLchar * fs_source = {
-"#version 440 core                              \n"
-
-"layout(binding=0) uniform sampler2D texture1;  \n"
-"layout(binding=1) uniform sampler2D texture2;  \n"
-
-"out vec4 fragcolor;                            \n"
-"uniform vec4 changecolor;                      \n"
-
-"in VS_OUT {                                    \n"
-"   vec4 color;                                 \n"
-"   vec2 TexCoord;                                   \n"
-"}fs_in;                                        \n"
-
-"void main(void) {                              \n"
-"   // fragcolor =  changecolor;                \n"
-"   fragcolor = mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.8);"
-"   fragcolor = fragcolor * changecolor;        \n"
-"}                                              "
-};
-
 CSphere::CSphere() :
     Animate((vec3(0.0,0.0,0.0)),vec3(0.0,0.0,0.0),vec3(0.0,0.0,0.0),vec4(0.5,0.2,0.6,1.0)) {
    _CountPoints = 36;
@@ -209,18 +163,21 @@ void CSphere::Draw(Camera* cam ){
     int lightcolorlocation = glGetUniformLocation(currentShader,"lightcolor");
     int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
     int hasTextureLocation = glGetUniformLocation(currentShader,"hasTexture");
+    int blinnLocation = glGetUniformLocation(currentShader,"blinn");
+
+    glUniform1i(hasTextureLocation,_HasTextures);
+    glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
+    // use Blinn
+    glUniform1i(blinnLocation,true);
 
 
     if (_HasTextures) {
 
+        if (_CountTextures > 1 )
+            glUniform1i(useTex2Location,true);
+        else
+            glUniform1i(useTex2Location,false);
     }
-
-
-
-    glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
-
-    glUniform1i(useTex2Location,0);
-
 
     glm::mat4 Model(1);
 
@@ -342,7 +299,10 @@ void CSphere::calcStrip() {
     float currentAngle       = 90.0f;
 
     int i,j;
-    sVertexTexture vt;   // Structure für Texture Sphere
+
+
+    sVertexNormals vn;   // neue stucture für normals
+    //sVertexTexture vt;   // Structure für Texture Sphere
     sVertexColor   vc;
 
     for (i=0; i<_CountPoints*2;i++){
@@ -350,17 +310,26 @@ void CSphere::calcStrip() {
         meridianPoint.y = _Radius;
         meridianPoint.z = 0.0f;
 
-        vt.vector = meridianPoint;
-        vt.color  = glm::normalize(vt.vector);
+        //vt.vector = meridianPoint;
+        //vt.color  = glm::normalize(vt.vector);
+
+        vn.vector = meridianPoint;
+        vn.normals  = glm::normalize(vn.vector);
+        vn.color    = _Color;
 
         if (i ==  (_CountPoints*2) -1)
-            vt.tex.s = 1.0;
+            //vt.tex.s = 1.0;
+            vn.tex.s = 1.0;
          else
-            vt.tex.s = static_cast<float>(i) * stepTexS;
-        vt.tex.t = 0.0;
+            //vt.tex.s = static_cast<float>(i) * stepTexS;
+            vn.tex.s = static_cast<float>(i) * stepTexS;
+
+        //vt.tex.t = 0.0;
+        vn.tex.t = 0.0;
 
         vc.vector  = meridianPoint;
-        vertsTexture.push_back(vt);
+        //vertsTexture.push_back(vt);
+        vertsNormals.push_back(vn);  //(vt);
         vertsColor.push_back(vc);
     }
 
@@ -377,13 +346,22 @@ void CSphere::calcStrip() {
         meridianPoint.y = mPoint.y;
         meridianPoint.z = 0.0f;
 
-        vt.vector = meridianPoint;
-        vt.color  = glm::normalize(vt.vector);
-        vt.tex.s = 0.0f;
-        vt.tex.t = static_cast<float>(i) * stepTexT;
+        //vt.vector = meridianPoint;
+        //vt.color  = glm::normalize(vt.vector);
+        //vt.tex.s = 0.0f;
+        //vt.tex.t = static_cast<float>(i) * stepTexT;
+
+        vn.vector = meridianPoint;
+        vn.normals  = glm::normalize(vn.vector);
+        vn.color = _Color;
+        vn.tex.s = 0.0f;
+        vn.tex.t = static_cast<float>(i) * stepTexT;
+
+
 
         vc.vector  = meridianPoint;
-        vertsTexture.push_back(vt);
+        //vertsTexture.push_back(vt);
+        vertsNormals.push_back(vn);
         vertsColor.push_back(vc);
 
         for (j=1; j < (_CountPoints*2); j++) {
@@ -399,17 +377,24 @@ void CSphere::calcStrip() {
              // Texture , diesmal nur u koordinate , v bleibt erstmal
 
              if (j ==  (_CountPoints*2) -1)
-                vt.tex.s = 1.0f; //static_cast<float>(j) * stepTexS;
+                //vt.tex.s = 1.0f; //static_cast<float>(j) * stepTexS;
+                 vn.tex.s = 1.0f;
              else
-                 vt.tex.s = static_cast<float>(j) * stepTexS;
+                 //vt.tex.s = static_cast<float>(j) * stepTexS;
+                 vn.tex.s = static_cast<float>(j) * stepTexS;
 
-             vt.tex.t = static_cast<float>(i) * stepTexT;
-
-             vt.vector = breitengradpoint;
-             vt.color = glm::normalize(vt.vector);
+             //vt.tex.t = static_cast<float>(i) * stepTexT;
+             //vt.vector = breitengradpoint;
+             //vt.color = glm::normalize(vt.vector);
+             vn.tex.t = static_cast<float>(i) * stepTexT;
+             vn.vector = breitengradpoint;
+             vn.normals = glm::normalize(vn.vector);
 
              vc.vector = breitengradpoint;
-             vertsTexture.push_back(vt);
+
+
+             //vertsTexture.push_back(vt);
+             vertsNormals.push_back(vn);
              vertsColor.push_back(vc);
         }
     }
@@ -419,13 +404,19 @@ void CSphere::calcStrip() {
         meridianPoint.y =  -_Radius;
         meridianPoint.z = 0.0f;
 
-        vt.vector = meridianPoint;
-        vt.color  = glm::normalize(vt.vector);
-        vt.tex.s = static_cast<float>(i) * stepTexS;
-        vt.tex.t = 1.0;
+        //vt.vector = meridianPoint;
+        //vt.color  = glm::normalize(vt.vector);
+        //vt.tex.s = static_cast<float>(i) * stepTexS;
+        //vt.tex.t = 1.0;
+
+        vn.vector = meridianPoint;
+        vn.normals  = glm::normalize(vn.vector);
+        vn.tex.s = static_cast<float>(i) * stepTexS;
+        vn.tex.t = 1.0;
 
         vc.vector  = meridianPoint;
-        vertsTexture.push_back(vt);
+        //vertsTexture.push_back(vt);
+        vertsNormals.push_back(vn);
         vertsColor.push_back(vc);
     }
 }
@@ -442,20 +433,25 @@ void CSphere::setUp() {
     glGenBuffers(1,&_VertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _VertexBuffer);
     glBufferData(GL_ARRAY_BUFFER,
-                 vertsTexture.size() * sizeof(sVertexTexture),
-                 &vertsTexture[0],
+                 vertsNormals.size() * sizeof(sVertexNormals),    //(sVertexTexture),
+                 &vertsNormals[0],
                  GL_DYNAMIC_DRAW);
 
 
     // Vertex
-    glVertexAttribPointer(0,3,GL_FLOAT, GL_TRUE, 8*sizeof(float),(void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT, GL_TRUE, 11*sizeof(float),(void*)0);
     glEnableVertexAttribArray(0);
-    //Color
-    glVertexAttribPointer(1,3,GL_FLOAT, GL_TRUE, 8*sizeof(float),(void*)(3 * sizeof(float)));
+
+    // Normal
+    glVertexAttribPointer(1,3,GL_FLOAT, GL_TRUE, 11*sizeof(float),(void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);
-    // Texture
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(float), (void*)(6 *sizeof(float)));
+
+    //Color
+    glVertexAttribPointer(2,3,GL_FLOAT, GL_TRUE, 11*sizeof(float),(void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    // Texture
+    glVertexAttribPointer(3,2,GL_FLOAT,GL_FALSE,11 * sizeof(float), (void*)(9 *sizeof(float)));
+    glEnableVertexAttribArray(3);
 
     // -------------------------------------
     // Sphere body

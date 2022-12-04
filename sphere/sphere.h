@@ -70,7 +70,8 @@ private:
 
 
     // Neue Version für Vertex calculation:
-    std::vector<sVertexTexture> vertsTexture;
+    //std::vector<sVertexTexture> vertsTexture;
+    std::vector<sVertexNormals> vertsNormals;
     std::vector<sVertexColor> vertsColor;
     void calcStrip();
 };

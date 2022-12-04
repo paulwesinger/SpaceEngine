@@ -73,48 +73,48 @@ static const GLfloat vertex_positions[] =
 };
 
 static const GLfloat vertex_normals[] = {
-     // x,y,z                normales           texture
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0, 0.0,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0, 0.0,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0, 1.0,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0, 1.0,  // Back
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0, 1.0,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0, 0.0,
+     // x,y,z                normales           Color           texture
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0, 0.0,0.0 , 0.0, 0.0,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0, 0.0,0.0 , 1.0, 0.0,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0, 0.0,0.0 , 1.0, 1.0,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0, 0.0,0.0 , 1.0, 1.0,  // Back
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0, 0.0,0.0 , 0.0, 1.0,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0, 0.0,0.0 , 0.0, 0.0,
 
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 0.0,
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0, 0.0,  //Front
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0, 1.0,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0, 1.0,
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 1.0,
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 0.0,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 1.0,0.0 ,0.0, 0.0,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  01.0, 1.0,0.0 ,1.0, 0.0,  //Front
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 1.0,0.0 ,1.0, 1.0,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 1.0,0.0 ,1.0, 1.0,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 1.0,0.0 ,0.0, 1.0,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0, 1.0,0.0 ,0.0, 0.0,
 
-    -0.5f,  0.5f,  0.5f, -1.0f,  -1.0f,  0.0f,  1.0, 1.0,
-    -0.5f,  0.5f, -0.5f, -1.0f,  -1.0f,  0.0f,  0.0, 1.0,
-    -0.5f, -0.5f, -0.5f, -1.0f,  -1.0f,  0.0f,  0.0, 0.0,
-    -0.5f, -0.5f, -0.5f, -1.0f,  -1.0f,  0.0f,  0.0, 0.0,
-    -0.5f, -0.5f,  0.5f, -1.0f,  -1.0f,  0.0f,  1.0, 0.0,   // LEFT
-    -0.5f,  0.5f,  0.5f, -1.0f,  -1.0f,  0.0f,  1.0, 1.0,
+    -0.5f,  0.5f,  0.5f, -1.0f,  -1.0f,  0.0f, 0.0, 0.0,1.0 ,1.0, 1.0,
+    -0.5f,  0.5f, -0.5f, -1.0f,  -1.0f,  0.0f, 0.0, 0.0,1.0 , 0.0, 1.0,
+    -0.5f, -0.5f, -0.5f, -1.0f,  -1.0f,  0.0f, 0.0, 0.0,1.0 , 0.0, 0.0,
+    -0.5f, -0.5f, -0.5f, -1.0f,  -1.0f,  0.0f, 0.0, 0.0,1.0 , 0.0, 0.0,
+    -0.5f, -0.5f,  0.5f, -1.0f,  -1.0f,  0.0f, 0.0, 0.0,1.0 , 1.0, 0.0,   // LEFT
+    -0.5f,  0.5f,  0.5f, -1.0f,  -1.0f,  0.0f, 0.0, 0.0,1.0 , 1.0, 1.0,
 
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0, 1.0,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0, 1.0,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0, 0.0,   // Right
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0, 0.0,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0, 1.0,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,0.0 , 1.0, 1.0,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,0.0 , 0.0, 1.0,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,0.0 , 0.0, 0.0,   // Right
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,0.0 , 0.0, 0.0,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,0.0 , 1.0, 0.0,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0, 0.0,0.0 , 1.0, 1.0,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0, 1.0,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,    //Bottom
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0, 0.0,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0, 0.0,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0, 0.0,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0, 1.0,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,0.0 , 1.0, 1.0,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,0.0 , 0.0, 1.0,    //Bottom
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,0.0 , 0.0, 0.0,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,0.0 , 0.0, 0.0,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,0.0 , 1.0, 0.0,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0, 1.0,0.0 , 1.0, 1.0,
 
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0, 1.0,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0, 1.0,   //TOP
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0, 0.0,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0, 1.0
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,1.0 , 1.0, 1.0,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,1.0 , 0.0, 1.0,   //TOP
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,1.0 , 0.0, 0.0,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,1.0 , 0.0, 0.0,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,1.0 , 1.0, 0.0,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0, 0.0,1.0 , 1.0, 1.0
 };
 
 /*
@@ -230,14 +230,18 @@ void CCube::Init() {
                   GL_DYNAMIC_DRAW);
 
     // Vertex
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // Normals
-    glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 8* sizeof(float),(void*) (3 * sizeof(float)));
+    glVertexAttribPointer(1,3, GL_FLOAT, GL_TRUE, 11* sizeof(float),(void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    // Texture
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE, 8 * sizeof (float),(void*)(6 *sizeof(float)));
+
+    // Color
+    glVertexAttribPointer(2,3, GL_FLOAT, GL_TRUE, 11* sizeof(float),(void*) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    // Texture
+    glVertexAttribPointer(3,2,GL_FLOAT,GL_FALSE, 11 * sizeof (float),(void*)(9 *sizeof(float)));
+    glEnableVertexAttribArray(3);
 
     //================================
     //Multitexturing erkunden...
@@ -272,8 +276,7 @@ void CCube::Draw(Camera * cam) {
     int projectionloc   = glGetUniformLocation(currentShader,"projection");
     int viewloc         = glGetUniformLocation(currentShader,"view");
     int hasTextureloc  = glGetUniformLocation(currentShader,"hasTexture");
-
-    color_location = glGetUniformLocation(currentShader,"triangleColor");
+    int color_location = glGetUniformLocation(currentShader,"triangleColor");
     //ortho_location = glGetUniformLocation(currentShader,"orthomatrix");
 
     // Model  Lightning
@@ -283,16 +286,16 @@ void CCube::Draw(Camera * cam) {
     int useTex2Location = glGetUniformLocation(currentShader,"useTexture_2");
     int useBlinnLocation = glGetUniformLocation(currentShader,"blinn");
 
-
-    glUniform1i(useBlinnLocation,true);
+    glUniform1i(hasTextureloc,_HasTextures);
+    glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
+    glUniform1i(useBlinnLocation,false);
 
     if (_CountTextures >1 )
         glUniform1i(useTex2Location,true);
     else
         glUniform1i(useTex2Location,false);
 
-    glUniform1i(hasTextureloc,_HasTextures);
-    glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
+
 
     //Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model= glm::mat4(1.0f);

@@ -575,7 +575,7 @@ void InitGL::InitEngineObject() {
     //----------------------------------------
     ambientLight = new light;
     ambientLight->setColor(glm::vec3(1.0,1.0,1.0));
-    ambientLight->setPos(glm::vec3(0.0,20.0,0.0));
+    ambientLight->setPos(glm::vec3(0.0,10.0,-5.0));
 
 
     loginfo("Erstelle Standard Ambientes Licht ","InitGL::InitEngineObjects");
@@ -645,7 +645,9 @@ void InitGL::InitEngineObject() {
     loginfo("=============================");
     loginfo("Erstelle Sphere .........done");
     loginfo("=============================");
-    cubeimages.push_back("../SpaceEngine/images/world.png");
+
+    cubeimages.clear();
+    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
     sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),24,(GLfloat)4.0,shader);
     sphere1->addTexture(cubeimages,"InitGL::Sphere");
     cubeimages.clear();
@@ -665,18 +667,19 @@ void InitGL::InitEngineObject() {
         logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
-    sphere1->initShader(COLOR_SHADER,cubeshaderprog_color);
-    sphere1->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
-    sphere1->initShader(LIGHT_SHADER, cubeshaderprog_normals);
+
+    sphere1->initShader(COLOR_SHADER,shader->getColor3DShader());
+    sphere1->initShader(TEXTURE_SHADER,shader->getTexture3DShader());
+    sphere1->initShader(LIGHT_SHADER, shader->getLightShader());   //cubeshaderprog_normals);
     sphere1->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
     sphere1->initShader(GLASS_SHADER,glasshader);
     sphere1->setActiveShader(LIGHT_SHADER);
     //sphere1->setGlasShader(true);
     sphere1->addLight(ambientLight);
 
-    lightSource->initShader(COLOR_SHADER,cubeshaderprog_color);
-    lightSource->initShader(TEXTURE_SHADER,cubeshaderprog_tex);
-    lightSource->initShader(LIGHT_SHADER, cubeshaderprog_normals);
+    lightSource->initShader(COLOR_SHADER,shader->getColor3DShader());//cubeshaderprog_color);
+    lightSource->initShader(TEXTURE_SHADER, shader->getTexture3DShader());//cubeshaderprog_tex);
+    lightSource->initShader(LIGHT_SHADER,shader->getLightShader());  //cubeshaderprog_normals);
     lightSource->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
     lightSource->initShader(GLASS_SHADER,glasshader);
     lightSource->setActiveShader(LIGHT_SHADER);
@@ -691,19 +694,6 @@ void InitGL::InitEngineObject() {
     logwarn("Cokpit angelegt, Mesh wird in CEngine zugewiesen  !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 
-    /*
-    PE = new PartikelEngine(projection->GetPerspective(),ShaderType::LIGHT_TEXTURE_SHADER);
-    PE->setShader(ShaderType::COLOR_SHADER,cubeshaderprog_color);
-    PE->setShader(ShaderType::GLASS_SHADER,glasshader);
-    PE->setShader(ShaderType::LIGHT_COLOR_SHADER,cubeshaderprog_normals);
-    PE->setShader(ShaderType::LIGHT_SHADER,cubeshaderprog_tex);
-    PE->setShader(ShaderType::LIGHT_TEXTURE_SHADER,lighttexture_shader);
-    PE->setShader(ShaderType::TEXTURE_SHADER,cubeshaderprog_tex);
-    PE->setEmissionTime(500); //ms
-    PE->init();
-*/
-
-
     logwarn("Partikelengine mit 100 Elementen !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 }
@@ -715,7 +705,7 @@ void InitGL::add2List(BaseObject *obj, ShaderType s) {
 
     obj->initShader(COLOR_SHADER,shader->getColor3DShader()); //   cubeshaderprog_color);
     obj->initShader(TEXTURE_SHADER,shader->getTexture3DShader());//     cubeshaderprog_tex);
-    obj->initShader(LIGHT_SHADER, cubeshaderprog_normals);
+    obj->initShader(LIGHT_SHADER, shader->getLightShader()); //   cubeshaderprog_normals);
     obj->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
     obj->initShader(GLASS_SHADER,glasshader);
     obj->setActiveShader(s);
@@ -1108,11 +1098,20 @@ void InitGL::Run() {
             Render(camera->GetView());
 
             sphere1->setGlasShader(true);
+
             sphere1->SetColor(glm::vec4(0.0,1.0,0.0,0.5));
-            sphere1->SetProjection(projection->GetPerspective());
-            sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
-            sphere1->Translate(camera->GetPos());
-            //sphere1->Draw(camera);
+            //sphere1->AnimateTranslate(_Elapsed);
+
+//            sphere1->SetProjection(projection->GetPerspective());
+//            sphere1->SetFirstTranslate(true);
+//            if (_Animate && sphere1->HasAnimation() )
+//                sphere1 ->AnimateRotate(_Elapsed);
+
+//            sphere1->Rotate(- glm::vec3(camera->PitchCameraDEG(), camera->YawCameraDEG(),camera->RollCameraDEG()));
+
+//            sphere1->Translate(camera->GetPos());
+//            sphere1->Draw(camera);
+
 
             if (cockpit->HasMesh()  && _ShowCockpit) {
 
@@ -1123,6 +1122,8 @@ void InitGL::Run() {
                 cockpit->Rotate(camera->MoveDirectionDEG());
                 cockpit->Draw(camera);
             }
+
+
         }
 
         // ===================================ee
