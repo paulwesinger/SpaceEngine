@@ -168,7 +168,7 @@ void CSphere::Draw(Camera* cam ){
     glUniform1i(hasTextureLocation,_HasTextures);
     glUniform4f(color_location,GetColor().r,GetColor().g,GetColor().b,GetColor().a);
     // use Blinn
-    glUniform1i(blinnLocation,true);
+    glUniform1i(blinnLocation,_UseBlinn);
 
 
     if (_HasTextures) {

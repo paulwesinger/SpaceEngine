@@ -785,6 +785,9 @@ bool InitGL::HandleMessage() {
     case SDL_KEYUP : {
             switch(_Event.key.keysym.sym) {
 
+                case SDLK_b: _UseBlinn = toggleVal(_UseBlinn);
+                   break;
+
                 case SDLK_ESCAPE : _QuitGame = true;
                     break;
 
@@ -998,9 +1001,6 @@ void InitGL::Run() {
     else
         logwarn("Modell nicht geladen");
 */
-
-
-
     while ( ! _QuitGame) {
 
         HandleMessage();
@@ -1081,7 +1081,7 @@ void InitGL::Run() {
                     else
                         list3D[i]->SetUseBlending(false);
 
-
+                    list3D[i]->UseBlinn(_UseBlinn);
                     list3D[i]->Draw(camera);
                 }
 
@@ -1098,7 +1098,6 @@ void InitGL::Run() {
             Render(camera->GetView());
 
             sphere1->setGlasShader(true);
-
             sphere1->SetColor(glm::vec4(0.0,1.0,0.0,0.5));
             //sphere1->AnimateTranslate(_Elapsed);
 

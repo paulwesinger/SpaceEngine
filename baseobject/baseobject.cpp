@@ -70,13 +70,14 @@ void BaseObject::addLight(light *l) {
 
 bool BaseObject::addTexture(std::string path, uint activetexture) {
 
+    _HasTextures = false;
 
     if (activetexture > 4) {
         logwarn("Value for activeTexture to high, choose [0..4] ", "BaseObject::addTexture");
         return false;
     }
 
-    _HasTextures = false;
+
     SDL_Surface * surface = CLoadImage::getSurface(path, "BaseObject::addTexture");
     if ( surface ) {
 
@@ -257,4 +258,7 @@ void BaseObject::setActiveShader(ShaderType t){
  bool BaseObject::UseGlasShader() { return _UseGlasshader;}
  bool BaseObject::UseBlending(){ return _UseBlending; }
 
+ bool BaseObject::UseBlinn(bool b) {
+     _UseBlinn = b;
+ }
  void BaseObject::SetPosition(vec3 pos) { _Position = pos; }

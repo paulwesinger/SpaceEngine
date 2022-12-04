@@ -81,6 +81,7 @@ public:
     bool UseBlending();
     bool GetFirstTranslate();
     bool HasTextures();
+    bool UseBlinn(bool b);
 
     vec3 Position();
     vec3 AlphaColor();
@@ -117,6 +118,7 @@ protected:
     bool _HasAlpha;
     bool _UseGlasshader;
     bool _UseBlending;
+    bool _UseBlinn;
     glm::vec3 _AlphaColor;
 
     uint _Elapsed;

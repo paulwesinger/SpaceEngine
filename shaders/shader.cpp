@@ -159,7 +159,7 @@ const GLchar * Standard3D_FragmentNormalsSrc = {
 "        if ( ! useTexture_2)                           \n"
 "            color = texture(texture1,fs_in.tex).rgb;   \n"
 "         else                                          \n"
-"            color = mix(texture(texture1, fs_in.tex), texture(texture2, fs_in.tex), 0.8).rgb; \n"
+"            color = mix(texture(texture1, fs_in.tex), texture(texture2, fs_in.tex), 0.5).rgb; \n"
 "    }                                                  \n"
 "    else                                               \n"
 "    {                                                  \n"
@@ -248,10 +248,10 @@ const GLchar * Standard3DTextured_FragmentSrc = {
 
     "    if ( hasTexture) {                                    \n"
 
-    "        if (useTexture_2)                                 \n"
-    "            outcolor = mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.4);\n"
+    "       if (useTexture_2)                                 \n"
+    "            outcolor = mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5);\n"
     "        else                                               \n"
-    "            outcolor = texture(texture2,fs_in.TexCoord);   \n"
+    "            outcolor = texture(texture1,fs_in.TexCoord);   \n"
     "    }                                                      \n"
     "    else {                                                 \n"
     "        outcolor =  triangleColor * fs_in.color;                         \n"
@@ -297,7 +297,7 @@ Shader::Shader()
 }
 
 
-void Shader::CreatStandardShaderFromFile(std::string path) {
+void Shader::CreatStandardShaderFromFile(std::string /*path*/) {
     // for later use ...
 
 }

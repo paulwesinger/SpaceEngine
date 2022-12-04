@@ -27,18 +27,17 @@ public:
     virtual void setPos(int x, int y);
     virtual void setColor(glm::vec4 col);
     virtual void calcDragBar();
+
+
     virtual int Height();
     virtual int Width();
     virtual void disable();
     virtual void enable();
-
     virtual bool IsDragging();
     glm::vec4 color();
     bool IsEnabled();
     sPoint Pos();
     void setDisablecolor(glm::vec4 disCol);
-
-
 
 protected:
     sPoint _Pos;
@@ -47,7 +46,6 @@ protected:
     glm::vec4 _Color;
     glm::vec4 _DisableColor;
     bool _Enable;
-
     int _ResX;
     int _ResY;
 

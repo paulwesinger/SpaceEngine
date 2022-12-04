@@ -63,9 +63,8 @@ protected:
     float genrateHeight(float ypos, float max, float min);
 
 private:
-    std::vector<sVertexTexture>  vertsTex;
-    std::vector<sVertexColor> vertsCol;
 
+    std::vector<sVertexNormals> vertsNormal;
     std::vector<ushort> indices;
 
     float _RasterX;

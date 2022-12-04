@@ -82,11 +82,16 @@ void LandScape::Draw(Camera *cam) {
     int useBlinnLocation = glGetUniformLocation(currentShader,"blinn");
 
     glUniform1i(hasTextureloc,_HasTextures);
-    glUniform1i(useTex2Location,1);
-    glUniform1i(useBlinnLocation,true);
+    glUniform1i(useBlinnLocation,_UseBlinn);
     glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
 
-    glUniform4f(color_location,_Color.r,_Color.g, _Color.b, _Color.a);
+    if (_HasTextures) {
+        if (_CountTextures > 1)
+           glUniform1i(useTex2Location,true);
+        else
+           glUniform1i(useTex2Location,false);
+    }
+
     //Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model= glm::mat4(1.0f);
 
@@ -129,12 +134,14 @@ void LandScape::Draw(Camera *cam) {
     glUniformMatrix4fv(projectionloc,1,GL_FALSE,glm::value_ptr(GetProjection()));
     glUniformMatrix4fv(viewloc,1,GL_FALSE,glm::value_ptr(cam->GetView()));
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,_Textures[1]);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _Textures[0]);
-
-    glPointSize(8.0);
+    if (_HasTextures) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,_Textures[0]);
+        if (_CountTextures > 1 ) {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, _Textures[1]);
+        }
+    }
     glBindVertexArray(_Vao);
     glBindBuffer(GL_ARRAY_BUFFER, _Vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_Ebo);
@@ -156,8 +163,8 @@ float LandScape::genrateHeight(float ypos, float max, float min) {
 void LandScape::setUp() {
 
     float y = -10.0f;
-    sVertexTexture vt;
-    sVertexColor vc;
+    //sVertexTexture vt;
+    sVertexNormals vn;
 
     //------------------------------------------
     // erstmal ein paar setups für die geometrie
@@ -184,30 +191,29 @@ void LandScape::setUp() {
                 // ------------------------------------------------------
                 // Vektoren
                 // ------------------------------------------------------
-                vt.vector.x = startX +(static_cast<float>(i) * _RasterX);
-                vt.vector.y = genrateHeight(y,maxY,minY); // hier generator für höhe einbauen
-                vt.vector.z = startZ + (static_cast<float>(j) * _RasterZ);
+                vn.vector.x = startX +(static_cast<float>(i) * _RasterX);
+                vn.vector.y = genrateHeight(y,maxY,minY); // hier generator für höhe einbauen
+                vn.vector.z = startZ + (static_cast<float>(j) * _RasterZ);
 
-                // daten für colorverts sind gleich
-                vc.vector = vt.vector;
+                // -------------------------------------------------------
+                // Normals
+                // -------------------------------------------------------
+                vn.normals = glm::normalize(vn.vector);
 
                 // -------------------------------------------------------
                 // Color  (Normals)
                 // -------------------------------------------------------
-                vt.color.r = 0.0f;
-                vt.color.g = 1.0f;
-                vt.color.b = 0.0f;
-
-                vc.color = vt.color;
+                vn.color.r = 0.0f;
+                vn.color.g = 1.0f;
+                vn.color.b = 0.0f;
 
                 //--------------------------------------------------------
                 //Texture coordinaten - nur für texshader landscape
                 //--------------------------------------------------------
-                vt.tex.x = (static_cast<float>(i) * texU);
-                vt.tex.y = (static_cast<float>(j) * texV);
+                vn.tex.x = (static_cast<float>(i) * texU);
+                vn.tex.y = (static_cast<float>(j) * texV);
 
-                vertsTex.push_back(vt);
-                vertsCol.push_back(vc);
+                vertsNormal.push_back(vn);
             }
         }
     }
@@ -235,18 +241,23 @@ bool LandScape::init(){
 
     glBindBuffer(GL_ARRAY_BUFFER, _Vbo);
     glBufferData(GL_ARRAY_BUFFER,
-                 vertsTex.size() * sizeof(sVertexTexture),
-                 &vertsTex[0],
+                 vertsNormal.size() * sizeof(sVertexNormals),
+                 &vertsNormal[0],
                  GL_DYNAMIC_DRAW);
     // Vertex
-    glVertexAttribPointer(0,3,GL_FLOAT, GL_TRUE, 8*sizeof(float),(void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT, GL_TRUE, 11 * sizeof(float),(void*)0);
     glEnableVertexAttribArray(0);
-    //Color
-    glVertexAttribPointer(1,3,GL_FLOAT, GL_TRUE, 8*sizeof(float),(void*)(3 * sizeof(float)));
+
+    //Normale
+    glVertexAttribPointer(1,3,GL_FLOAT, GL_TRUE, 11 * sizeof(float),(void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    // Texture
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_TRUE,8 * sizeof(float), (void*)(6 *sizeof(float)));
+
+    //Color
+    glVertexAttribPointer(2,3,GL_FLOAT, GL_TRUE, 11 * sizeof(float),(void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    // Texture
+    glVertexAttribPointer(3,2,GL_FLOAT,GL_TRUE, 11 * sizeof(float), (void*)(9 *sizeof(float)));
+    glEnableVertexAttribArray(3);
 
     // -----------------------------------------
     // generate indices

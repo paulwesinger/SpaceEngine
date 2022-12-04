@@ -498,13 +498,13 @@ void CEngine::Init3D(){
    // --------------------------------------
    // colored cubes loading
    //---------------------------------------
-   ok = fileutil->readLine(OBJECT3D_CFG + "ColoredCubes/ColorCubes.cfg", object3DColoredList);
-   if (ok) {
-        if ( ! loadColorCubes() )
-            logwarn("Fehler: Keine Colored Cubes gefunden oder Fehler im Pfad!");
-   }
-   else
-       logwarn("Fehler: Datei  < config/ColorCubes.cfg  > nicht gefunden !");
+ //  ok = fileutil->readLine(OBJECT3D_CFG + "ColoredCubes/ColorCubes.cfg", object3DColoredList);
+ //  if (ok) {
+ //       if ( ! loadColorCubes() )
+ //           logwarn("Fehler: Keine Colored Cubes gefunden oder Fehler im Pfad!");
+ //  }
+ //  else
+ //      logwarn("Fehler: Datei  < config/ColorCubes.cfg  > nicht gefunden !");
 
 
    // --------------------------------------
@@ -566,12 +566,16 @@ bool CEngine::loadLandscape() {
              if (initLandscape(landscape,objconfig)) {
 
                  LandScape * obj = new LandScape();
-                 //obj->SetColor(glm::vec4(s3D.color.x, s3D.color.y, s3D.color.z, s3D.color.w));
-                 if ( landscape.textures == "NONE" )
+                //obj->SetColor(glm::vec4(s3D.color.x, s3D.color.y, s3D.color.z, s3D.color.w));
+                /*
+                if ( landscape.textures == "NONE" ) {
                      obj->SetHasTextures( false);
-                 else
-                     obj->SetHasTextures( true);
-
+                }
+                else {
+                    if ( landscape.textures == "YES" )
+                         obj->SetHasTextures( true);
+                 }
+                */
                  obj->SetColor(glm::vec4(landscape.color.x, landscape.color.y, landscape.color.z, landscape.color.w));
                  obj->Rotate(glm::vec3(landscape.trans.rotate.x, landscape.trans.rotate.y, landscape.trans.rotate.z) );
                  obj->Translate(glm::vec3(landscape.trans.translate.x, landscape.trans.translate.y, landscape.trans.translate.z));
@@ -587,7 +591,6 @@ bool CEngine::loadLandscape() {
                  // ---------------------------------------
                  bool texturesok;
                  std::vector<std::string> images;
-
                  std::string path = landscape.textures;
                  if ( landscape.textures != "NONE" ) {
                      fileUtil fu;

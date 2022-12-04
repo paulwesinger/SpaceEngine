@@ -142,7 +142,7 @@ protected:
     // Flags for effects:
     bool _Fog;
     bool _HasSkyBox;
-
+    bool _UseBlinn;
     void safeDelete(BaseObject * bo);
 
     CSphere *sphere1;
