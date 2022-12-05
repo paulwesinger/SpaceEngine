@@ -82,7 +82,57 @@ static const GLchar * Standard2DColor_FragmentSrc = {
     "}                                                                "
 };
 
+//-------------------------------------------------
+// Fragment-Shader für Color Rendering mit Normale
+// ------------------------------------------------
+const GLchar * Standard3DColor_FragmentLightSrc = {
+    "#version 450 core                                      \n"
 
+    "in VS_OUT {                                            \n"
+    "        vec3 N;                                        \n"
+    "        vec3 L;                                        \n"
+    "        vec3 V;                                        \n"
+    "        vec3 fragpos;                                  \n"
+    "        vec3 color;                                    \n"
+    "        vec2 tex;                                      \n"
+    "} fs_in;                                               \n"
+    "uniform vec3 lightPos;                                 \n"
+    "uniform vec3 viewPos;                                  \n"
+    "uniform bool blinn;                                    \n"
+    "uniform vec4 triangleColor;                            \n"
+    "                                                       \n"
+    "out vec4 FragColor;                                    \n"
+    "                                                       \n"
+    "void main()                                            \n"
+    "{                                                      \n"
+    "    vec3 color;                                        \n"
+    "    color = triangleColor.rgb * fs_in.color;           \n"
+    "    vec3 ambient = 0.5 * color;   // ambient           \n"
+    "    vec3 lightDir = normalize(lightPos - fs_in.fragpos);\n"
+    "    vec3 normal = normalize(fs_in.N);                  \n"
+    "    float diff = max(dot(lightDir,normal), 0.0);       \n"
+    "    vec3 diffuse = diff * color;        // diffus      \n"
+    "    vec3 viewDir = normalize(viewPos - fs_in.fragpos); \n"
+    "    vec3 reflectDir = reflect(-lightDir, normal);      \n"
+    "    float spec = 0.0;                                  \n"
+    "    if(blinn)                                          \n"
+    "    {                                                  \n"
+    "       vec3 halfwayDir = normalize(lightDir + viewDir);                        \n"
+    "       spec = pow(max(dot(normal, halfwayDir), 0.0), 1.0);                     \n"
+    "    }                                                   \n"
+    "    else                                                \n"
+    "    {                                                   \n"
+    "       vec3 reflectDir = reflect(-lightDir, normal);    \n"
+    "       spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.0);                    \n"
+    "    }                                                                          \n"
+    "    vec3 specular = vec3(1.0) * spec; // assuming bright white light color     \n"
+    "    FragColor = vec4(ambient + diffuse + specular,1.0 ) * vec4(color,1.0);     \n"
+    "}                                                                              \n"
+};
+
+//-------------------------------------------------
+// Shaders für rendering mit normalen und Licht
+// ------------------------------------------------
 //-------------------------------------------------
 // Vertex-Shader für Texture Rendering mit normalen
 // ------------------------------------------------
@@ -131,7 +181,6 @@ const GLchar * Standard3D_VertexNormalsSrc = {
 "        //TexCoord = tex;                                \n"
 "    }                                                  \n"
 };
-
 
 const GLchar * Standard3D_FragmentNormalsSrc = {
 "#version 450 core                                       \n"
@@ -224,6 +273,7 @@ const GLchar * Standard3D_VertexSrc = {
 };
 
 
+
 const GLchar * Standard3DTextured_FragmentSrc = {
 
     "#version 450 core                                          \n"
@@ -290,8 +340,11 @@ Shader::Shader()
     _FAILED_GlyphShader         = false;
     _FAILED_3DTextureShader     = false;
     _FAILED_3DColorShader       = false;
+    _FAILED_3DLightShader       = false;
+    _FAILED_3DLightColorShader  = false;
     _FAILED_2DColorShader       = false;
     _FAILED_2DTextureShader     = false;
+
 
     CreateStandardShaders();
 }
@@ -320,8 +373,8 @@ void Shader::CreateStandardShaders() {
     //Create Shader for 3D rendering with color, no lights
     //------------------------------------------------------
     Error::Failed(CreateStandard3DColorShader(),"Creating Standard3DColorShader failed !", _FAILED_3DColorShader);
-
     Error::Failed(CreateStandard3DLightShader(),"Creating Standard3DLightShader failed !", _FAILED_3DLightShader);
+    Error::Failed(CreateStandard3DLightColorShader(),"Creating Standard3DLightColorShader failed !", _FAILED_3DLightColorShader);
 }
 
 
@@ -382,6 +435,12 @@ bool Shader::CreateStandard3DLightShader() {
     return CreateShaderProgram(_LightShader3D,Standard3D_VertexNormalsSrc, Standard3D_FragmentNormalsSrc);
 }
 
+bool Shader::CreateStandard3DLightColorShader() {
+    //------------------------------------------------------
+    //Shader for 3D LightShader
+    //------------------------------------------------------
+    return CreateShaderProgram(_LightShaderColor3D,Standard3D_VertexNormalsSrc, Standard3DColor_FragmentLightSrc);
+}
 
 GLuint Shader::getTexture3DShader() {
    return ( _FAILED_3DTextureShader) ?  0 : _TextureShader3D;
@@ -393,6 +452,10 @@ GLuint Shader::getColor3DShader() {
 
 GLuint Shader::getLightShader() {
     return (_FAILED_3DLightShader) ? 0 : _LightShader3D;
+}
+
+GLuint Shader::getLightColorShader() {
+    return (_FAILED_3DLightColorShader) ? 0  : _LightShaderColor3D;
 }
 
 GLuint Shader::getGlyphShader() {

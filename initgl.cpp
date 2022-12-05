@@ -671,7 +671,7 @@ void InitGL::InitEngineObject() {
     sphere1->initShader(COLOR_SHADER,shader->getColor3DShader());
     sphere1->initShader(TEXTURE_SHADER,shader->getTexture3DShader());
     sphere1->initShader(LIGHT_SHADER, shader->getLightShader());   //cubeshaderprog_normals);
-    sphere1->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    sphere1->initShader(LIGHT_COLOR_SHADER, shader->getLightColorShader()); //   cubeshaderprog_color_normal);
     sphere1->initShader(GLASS_SHADER,glasshader);
     sphere1->setActiveShader(LIGHT_SHADER);
     //sphere1->setGlasShader(true);
@@ -680,7 +680,7 @@ void InitGL::InitEngineObject() {
     lightSource->initShader(COLOR_SHADER,shader->getColor3DShader());//cubeshaderprog_color);
     lightSource->initShader(TEXTURE_SHADER, shader->getTexture3DShader());//cubeshaderprog_tex);
     lightSource->initShader(LIGHT_SHADER,shader->getLightShader());  //cubeshaderprog_normals);
-    lightSource->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    lightSource->initShader(LIGHT_COLOR_SHADER, shader->getLightColorShader());  //cubeshaderprog_color_normal);
     lightSource->initShader(GLASS_SHADER,glasshader);
     lightSource->setActiveShader(LIGHT_SHADER);
 
@@ -706,7 +706,7 @@ void InitGL::add2List(BaseObject *obj, ShaderType s) {
     obj->initShader(COLOR_SHADER,shader->getColor3DShader()); //   cubeshaderprog_color);
     obj->initShader(TEXTURE_SHADER,shader->getTexture3DShader());//     cubeshaderprog_tex);
     obj->initShader(LIGHT_SHADER, shader->getLightShader()); //   cubeshaderprog_normals);
-    obj->initShader(LIGHT_COLOR_SHADER, cubeshaderprog_color_normal);
+    obj->initShader(LIGHT_COLOR_SHADER, shader->getLightColorShader());  //cubeshaderprog_color_normal);
     obj->initShader(GLASS_SHADER,glasshader);
     obj->setActiveShader(s);
     obj -> SetProjection(projection->GetPerspective());

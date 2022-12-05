@@ -101,6 +101,7 @@ protected:
     //----------------------------------
     virtual void Render(glm::mat4 cam);
     virtual void SetResolution(int resx,int resy);
+    virtual bool HandleMessage();
 
 
     void SetClearColor(float r, float g, float b, float a);
@@ -233,7 +234,6 @@ private:
     void DeleteMatrices();
     void DeleteShaders();
     void PrintDisplayModes();
-    bool HandleMessage();
 
     MOUSE convertMouse(int x, int y);
 
