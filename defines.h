@@ -18,6 +18,11 @@
 #include <string>
 
 #include <glm/glm.hpp>
+#include <chrono>
+
+typedef void (*FP)();  // Zeiger auf Funktion wird für eventhandling gebraucht
+typedef void (*FPB)(bool);
+typedef std::chrono::high_resolution_clock Clock;
 
 
 const int MAX_SCHEMES = 6;   // siehe COLOR_SCHEMES
@@ -48,8 +53,6 @@ enum LineType {
     SOLID
 };
 
-typedef void (*FP)();  // Zeiger auf Funktion wird für eventhandling gebraucht
-typedef void (*FPB)(bool);
 
 typedef struct {
 

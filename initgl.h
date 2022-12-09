@@ -3,17 +3,11 @@
 #ifndef INITGL_H
 #define INITGL_H
 
-
-
-
 #include <cstdio>
 #include <cstdlib>
 #include <string>
-#include <chrono>
-
 
 #include <GL/glew.h>
-
 #include <SDL2/SDL.h>
 #include <map>
 #include <irrklang/irrKlang.h>
@@ -43,8 +37,8 @@
 #include "particleengine/partikelengine.h"
 #include "3DLoader/load3ds.h"
 
-typedef std::chrono::high_resolution_clock Clock;
 
+/*
 const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
 const std::string SPACE = " ";
 
@@ -52,22 +46,16 @@ const int  SD_WIDTH     =  1600;
 const int  SD_HEIGHT    =  1200;
 const int  FULLSCREEN_WIDTH = 3200;//1680.0f//1920.0f
 const int  FULLSCREEN_HEIGHT = 1800;//1050.0f//1200.0f
+*/
 
-typedef struct {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat w;
-    // use for colors too..
-}GLFLOAT4;
 
 
 // static flags for handler in derrived classes
-static bool renderSkybox;
-static bool _Animate;
-static bool _UseBlend;
-static bool _ShowCockpit;
-static bool showPanel;   // DrawPanel für 2D
+extern bool _RenderSkybox;
+extern bool _Animate;
+extern bool _UseBlend;
+extern bool _ShowCockpit;
+extern bool _ShowPanel;   // DrawPanel für 2D
 
 class InitGL {
 public:
@@ -114,6 +102,7 @@ protected:
     static void toogleCockpit();
     static void toggleBlend();
     static void togglePanel2D();
+    static void toggleSkyBox();
     static bool toggleVal(bool val);
 
     // HandlerFuncs for Mouse
@@ -219,7 +208,17 @@ protected:
     float _CameraSpeed;
 
     std::string caption;
-    GLFLOAT4 _ClearColor;
+    FLOAT4 _ClearColor;
+
+
+    const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
+    const std::string SPACE = " ";
+
+    const int  SD_WIDTH     =  1600;
+    const int  SD_HEIGHT    =  1200;
+    const int  FULLSCREEN_WIDTH = 3200;//1680.0f//1920.0f
+    const int  FULLSCREEN_HEIGHT = 1800;//1050.0f//1200.0f
+
 
   //  C3DSLoad * load3DS;
 

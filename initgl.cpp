@@ -21,6 +21,13 @@ const std::string PATH_HEADLINE     = "../SpaceEngine/images/darkgray.png";
 const std::string PATH_TEXTFIELD    = "../SpaceEngine/images/Textfeld.png";
 const std::string PATH_BOTTOM       = "../SpaceEngine/images/Bottom.png";
 
+
+bool _RenderSkybox;
+bool _Animate;
+bool _UseBlend;
+bool _ShowCockpit;
+bool _ShowPanel;   // DrawPanel für 2D
+
 using namespace irrklang;
 
 InitGL::InitGL (const std::string titel){
@@ -232,7 +239,7 @@ void InitGL::InitUtils() {
         logwarn ("Konnte Util FileStream nicht erstellen !!","InitGL::InitUtils");
     }
     else
-        loginfo("Erstelle FileUtil...... DEone","InitGL::InitUtils");
+        loginfo("Erstelle FileUtil...... Done","InitGL::InitUtils");
 }
 
 void InitGL::InitShaders() {
@@ -242,83 +249,9 @@ void InitGL::InitShaders() {
     shader = new Shader();
     int vs;
     int fs;
-
-    // Vertex Shader
-    // ------------------------------------------------------------------------
-    std::string v_source ="../SpaceEngine/ShaderSources/cubevertexshader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader Color
-    v_source ="../SpaceEngine/ShaderSources/colorshader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-
-    // ColorCubeShader
-    loginfo("Erstelle Cube Color Shader.................done");
-    shader->CreateCustomShader(cubeshaderprog_color);
-    shader->AttachCustomShader(cubeshaderprog_color,vs);
-    shader->AttachCustomShader(cubeshaderprog_color,fs);
-    shader->CreateCustomProgram(cubeshaderprog_color);
-    glDetachShader(cubeshaderprog_color,vs);
-    glDetachShader(cubeshaderprog_color,fs);
-    logEmptyLine();
-
-    // Fragment Shader Texture
-    v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMulti.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    //Texture CubeShader
-    loginfo("Erstelle Cube Texture Shader ..............done");
-    shader->CreateCustomShader(cubeshaderprog_tex);
-    shader->AttachCustomShader(cubeshaderprog_tex,vs);
-    shader->AttachCustomShader(cubeshaderprog_tex,fs);
-    shader->CreateCustomProgram(cubeshaderprog_tex);
-    glDetachShader(cubeshaderprog_tex,vs);
-    glDetachShader(cubeshaderprog_tex,fs);
-
-
-    // Shader für lightning
-    loginfo("Erstelle Cube Lightning Shader ..............done");
-    v_source ="../SpaceEngine/ShaderSources/cubevertexnormalshader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader Color
-    v_source ="../SpaceEngine/ShaderSources/cubefragmentshaderMultinormals.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    shader->CreateCustomShader(cubeshaderprog_normals);
-    shader->AttachCustomShader(cubeshaderprog_normals,vs);
-    shader->AttachCustomShader(cubeshaderprog_normals,fs);
-    shader->CreateCustomProgram(cubeshaderprog_normals);
-    glDetachShader(cubeshaderprog_normals,vs);
-    glDetachShader(cubeshaderprog_normals,fs);
-
-    // Shader für colorlightning
-    loginfo("Erstelle Cube Color Light Shader ..............done");
-    v_source ="../SpaceEngine/ShaderSources/vertexnormalcolorshader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader Color
-    v_source ="../SpaceEngine/ShaderSources/fragmentnormalcolorshader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    shader->CreateCustomShader(cubeshaderprog_color_normal);
-    shader->AttachCustomShader(cubeshaderprog_color_normal,vs);
-    shader->AttachCustomShader(cubeshaderprog_color_normal,fs);
-    shader->CreateCustomProgram(cubeshaderprog_color_normal);
-    glDetachShader(cubeshaderprog_color_normal,vs);
-    glDetachShader(cubeshaderprog_color_normal,fs);
-
-    // Shader für Texture lightning
-    loginfo("Erstelle Lightning Shader ..............done");
-    v_source ="../SpaceEngine/ShaderSources/VertexTextureLightShader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader Color
-    v_source ="../SpaceEngine/ShaderSources/FragmentTextureLightShader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    shader->CreateCustomShader(lighttexture_shader);
-    shader->AttachCustomShader(lighttexture_shader,vs);
-    shader->AttachCustomShader(lighttexture_shader,fs);
-    shader->CreateCustomProgram(lighttexture_shader);
-    glDetachShader(lighttexture_shader,vs);
-    glDetachShader(lighttexture_shader,fs);
-
     // Shader für Glas
     loginfo("Erstelle Glas Shader ..............done");
-    v_source ="../SpaceEngine/ShaderSources/glasshader.vex";
+    std::string v_source ="../SpaceEngine/ShaderSources/glasshader.vex";
     vs = shader ->compileVertexShaderFromFile(v_source,filestream);
     //Fragment Shader Color
     v_source ="../SpaceEngine/ShaderSources/glasshader.frg";
@@ -749,7 +682,8 @@ void InitGL::ShowCameraPos() {}
 void InitGL::toggleAnimation() { _Animate = toggleVal(_Animate); }
 void InitGL::toogleCockpit() { _ShowCockpit = toggleVal(_ShowCockpit); }
 void InitGL::toggleBlend() {_UseBlend = toggleVal(_UseBlend); }
-void InitGL::togglePanel2D() {showPanel = toggleVal(showPanel);}
+void InitGL::togglePanel2D() {_ShowPanel = toggleVal(_ShowPanel);}
+void InitGL::toggleSkyBox() { _RenderSkybox = toggleVal(_RenderSkybox);}
 bool InitGL::toggleVal(bool val){return ! val; }
 
 
@@ -1027,7 +961,7 @@ void InitGL::Run() {
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-       if ( ! showPanel) {
+       if ( ! _ShowPanel) {
 
            if (_UseBlend)
                lightSource->SetUseBlending(true);

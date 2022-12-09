@@ -113,8 +113,7 @@ void CEngine::functoogleBlend(bool checked) {
 }
 
 void CEngine::funcToogleSkybox() {
-
-    renderSkybox = InitGL::toggleVal(renderSkybox);
+    InitGL::toggleSkyBox();
 }
 
 void CEngine::funcFog(){
@@ -123,7 +122,7 @@ void CEngine::funcFog(){
 
 void CEngine::Render(glm::mat4 cam) {
 
-    if (renderSkybox)
+    if (_RenderSkybox)
         InitGL::Render(cam);
 }
 
