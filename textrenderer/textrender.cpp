@@ -684,8 +684,6 @@ void TextRender::Render() {
     // --------------------------------
     // Erstmal alles fürs TextFenster
     //---------------------------------
-
-
     if (_HasTexture)
         _CurrentShader = shader ->getTexture2DShader();
     else
@@ -753,7 +751,6 @@ void TextRender::Render() {
             //GLfloat ypos = row - ((ch.Size.y - ch.Bearing.y) * _Scale) ;
 
             GLfloat ypos;
-            ypos = row;
             ypos = row + ((ch.Size.y - ch.Bearing.y) * _Scale) ;
 
             GLfloat w = ch.Size.x * _Scale;
@@ -773,11 +770,10 @@ void TextRender::Render() {
             // Update content of VBO memory
             glBindBuffer(GL_ARRAY_BUFFER, _VBO);
             glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
             // Render quad
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
-            glDrawElements( GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, 0);
-            //glDrawArrays(GL_TRIANGLES, 0, 6);
+            //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
+            //glDrawElements( GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, 0);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
             // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
             _x += (ch.Advance >> 6) * _Scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
         }
@@ -785,8 +781,8 @@ void TextRender::Render() {
         row +=  18.0f *_Scale; //  + bearingdiff ;  // 16
     }
     // Aufräumen
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-    //glBindBuffer(GL_ARRAY_BUFFER,0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D,0);
 }

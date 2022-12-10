@@ -230,10 +230,6 @@ void CEngine::initMenu(){
     txtFrameperSec = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                                   glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
-   // txtFrameperSec->setGlyphShader(shader->getGlyphShader());
-   // txtFrameperSec->setColorShader(shader->getColor2DShader());
-   // txtFrameperSec->setTextureShader(shader->getTexture2DShader(),true);
-
     txtFrameperSec->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(txtFrameperSec);
     // add label for Frames to buildin textrender label
@@ -246,10 +242,6 @@ void CEngine::initMenu(){
 
     checkBoxAnimation = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,
                                      glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr() );
-
-    //checkBoxAnimation->setGlyphShader(shader->getGlyphShader());
-    //checkBoxAnimation->setColorShader(shader->getColor2DShader());
-    //checkBoxAnimation->setTextureShader(shader->getTexture2DShader(),true);
 
     checkBoxAnimation->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     checkBoxAnimation->AddHandler(CEngine::functoogleAnimation);
@@ -266,10 +258,6 @@ void CEngine::initMenu(){
     checkBoxBlending = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                                     glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr() );
 
-    //checkBoxBlending->setGlyphShader(shader->getGlyphShader());
-    //checkBoxBlending->setColorShader(shader->getColor2DShader());
-    //checkBoxBlending->setTextureShader(shader->getTexture2DShader(),true);
-
     checkBoxBlending->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     checkBoxBlending->AddHandler(CEngine::functoogleBlend);
     checkBoxBlending->setChecked();
@@ -285,11 +273,6 @@ void CEngine::initMenu(){
     checkBoxCockpit = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                                    glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr() );
 
-
-    //checkBoxBlending->setGlyphShader(shader->getGlyphShader());
-    //checkBoxBlending->setColorShader(shader->getColor2DShader());
-    //checkBoxBlending->setTextureShader(shader->getTexture2DShader(),true);
-
     checkBoxCockpit->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     checkBoxCockpit->AddHandler(CEngine::functoogleCockpit);
     checkBoxCockpit->setChecked();
@@ -303,9 +286,7 @@ void CEngine::initMenu(){
     p = con2->NextControllPos();
     cameraX = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                   glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr());
-    //cameraX->setGlyphShader(shader->getGlyphShader());
-    //cameraX->setColorShader(shader->getColor2DShader());
-    //cameraX->setTextureShader(shader->getTexture2DShader(),true);
+
     cameraX->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(cameraX);
     // add label for Frames to buildin textrender label
@@ -314,10 +295,6 @@ void CEngine::initMenu(){
     p = con2->NextControllPos();
     cameraY = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s
                   ,glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
-
-    //cameraY->setGlyphShader(shader->getGlyphShader());
-    //cameraY->setColorShader(shader->getColor2DShader());
-    //cameraY->setTextureShader(shader->getTexture2DShader(),true);
 
     cameraY->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(cameraY);
@@ -328,10 +305,6 @@ void CEngine::initMenu(){
     cameraZ = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                            glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
-    //cameraZ->setGlyphShader(shader->getGlyphShader());
-    //cameraZ->setColorShader(shader->getColor2DShader());
-    //cameraZ->setTextureShader(shader->getTexture2DShader(),true);
-
     cameraZ->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(cameraZ);
     // add label for Frames to buildin textrender label
@@ -341,9 +314,6 @@ void CEngine::initMenu(){
     camerayaw = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                              glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr());
 
-    //camerayaw->setGlyphShader(shader->getGlyphShader());
-    //camerayaw->setColorShader(shader->getColor2DShader());
-    //camerayaw->setTextureShader(shader->getTexture2DShader(),true);
     camerayaw->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(camerayaw);
     // add label for Frames to buildin textrender label
@@ -353,9 +323,6 @@ void CEngine::initMenu(){
     cameradirZ = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                               glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr());
 
-    //cameradirZ->setGlyphShader(shader->getGlyphShader());
-    //cameradirZ->setColorShader(shader->getColor2DShader());
-    //cameradirZ->setTextureShader(shader->getTexture2DShader(),true);
     cameradirZ->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(cameradirZ);
     // add label for Frames to buildin textrender label
@@ -365,9 +332,6 @@ void CEngine::initMenu(){
     cameradirX = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
                               glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
-    //cameradirX->setGlyphShader(shader->getGlyphShader());
-    //cameradirX->setColorShader(shader->getColor2DShader());
-    //cameradirX->setTextureShader(shader->getTexture2DShader(),true);
     cameradirX->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
     con2->addControll2D(cameradirX);
     // add label for Frames to buildin textrender label

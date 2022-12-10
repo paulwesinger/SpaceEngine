@@ -928,6 +928,8 @@ void InitGL::Run() {
     cad2->addPoint(Point(200.0,900.0));
 
     _Elapsed = 0;
+    auto start = Clock::now();
+    auto end = Clock::now();
 
 /*
     if (load3DS->Load3DS("../SpaceEngine/models/32-sting-sword-lowpoly.3ds"))
@@ -939,7 +941,8 @@ void InitGL::Run() {
 
         HandleMessage();
 
-        auto start = Clock::now();
+        // Delete the eventque for movemove
+        SDL_FlushEvent(SDL_MOUSEMOTION);
 
         ms += _Elapsed;
         frames++;
@@ -948,15 +951,11 @@ void InitGL::Run() {
             frames = 0;
             ms = 0;
          }
-
         ShowFramesPerSec();
         ShowCameraPos();
 
         MousePositions->SetText(0,"Mouse X " + IntToString(_Mouse.x) );
         MousePositions->SetText(1,"Mouse Y " + IntToString(_Mouse.y) );
-
-        uint motionX =0;
-        uint motionY =0;
 
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1003,10 +1002,6 @@ void InitGL::Run() {
                     if (_Animate && list3D[i]->HasAnimation()) {
 
                         list3D[i]->StepTranslate(vt,_Elapsed);
-
-
-                       // list3D[i]->AnimateScale(elapsed);
-                       // list3D[i]->AnimateTranslate(elapsed);
                         list3D[i]->AnimateRotate(_Elapsed);
                     }
 
@@ -1055,8 +1050,6 @@ void InitGL::Run() {
                 cockpit->Rotate(camera->MoveDirectionDEG());
                 cockpit->Draw(camera);
             }
-
-
         }
 
         // ===================================ee
@@ -1089,6 +1082,8 @@ void InitGL::Run() {
             }
         }
 
+
+        /*
         cad2->useShader(line2DShader);
         cad2->setColor(glm::vec4(0.4,1.0,0.8,1.0));
         sPoint p0{300,100};
@@ -1096,13 +1091,13 @@ void InitGL::Run() {
         cad2->setPoint0(p0);
         cad2->setPoint1(p1);
         cad2->Render();
-
+*/
         Restore3D();
 
         SDL_GL_SwapWindow(window);
-        auto end = Clock::now();
-        auto el = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        _Elapsed =   static_cast<uint32>(el);//500;
+        end = Clock::now();
+        _Elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        start = end;
      }
 }
 
@@ -1124,90 +1119,68 @@ void InitGL::Restore3D() {
     glDepthMask(1);
 }
 
-//-------------------------------------------------
-// Mouse events
-//-------------------------------------------------
-
-MOUSE InitGL::convertMouse(int x, int y) {
-
-    MOUSE m;
-//    float fx = (float)x * MouseResX;
-//  float fy = (float)y * MouseResY;
-
-//    m.x = (int) fx;
-//    m.y = (int) fy;
-    m.x =  x;
-    m.y =  y;
-
-    return  m;
-}
 void InitGL::OnMouseMove(int &x, int &y, uint32 buttonstate) {
-
-    MOUSE m = convertMouse(x,y);
 
     for (uint i = 0; i < textfields.size(); i++) {
 
         if (textfields.at(i)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
-            textfields.at(i)->OnDrag(m.x, m.y);
+            textfields.at(i)->OnDrag(x, y);
         }
     }
 
-/*
+
     for (uint i = 0; i < objects2D.size(); i++) {
 
         if (objects2D.at(i)->IsDragging() && (buttonstate & SDL_BUTTON_LMASK) != 0) {
-            objects2D.at(i)->OnDrag(m.x, m.y);
+            objects2D.at(i)->OnDrag(x, y);
         }
     }
-*/
 }
 
 void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
 
-    MOUSE m = convertMouse(x,y);
-
     for (uint i = 0; i < textfields.size(); i++) {
-        if (textfields.at(i)->Intersect(m.x,m.y))
-            textfields.at(i)->OnStartDrag(m.x, m.y);
+        if (textfields.at(i)->Intersect(x, y))
+            textfields.at(i)->OnStartDrag(x, y);
     }
 
     if ( ! buttons.empty()  ) {
         for (uint i = 0; i < buttons.size(); i++) {
-            if (buttons[i]->intersect(m.x, m.y) )
-                buttons[i]->OnStartDrag(m.x,m.y);
+            if (buttons[i]->intersect(x, y) )
+                buttons[i]->OnStartDrag(x, y);
         }
     }
-/*
+
     if (!objects2D.empty() ) {
 
 
         for (uint i = 0; i < objects2D.size(); i++)
         {
-            if (objects2D.at(i)->intersect(m.x,m.y))
-                objects2D[i]->OnStartDrag(m.x,m.y);
+            if (objects2D.at(i)->intersect(x, y))
+                objects2D[i]->OnStartDrag(x, y);
 
         }
 
     }
-*/
+
     if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
 
         for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
             if ( ! MainMenu->containerList.at(i)->buttons.empty()) {
 
                 for (uint j=0; j< MainMenu->containerList.at(i)->buttons.size(); j ++) {
-                    if (MainMenu->containerList.at(i)->buttons.at(j)->intersect(m.x, m.y) ) {
+                    if (MainMenu->containerList.at(i)->buttons.at(j)->intersect(x, y) ) {
                         MainMenu->containerList.at(i)->buttons.at(j)->OnClick();
 
                     }
                 }
-             if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
-                for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
-                    if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(m.x, m.y) ) {
-                        MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
-                    }
-                }
-             }
+             //if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
+             //   for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
+             //       if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect( x, y) ) {
+             //           MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
+             //       }
+             //   }
+             //}
           }
        }
     }
@@ -1215,48 +1188,46 @@ void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
 
 void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
 
-    MOUSE m = convertMouse(x,y);
     if ( ! MainMenu->containerList.empty() && MainMenu != nullptr && MainMenu->Active()) {
 
         for ( uint i = 0; i< MainMenu->containerList.size(); i++) {
             if ( ! MainMenu->containerList.at(i)->buttons.empty()) {
 
                 for (uint j=0; j< MainMenu->containerList.at(i)->buttons.size(); j ++) {
-                    if (MainMenu->containerList.at(i)->buttons.at(j)->intersect(m.x, m.y) ) {
+                    if (MainMenu->containerList.at(i)->buttons.at(j)->intersect( x, y) ) {
                         MainMenu->containerList.at(i)->buttons.at(j)->OnRelease();
                     }
                 }
             }
 
             if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
-            //    for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
-            //        if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(m.x, m.y) ) {
-            //            MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
-            //        }
-            //    }
+                for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
+                    if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(x, y) ) {
+                        MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
+                    }
+                }
             }
         }
     }
 
     if ( ! buttons.empty()  ) {
         for (uint i = 0; i < buttons.size(); i++) {
-            if (buttons[i]->intersect(m.x, m.y) )
+            if (buttons[i]->intersect(x, y) )
                 buttons[i]->OnRelease();
         }
     }
 
     for (uint i = 0; i < textfields.size(); i++) {
         if (textfields.at(i)->IsDragging() ) {
-            textfields.at(i)->OnEndDrag(m.x, m.y);
+            textfields.at(i)->OnEndDrag(x, y);
         }
     }
-/*
+
     for (uint i = 0; i < objects2D.size(); i++) {
         if (objects2D.at(i)->IsDragging() ) {
-            objects2D.at(i)->OnEndDrag(m.x, m.y);
+            objects2D.at(i)->OnEndDrag(x, y);
         }
     }
-*/
 }
 
 

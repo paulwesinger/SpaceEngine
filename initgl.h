@@ -234,8 +234,6 @@ private:
     void DeleteShaders();
     void PrintDisplayModes();
 
-    MOUSE convertMouse(int x, int y);
-
     SDL_Window * window;
     SDL_GLContext maincontext;
 
