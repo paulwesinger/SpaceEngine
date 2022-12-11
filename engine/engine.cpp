@@ -666,7 +666,7 @@ bool CEngine::loadTexturedCubes(){
                  bool texturesok;
                  std::vector<std::string> images;
 
-                 std::string path = s3D.textures;
+                 std::string path = PATH::ROOT + s3D.textures;
                  if ( s3D.textures != "none" ) {
                      fileUtil fu;
 
@@ -681,27 +681,27 @@ bool CEngine::loadTexturedCubes(){
                      int count = 0;
 
                      if (s3D.texture0 != "" ) {
-                         images.push_back(s3D.texture0);
+                         images.push_back(PATH::ROOT + s3D.texture0);
                          count ++;
                      }
 
                      if (s3D.texture1 != "" ) {
-                         images.push_back(s3D.texture1);
+                         images.push_back(PATH::ROOT + s3D.texture1);
                          count ++;
                      }
 
                      if (s3D.texture2 != "" ) {
-                         images.push_back(s3D.texture2);
+                         images.push_back(PATH::ROOT + s3D.texture2);
                          count ++;
                      }
 
                      if (s3D.texture3 != "" ) {
-                         images.push_back(s3D.texture3);
+                         images.push_back(PATH::ROOT + s3D.texture3);
                          count ++;
                      }
 
                      if (s3D.texture4 != "" ) {
-                         images.push_back(s3D.texture4);
+                         images.push_back(PATH::ROOT + s3D.texture4);
                          count ++;
                      }
 
@@ -737,8 +737,8 @@ void CEngine::setupTemplate(int i) {
     glm::vec3 scale = glm::vec3(1.0,1.0,1.0);
     glm::vec4 color = glm::vec4(0,0,1,1);
 
-    std::string tex0 = "../SpaceEngine/images/bluefish.png";
-    std::string tex1 = "../SpaceEngine/images/wall.png";
+    std::string tex0 = PATH::ROOT + "images/bluefish.png";
+    std::string tex1 = PATH::ROOT + "images/wall.png";
 
 
     obj->SetHasTextures( true);
@@ -788,7 +788,6 @@ bool CEngine::loadCockpits() {
              if (init3DStruct(s3D,objconfig)) {
 
                  CCube * obj = new CCube();
-                 //obj->SetColor(glm::vec4(s3D.color.x, s3D.color.y, s3D.color.z, s3D.color.w));
                  if ( s3D.textures == "" )
                      obj->SetHasTextures( false);
                  else
@@ -808,7 +807,7 @@ bool CEngine::loadCockpits() {
                  bool texturesok;
                  std::vector<std::string> images;
 
-                 std::string path = s3D.textures;
+                 std::string path =PATH::ROOT + s3D.textures;
                  if ( s3D.textures != "" ) {
                      fileUtil fu;
 
@@ -923,7 +922,7 @@ bool CEngine::loadSpheres(){
                  bool texturesok;
                  std::vector<std::string> images;
 
-                 std::string path = sphere.textures;
+                 std::string path = PATH::ROOT + sphere.textures;
                  if ( sphere.textures != "none" ) {
                      fileUtil fu;
 
@@ -938,27 +937,27 @@ bool CEngine::loadSpheres(){
                      int count = 0;
 
                      if (sphere.texture0 != "" ) {
-                         images.push_back(sphere.texture0);
+                         images.push_back(PATH::ROOT + sphere.texture0);
                          count ++;
                      }
 
                      if (sphere.texture1 != "" ) {
-                         images.push_back(sphere.texture1);
+                         images.push_back(PATH::ROOT + sphere.texture1);
                          count ++;
                      }
 
                      if (sphere.texture2 != "" ) {
-                         images.push_back(sphere.texture2);
+                         images.push_back(PATH::ROOT + sphere.texture2);
                          count ++;
                      }
 
                      if (sphere.texture3 != "" ) {
-                         images.push_back(sphere.texture3);
+                         images.push_back(PATH::ROOT + sphere.texture3);
                          count ++;
                      }
 
                      if (sphere.texture4 != "" ) {
-                         images.push_back(sphere.texture4);
+                         images.push_back(PATH::ROOT + sphere.texture4);
                          count ++;
                      }
 

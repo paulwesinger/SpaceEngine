@@ -2,6 +2,11 @@
 #define DEFAULTS_H
 
 #include <glm/glm.hpp>
+#include <string>
+
+namespace PATH{
+    const std::string ROOT = "../SpaceEngine/";
+}
 
 namespace BASE {
     const glm::vec2 ZERO_VEC2(0.0);

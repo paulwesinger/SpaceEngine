@@ -16,4 +16,4 @@ scaleX 115.0
 scaleY 10.0
 scaleZ 58.0
 firstTranslate 0
-textures ../SpaceEngine/config/cube2textures.cfg
+textures config/cube2textures.cfg

@@ -10,6 +10,7 @@
 #include "../utils/utils.h"
 #include "../imageloader/loadimage.h"
 #include "../vecmath/vecmath.h"
+#include "../defaults.h"
 
 const glm::vec3 VEC3_ZERO = glm::vec3(0.0,0.0,0.0);
 
@@ -78,7 +79,7 @@ bool BaseObject::addTexture(std::string path, uint activetexture) {
     }
 
 
-    SDL_Surface * surface = CLoadImage::getSurface(path, "BaseObject::addTexture");
+    SDL_Surface * surface = CLoadImage::getSurface(PATH::ROOT + path, "BaseObject::addTexture");
     if ( surface ) {
 
         int width = surface->w;
@@ -130,7 +131,7 @@ bool BaseObject::addTexture(std::vector<std::string> path, std::string obj) {
 
     for ( uint i = 0; i< path.size(); i++) {
 
-        SDL_Surface * surface = CLoadImage::getSurface(path[i], "BaseObject::Init");
+        SDL_Surface * surface = CLoadImage::getSurface(PATH::ROOT + path[i], "BaseObject::Init");
         if ( surface ) {
             int width = surface->w;
             int height = surface->h;
@@ -157,7 +158,7 @@ bool BaseObject::addTexture(std::vector<std::string> path, std::string obj) {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-                logimage("Texture "+ path[i]+ " geladen. Index = " + IntToString(i),obj);
+                logimage("Texture "+ PATH::ROOT + path[i]+ " geladen. Index = " + IntToString(i),obj);
 
                 _CountTextures ++ ;
             }  // if data

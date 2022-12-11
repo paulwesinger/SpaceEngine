@@ -17,10 +17,10 @@
 
 
 
-const std::string BUTTONS_CFG  = "../SpaceEngine/config/Buttons/";
-const std::string OBJECT3D_CFG = "../SpaceEngine/config/3DObjects/";
-const std::string COCKPIT_CFG  = "../SpaceEngine/config/3DObjects/Cockpits/";
-const std::string SPHERE_CFG   = "../SpaceEngine/config/3DObjects/TexturedSpheres/";
+const std::string BUTTONS_CFG  = PATH::ROOT + "config/Buttons/";
+const std::string OBJECT3D_CFG = PATH::ROOT + "config/3DObjects/";
+const std::string COCKPIT_CFG  = PATH::ROOT + "config/3DObjects/Cockpits/";
+const std::string SPHERE_CFG   = PATH::ROOT + "config/3DObjects/TexturedSpheres/";
 
 
 

@@ -25,6 +25,7 @@ public:
     GLuint getColor3DShader();
     GLuint getLightShader();
     GLuint getLightColorShader();
+    GLuint getGlasShader();
 
 
     int compileShader(const char* source, GLint type);
@@ -45,7 +46,7 @@ protected:
     GLuint _GlyphShader2D,_TextureShader2D,_ColorShader2D;
 
     //Shaders for 3D
-    GLuint _TextureShader3D,_ColorShader3D,_LightShader3D, _LightShaderColor3D;
+    GLuint _TextureShader3D,_ColorShader3D,_LightShader3D, _LightShaderColor3D, _GlasShader3D;
 
 private:
 
@@ -58,6 +59,7 @@ private:
     bool CreateStandard3DColorShader();
     bool CreateStandard3DLightShader();
     bool CreateStandard3DLightColorShader();
+    bool CreateStandard3DGlasShader();
 
     bool _FAILED_GlyphShader;
     bool _FAILED_2DTextureShader;
@@ -67,6 +69,7 @@ private:
     bool _FAILED_3DColorShader;
     bool _FAILED_3DLightShader;
     bool _FAILED_3DLightColorShader;
+    bool _FAILED_3DGlasShader;
 
 };
 

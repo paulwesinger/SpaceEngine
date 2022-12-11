@@ -6,7 +6,7 @@ colorGreen 0.0
 colorBlue 0.0
 colorAlpha 1.0
 hasLight 1
-textures ../SpaceEngine/config/cube2textures.cfg
+textures config/cube2textures.cfg
 translateX 5.0
 translateY 5.0
 translateZ 5.0

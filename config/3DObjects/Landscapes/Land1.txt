@@ -17,5 +17,5 @@ patchX 32
 patchZ 32
 rasterX 20.0
 rasterZ 20.0
-texture1 ../SpaceEngine/images/Tajmahal.png
-texture0 ../SpaceEngine/images/wallAlpha.png
+texture1 images/Tajmahal.png
+texture0 images/wallAlpha.png

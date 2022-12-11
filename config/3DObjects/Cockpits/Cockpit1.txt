@@ -6,7 +6,7 @@ colorGreen 0.0
 colorBlue 0.0
 colorAlpha 1.0
 hasLight 1
-textures ../SpaceEngine/config/3DObjects/Cockpits/cockpittextures.cfg
+textures config/3DObjects/Cockpits/cockpittextures.cfg
 translateX 0.0
 translateY 0.0
 translateZ 0.0

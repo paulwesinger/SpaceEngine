@@ -6,7 +6,7 @@ colorGreen 0.0
 colorBlue 1.0
 colorAlpha 1.0
 hasLight 1
-textures ../SpaceEngine/config/Sphere1Textures.cfg
+textures config/Sphere1Textures.cfg
 translateX -12.0
 translateY 3.0
 translateZ -10.0

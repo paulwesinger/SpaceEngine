@@ -335,6 +335,71 @@ const GLchar * Standard3DColored_FragmentSrc = {
 };
 
 
+const GLchar * Standard3DGLasshader_Vertexsrc = {
+"    #version 450 core                                          \n"
+"    layout (location = 0) in vec3 position;                    \n"
+"    layout (location = 1) in vec3 veccolor;                    \n"
+"    layout (location = 2) in vec2 tex;                         \n"
+
+"    out VS_OUT{                                                \n"
+"        vec4 color;                                            \n"
+"        vec2 TexCoord;                                         \n"
+"    } vs_out;                                                  \n"
+
+"    uniform mat4 mv_matrix;                                    \n"
+
+"    uniform mat4 model;                                        \n"
+"    uniform mat4 projection;                                   \n"
+"    uniform mat4 view;                                         \n"
+
+"    void main(void)                                            \n"
+"    {                                                          \n"
+"        vec3 fragpos = vec3(model * vec4(position,1.0));       \n"
+"        gl_Position = projection * view * vec4(fragpos,1.0);   \n"
+
+"        vs_out.color = vec4(veccolor,1.0);                     \n"
+"        vs_out.TexCoord = tex;                                 \n"
+"    }                                                          \n"
+};
+
+const GLchar * Standard3DGLasshader_Fragmentsrc = {
+"    #version 450 core                                                                  \n"
+
+"    layout(binding=0) uniform sampler2D texture1;                                      \n"
+"    layout(binding=1) uniform sampler2D texture2;                                      \n"
+
+"    in VS_OUT{                                                                         \n"
+"       vec4 color;                                                                     \n"
+"       vec2 TexCoord;                                                                  \n"
+"    } fs_in;                                                                           \n"
+
+"    uniform vec4 triangleColor;                                                        \n"
+"    uniform bool useTexture_2;                                                         \n"
+"    uniform bool hasTexture;                                                           \n"
+
+"    out vec4 FragColor;                                                                \n"
+
+"    void main(void) {                                                                  \n"
+
+"        vec4 outcolor;                                                                 \n"
+"        if ( hasTexture ) {                                                            \n"
+"            if (useTexture_2)                                                          \n"
+"               outcolor =  mix(texture(texture1, fs_in.TexCoord), texture(texture2, fs_in.TexCoord), 0.5); \n"
+"            else                                                                       \n"
+"               outcolor = texture(texture1,fs_in.TexCoord);                            \n"
+"        }                                                                              \n"
+"        else {                                                                         \n"
+"             outcolor = triangleColor;                                                 \n"
+"        }                                                                              \n"
+"        if (outcolor.r == 0.0 && outcolor.g == 0.0 && outcolor.b == 0.0)               \n"
+"            discard;                                                                   \n"
+"        else                                                                           \n"
+"        {                                                                              \n"
+"            FragColor =  outcolor * triangleColor;                                     \n"
+"        }                                                                              \n"
+"    }                                                                                  \n"
+};
+
 Shader::Shader()
 {
     _FAILED_GlyphShader         = false;
@@ -342,6 +407,7 @@ Shader::Shader()
     _FAILED_3DColorShader       = false;
     _FAILED_3DLightShader       = false;
     _FAILED_3DLightColorShader  = false;
+    _FAILED_3DGlasShader        = false;
     _FAILED_2DColorShader       = false;
     _FAILED_2DTextureShader     = false;
 
@@ -375,6 +441,7 @@ void Shader::CreateStandardShaders() {
     Error::Failed(CreateStandard3DColorShader(),"Creating Standard3DColorShader failed !", _FAILED_3DColorShader);
     Error::Failed(CreateStandard3DLightShader(),"Creating Standard3DLightShader failed !", _FAILED_3DLightShader);
     Error::Failed(CreateStandard3DLightColorShader(),"Creating Standard3DLightColorShader failed !", _FAILED_3DLightColorShader);
+    Error::Failed(CreateStandard3DGlasShader(),"Creating Standard3DGlasShader failed !", _FAILED_3DGlasShader);
 }
 
 
@@ -442,6 +509,13 @@ bool Shader::CreateStandard3DLightColorShader() {
     return CreateShaderProgram(_LightShaderColor3D,Standard3D_VertexNormalsSrc, Standard3DColor_FragmentLightSrc);
 }
 
+bool Shader::CreateStandard3DGlasShader() {
+    //------------------------------------------------------
+    //Shader for 3D LightShader
+    //------------------------------------------------------
+    return CreateShaderProgram(_GlasShader3D,Standard3DGLasshader_Vertexsrc , Standard3DGLasshader_Fragmentsrc);
+}
+
 GLuint Shader::getTexture3DShader() {
    return ( _FAILED_3DTextureShader) ?  0 : _TextureShader3D;
 }
@@ -468,6 +542,10 @@ GLuint Shader::getColor2DShader() {
 
 GLuint Shader::getTexture2DShader() {
     return (_FAILED_2DTextureShader) ? 0 : _TextureShader2D;
+}
+
+GLuint Shader::getGlasShader () {
+    return (_FAILED_3DGlasShader) ? 0 : _GlasShader3D;
 }
 
 Shader::~Shader(){

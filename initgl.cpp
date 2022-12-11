@@ -247,39 +247,8 @@ void InitGL::InitShaders() {
     //Test für CustomShader
 
     shader = new Shader();
-    int vs;
-    int fs;
-    // Shader für Glas
-    loginfo("Erstelle Glas Shader ..............done");
-    std::string v_source ="../SpaceEngine/ShaderSources/glasshader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader Color
-    v_source ="../SpaceEngine/ShaderSources/glasshader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    shader->CreateCustomShader(glasshader);
-    shader->AttachCustomShader(glasshader,vs);
-    shader->AttachCustomShader(glasshader,fs);
-    shader->CreateCustomProgram(glasshader);
-    glDetachShader(glasshader,vs);
-    glDetachShader(glasshader,fs);
-
-    // Shader für line2D
-    loginfo("Erstelle Linien Shader ..............done");
-    v_source ="../SpaceEngine/ShaderSources/cad2Dshader.vex";
-    vs = shader ->compileVertexShaderFromFile(v_source,filestream);
-    //Fragment Shader Color
-    v_source ="../SpaceEngine/ShaderSources/cad2Dshader.frg";
-    fs = shader ->compileFragmentShaderFromFile(v_source,filestream);
-    shader->CreateCustomShader(line2DShader);
-    shader->AttachCustomShader(line2DShader,vs);
-    shader->AttachCustomShader(line2DShader,fs);
-    shader->CreateCustomProgram(line2DShader);
-    glDetachShader(line2DShader,vs);
-    glDetachShader(line2DShader,fs);
-
     _CurrentShader = ShaderType::LIGHT_SHADER;
     // ========================================================================
-
 }
 
 void InitGL::DeleteUtils() {
@@ -605,16 +574,16 @@ void InitGL::InitEngineObject() {
     sphere1->initShader(TEXTURE_SHADER,shader->getTexture3DShader());
     sphere1->initShader(LIGHT_SHADER, shader->getLightShader());   //cubeshaderprog_normals);
     sphere1->initShader(LIGHT_COLOR_SHADER, shader->getLightColorShader()); //   cubeshaderprog_color_normal);
-    sphere1->initShader(GLASS_SHADER,glasshader);
+    sphere1->initShader(GLASS_SHADER,  shader->getGlasShader() );
     sphere1->setActiveShader(LIGHT_SHADER);
-    //sphere1->setGlasShader(true);
+    //phere1->setGlasShader(true);
     sphere1->addLight(ambientLight);
 
     lightSource->initShader(COLOR_SHADER,shader->getColor3DShader());//cubeshaderprog_color);
     lightSource->initShader(TEXTURE_SHADER, shader->getTexture3DShader());//cubeshaderprog_tex);
     lightSource->initShader(LIGHT_SHADER,shader->getLightShader());  //cubeshaderprog_normals);
     lightSource->initShader(LIGHT_COLOR_SHADER, shader->getLightColorShader());  //cubeshaderprog_color_normal);
-    lightSource->initShader(GLASS_SHADER,glasshader);
+    lightSource->initShader(GLASS_SHADER, shader->getGlasShader() );//   glasshader);
     lightSource->setActiveShader(LIGHT_SHADER);
 
 
@@ -640,7 +609,7 @@ void InitGL::add2List(BaseObject *obj, ShaderType s) {
     obj->initShader(TEXTURE_SHADER,shader->getTexture3DShader());//     cubeshaderprog_tex);
     obj->initShader(LIGHT_SHADER, shader->getLightShader()); //   cubeshaderprog_normals);
     obj->initShader(LIGHT_COLOR_SHADER, shader->getLightColorShader());  //cubeshaderprog_color_normal);
-    obj->initShader(GLASS_SHADER,glasshader);
+    obj->initShader(GLASS_SHADER,shader -> getGlasShader());
     obj->setActiveShader(s);
     obj -> SetProjection(projection->GetPerspective());
 
@@ -854,7 +823,7 @@ bool InitGL::HandleMessage() {
                     //cockpit->setPosition(camera);
                     break;
 
-            }  // case KeyDown
+            }  // case Keyup
         }
 
         //------------------------------------------------------------------------------
@@ -1049,6 +1018,7 @@ void InitGL::Run() {
                 cockpit->Translate(camera->GetPos());
                 cockpit->Rotate(camera->MoveDirectionDEG());
                 cockpit->Draw(camera);
+                cockpit->getCockpitMesch()->setGlasShader(true);
             }
         }
 
