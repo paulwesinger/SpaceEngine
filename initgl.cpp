@@ -1,5 +1,6 @@
 #include "initgl.h"
 #include "Cad/cad2d.h"
+#include "defaults.h"
 
 
 /*
@@ -9,7 +10,6 @@
  * Created on 17. Mai 2018, 21:11
  */
 
-#include "initgl.h"
 //#include "vecmath/vecmath.h"
 #include <vector>
 //#include "3DLoader/load3ds.h"
@@ -105,6 +105,11 @@ InitGL::~InitGL() {
     DeleteUtils();
     DeleteMatrices();
     DeleteShaders();
+}
+
+void  InitGL::setRootPath(std::string path) {
+
+    PATH::ROOT = path;
 }
 
 void InitGL::DeleteShaders() {

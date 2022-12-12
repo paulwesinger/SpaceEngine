@@ -25,6 +25,7 @@ SOURCES += \
         controllcontainer/controllcontainer.cpp \
         cube/colorcube.cpp \
         cube/cube.cpp \
+        defaults.cpp \
         engine/engine.cpp \
         error/error.cpp \
         fileutils/fileutil.cpp \

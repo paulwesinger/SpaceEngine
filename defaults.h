@@ -4,8 +4,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
+
 namespace PATH{
-    const std::string ROOT = "../SpaceEngine/";
+   extern std::string ROOT;
 }
 
 namespace BASE {

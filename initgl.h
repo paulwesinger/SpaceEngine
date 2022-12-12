@@ -62,6 +62,8 @@ public:
 
     InitGL( std::string titel = "OpenGL");
     InitGL(const InitGL& orig);
+
+    void setRootPath(std::string path);
     // Create Context and Init SDL2
     bool InitSDL2();
     Shader * getShaderPtr();
@@ -78,7 +80,6 @@ public:
 
     // effects
     static void setFog(bool enable = false);
-
 
     void fogParam();
 
