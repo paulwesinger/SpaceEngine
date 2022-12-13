@@ -6,6 +6,8 @@ Base::Base()
 }
 Base::~Base() {}
 
+void Base::Render() {}
+
 
 //void Base::Render(){}
 

@@ -10,10 +10,10 @@ class Base
 {
 public:
     Base();
-    ~Base();
+    virtual ~Base();
 
 
-    virtual void Render() = 0;
+    virtual void Render();
 
     virtual void OnStartDrag(int mx, int my);
     virtual void OnDrag(int mx, int my);

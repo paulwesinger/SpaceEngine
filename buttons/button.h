@@ -51,7 +51,7 @@ public:
     //*********************************************
     // Virtuals
     // ********************************************
-    virtual void Render() = 0;
+    virtual void Render() override;
     virtual void setbuttonColors(glm::vec3 imagecol, glm::vec3 textcol);
     virtual void setScale(float s = 1.0f) = 0;
 

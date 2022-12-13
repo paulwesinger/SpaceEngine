@@ -35,16 +35,7 @@ public:
     void setShaderPtr(Shader * pt);
     Shader * getShaderPtr();
 
-/*
-    void setGlyphShader(GLuint sh, bool current = false);
-    void setTextureShader (GLuint sh,bool current = false);
-    void setColorShader(GLuint sh, bool current = false);
-
-    GLuint getGlyphShader();
-    GLuint getColorShader();
-    GLuint getTextureShader();
-*/
-    virtual void Render();
+    virtual void Render() override;
     virtual void OnClick();
 
 protected:
