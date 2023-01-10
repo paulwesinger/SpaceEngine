@@ -221,6 +221,8 @@ protected:
     const int  FULLSCREEN_HEIGHT = 1800;//1050.0f//1200.0f
 
 
+    SDL_Event       _Event;
+
   //  C3DSLoad * load3DS;
 
 private:
@@ -241,7 +243,6 @@ private:
     SDL_DisplayMode DesktopDisplayMode;
     SDL_DisplayMode newDisplayMode;
 
-    SDL_Event       _Event;
 
 };
 

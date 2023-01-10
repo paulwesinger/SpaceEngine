@@ -97,6 +97,25 @@ void CEngine::Run() {
     InitGL::Run();
 }
 
+bool CEngine::HandleMessage() {
+
+    /*
+
+    SDL_PollEvent(&_Event);
+
+    switch(_Event.type) {
+
+        case SDL_KEYDOWN:
+        case SDL_KEYUP : {
+            switch(_Event.key.keysym.sym) {
+                case SDLK_d: _QuitGame = true; break;
+            }
+        }
+    }
+    */
+    return InitGL::HandleMessage();
+}
+
 // ---------------------------------------------------------------
 // Place here Functons for button handler..
 // ---------------------------------------------------------------

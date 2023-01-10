@@ -717,7 +717,6 @@ bool InitGL::HandleMessage() {
 
                     break;
 
-
                 case SDLK_e:
                      camera->MoveForward(_Elapsed);
                      //cockpit->setPosition(camera);

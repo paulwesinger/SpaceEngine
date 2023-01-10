@@ -53,6 +53,7 @@ public:
     ~CEngine();
     void Run() override;
     void Done() override;
+    bool HandleMessage() override;
 
 
 
