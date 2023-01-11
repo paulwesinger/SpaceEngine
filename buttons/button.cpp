@@ -129,11 +129,6 @@ CTextButton::CTextButton(int resx, int resy, std::string path, std::string text,
     btnText->SetHasBackground(false);
     btnText->SetHasTexture(false);
     btnText->SetAlignRight(false);
-
-  //  btnText->SetGlyphShader(getGlyphShader());
-  //  btnText->SetColorShader(getColorShader());
-  //  btnText->SetTextureShader(getTextureShader());
-
 }
 
 void CTextButton::animateClick() {
@@ -197,14 +192,10 @@ void CTextButton::setSize(int w, int h) {
 
 void CTextButton::Render() {
 
-
     Base2D::setColor(glm::vec4(1.0,1.0,1.0,_Alpha_Image));
     Base2D::Render();
 
     btnText->Render();
-
-    //textImage->Base2D::setColor(glm::vec4(1.0,1.0,1.0,_AlphaText));
-    //textImage->Base2D::Render();
 }
 
 void CTextButton::OnClick() {
@@ -214,8 +205,6 @@ void CTextButton::OnClick() {
 void CTextButton::OnRelease(){
     releaseClick();
 }
-
-
 
 //--------------------------------------------------
 // Image Button for use
@@ -230,7 +219,6 @@ CImageButton::CImageButton( int resx, int  resy, Shader * sh) :
     // init stuff
     textImage = new Base2D(resx, resy, "images/Add.png",sh);
     textImage->setPos(0,0);
-
 }
 
 CImageButton::CImageButton(int resx, int resy, std::string pathbg, std::string pathtext, sPoint pos,Shader * sh):
@@ -270,7 +258,6 @@ void CImageButton::releaseClick() {
 
         textImage->setPos(p.x-2, p.y-2);
     }
-
 }
 
 void CImageButton::setbuttonColors(glm::vec3 imagecol, glm::vec3 textcol)  {
@@ -294,7 +281,6 @@ void CImageButton::setSize(int w, int h) {
 }
 
 void CImageButton::Render() {
-
 
     Base2D::setColor(glm::vec4(1.0,1.0,1.0,_Alpha_Image));
     Base2D::Render();

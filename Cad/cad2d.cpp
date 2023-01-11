@@ -4,6 +4,7 @@
 #include "../utils/utils.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../defaults.h"
 
 
 
@@ -49,8 +50,8 @@ bool BaseCad2D::Init(int resx,int resy) {
 
         int vs;
         int fs;
-        std::string vertex_source = "../SpaceEngine/ShaderSources/cad2Dshader.vex";
-        std::string frag_source = "../SpaceEngine/ShaderSources/cad2Dshader.frg";
+        std::string vertex_source = PATH::ROOT + "ShaderSources/cad2Dshader.vex";
+        std::string frag_source = PATH::ROOT + "ShaderSources/cad2Dshader.frg";
 
         vs = shader -> compileVertexShaderFromFile(vertex_source,filestream);
         fs = shader -> compileFragmentShaderFromFile(frag_source,filestream);
@@ -188,7 +189,11 @@ bool BaseCad2D::intersectP0(sPoint p0, sPoint mouse){
         //
     }
 }
-bool BaseCad2D::intersectP1(sPoint p1, sPoint mouse){}
+bool BaseCad2D::intersectP1(sPoint p1, sPoint mouse){
+
+    // !!!!!!!!!!!
+    return false;
+}
 void BaseCad2D::OnClick() {}
 
 void BaseCad2D::setDisablecolor(glm::vec4 disCol){}

@@ -24,7 +24,6 @@ using namespace glm;
 class Base2D  : public Base {
 public:
     Base2D(int resx, int resy, Shader * sh);
- //   Base2D(int resx, int resy,std::string path);
     Base2D(int resx, int resy, std::string path, Shader * sh);
     Base2D(const Base2D& orig);
 

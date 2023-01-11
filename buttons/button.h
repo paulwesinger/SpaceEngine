@@ -39,8 +39,8 @@ public:
     // ********************************************
     // set
     void setText(std::string t);
-    void enable();
-    void disable();
+    void enable() override;
+    void disable() override;
 
     std::string Text();
     bool Enabled();

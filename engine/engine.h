@@ -54,6 +54,7 @@ public:
     void Run() override;
     void Done() override;
     bool HandleMessage() override;
+    void InitUserObjects() override;
 
 
 

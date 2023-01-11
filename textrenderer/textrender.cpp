@@ -218,11 +218,11 @@ void TextRender::OnDrag(int mx, int my) {
 void TextRender::OnEndDrag(int, int) {
 
     _Dragging = false;
+
 }
 
 bool TextRender::Intersect(int x, int y) {
-    //bool var = (x > interSectHeadline.x && x < interSectHeadline.x1 && y > interSectHeadline.y && y < interSectHeadline.y1);
-   bool var = (x > posX && x < posX + _Textfeld.w) && (y < posY && y > posY - 35);
+    bool var = (x > posX && x < posX + _Textfeld.w) && (y < posY && y > posY - 35);
     return var;
 }
 
@@ -332,48 +332,6 @@ bool TextRender::Init(int resx, int resy) {
     _MarginLeft = 5.0f;
     _MarginRight= 5.0f;
     _MarginY = 5.0f;
-/*
-    shader = new Shader();
-    if (shader ) {
-        vs = shader -> compileVertexShader(vs2D_src);
-        fs = shader -> compileFragmentShader(fs2D_src);
-        _TextShader = shader -> CreateProgram(vs,fs);
-
-        if ( ( vs == 0 ) ||
-             ( fs == 0 ) ||
-             (_TextShader == 0 ) )
-            logwarn("Konnte TextShader nicht erzeugen ! ","TextRender; ;Init" );
-        else
-            logwarn( "TextShader erstellt ID = " + IntToString(_TextShader),"TextRender::Init");
-
-        // ------------------------------------------------
-        // Vertex und Fragment Shader für Textfeld erzeugen
-        // ------------------------------------------------
-        vs_textfeld = shader -> compileVertexShader(vertex_textfeld_src);
-        fs_textfeld = shader -> compileFragmentShader(fragment_textfeld_src);
-        _GlyphShader = shader ->CreateProgram(vs_textfeld,fs_textfeld);
-        if ( ( vs_textfeld == 0 ) ||
-             ( fs_textfeld == 0 ) ||
-             (_GlyphShader == 0 ) )
-            logwarn("Konnte TextureShader nicht erzeugen !!!","TextRender;;Init" );
-        else
-            logwarn( "Textureshader  erstellt ID = " + IntToString(_GlyphShader),"TextRender::Init");
-
-        // Color Shader erzeugen
-        fs = shader->compileFragmentShader(fragment_textfeld_Color);
-        _ColorShader = shader->CreateProgram(vs_textfeld,fs);
-        if ( _ColorShader == 0)
-            logwarn("Konnte ColorShader nicht erzeugen ","TextRender::compileColorShader");
-        else
-            loginfo("ColorShader erzeugt! ","TextRender::compilecolorshader");
-
-    }
-    else {
-        logwarn("Shader - Init Failed");
-        return false;  // make assertion
-    }
-
-*/
 
     // ---------------------------------------
     //  Freetype2 init.

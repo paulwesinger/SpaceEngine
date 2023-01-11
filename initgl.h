@@ -36,19 +36,7 @@
 #include "cockpit/cockpit.h"
 #include "particleengine/partikelengine.h"
 #include "3DLoader/load3ds.h"
-
-
-/*
-const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
-const std::string SPACE = " ";
-
-const int  SD_WIDTH     =  1600;
-const int  SD_HEIGHT    =  1200;
-const int  FULLSCREEN_WIDTH = 3200;//1680.0f//1920.0f
-const int  FULLSCREEN_HEIGHT = 1800;//1050.0f//1200.0f
-*/
-
-
+#include "defaults.h"
 
 // static flags for handler in derrived classes
 extern bool _RenderSkybox;
@@ -91,7 +79,8 @@ protected:
     virtual void Render(glm::mat4 cam);
     virtual void SetResolution(int resx,int resy);
     virtual bool HandleMessage();
-
+    virtual void InitEngineObject();
+    virtual void InitUserObjects();
 
     void SetClearColor(float r, float g, float b, float a);
     void setClearColor(float r, float g, float b);
@@ -199,6 +188,12 @@ protected:
     bool _ShaderChanged;
     bool _FullScreen ;
     bool _QuitGame;
+
+    //Flags for overrides
+    bool _ShowFramesPerSecond   = false;
+    bool _ShowMousePositions     = false;
+    bool _ShowCameraPos         = false;
+
     uint32_t _Elapsed;
 
 
@@ -212,7 +207,7 @@ protected:
     FLOAT4 _ClearColor;
 
 
-    const std::string MAIN_CFG = "../SpaceEngine/config/Engine/engine.cfg";
+    const std::string MAIN_CFG = PATH::ROOT +"config/Engine/engine.cfg";
     const std::string SPACE = " ";
 
     const int  SD_WIDTH     =  1600;
@@ -222,12 +217,12 @@ protected:
 
 
     SDL_Event       _Event;
-
+    bool _LockClick = false;
   //  C3DSLoad * load3DS;
 
 private:
 
-    void InitEngineObject();
+
     void InitUtils();  // Fileutils,logs ,etc....
     void InitShaders();
     void InitMatrices();
@@ -242,8 +237,6 @@ private:
 
     SDL_DisplayMode DesktopDisplayMode;
     SDL_DisplayMode newDisplayMode;
-
-
 };
 
 // -------------------------------------

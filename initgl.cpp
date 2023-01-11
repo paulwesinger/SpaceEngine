@@ -17,9 +17,9 @@
 // Res for windowed Mode
 
 
-const std::string PATH_HEADLINE     = "../SpaceEngine/images/darkgray.png";
-const std::string PATH_TEXTFIELD    = "../SpaceEngine/images/Textfeld.png";
-const std::string PATH_BOTTOM       = "../SpaceEngine/images/Bottom.png";
+const std::string PATH_HEADLINE     = PATH::ROOT + "images/darkgray.png";
+const std::string PATH_TEXTFIELD    = PATH::ROOT + "images/Textfeld.png";
+const std::string PATH_BOTTOM       = PATH::ROOT + "images/Bottom.png";
 
 
 bool _RenderSkybox;
@@ -44,16 +44,16 @@ InitGL::InitGL (const std::string titel){
     _Mouse.x     = 0;
     _Mouse.y     = 0;
 
-    sphere1 = NULL;
-    lightSource = NULL;
-    skybox  = NULL;
-    base2d  = NULL;
+    sphere1 = nullptr;
+    lightSource = nullptr;
+    skybox  = nullptr;
+    base2d  = nullptr;
    // land = nullptr;
 
     cockpit = nullptr;
     PE      = nullptr;
 
-    MousePositions = NULL;
+    MousePositions = nullptr;
    // soundengine = NULL;
     projection = nullptr;
 
@@ -92,9 +92,9 @@ InitGL::~InitGL() {
     //delete load3DS;
     //safeDelete(land);
 
-    if ( skybox != NULL)
+    if ( skybox != nullptr)
         delete skybox;
-    if (base2d != NULL  )
+    if (base2d != nullptr  )
         delete base2d;
 //    if (cockpit != NULL)
 //        delete cockpit;
@@ -124,9 +124,9 @@ Shader * InitGL::getShaderPtr() {
 }
 
 void InitGL::safeDelete(BaseObject * bo) {
-    if (bo != NULL) {
+    if (bo != nullptr) {
         delete bo;
-        bo = NULL;
+        bo = nullptr;
     }
 }
 
@@ -240,7 +240,7 @@ void InitGL::setFog(bool enable) {
 // ------------------------------------------
 void InitGL::InitUtils() {
     filestream = new fileUtil();
-    if (filestream == NULL) {
+    if (filestream == nullptr) {
         logwarn ("Konnte Util FileStream nicht erstellen !!","InitGL::InitUtils");
     }
     else
@@ -257,14 +257,14 @@ void InitGL::InitShaders() {
 }
 
 void InitGL::DeleteUtils() {
-    if ( filestream != NULL) {
+    if ( filestream != nullptr) {
         delete filestream;
         loginfo("Deleted filestream","InitGL::DeleteUtils");
     }
 }
 
 void InitGL::DeleteMatrices() {
-    if (projection != NULL) {
+    if (projection != nullptr) {
         delete projection;
         loginfo("Delete Prokjection Matrix Class","InitGL::DeleteMatrtices");
     }
@@ -275,7 +275,7 @@ void InitGL::DeleteMatrices() {
 // ------------------------------------------
 void InitGL::InitMatrices() {
     projection = new Projection(0,_ResX,0,_ResY,0.01f,1000.0f);
-    if (projection != NULL) {
+    if (projection != nullptr) {
         loginfo("Created Procjection Class","InitGL::InitMatrices");
     }
 }
@@ -487,19 +487,29 @@ void InitGL::InitEngineObject() {
 
     loginfo("Erstelle Standard Ambientes Licht ","InitGL::InitEngineObjects");
 
+    InitUserObjects();
+}
+
+void InitGL::InitUserObjects() {
+
     // ---------------------------------------
     // Skybox ,objects init.
     // ---------------------------------------
     loginfo("Erstelle Standard SkyBox \"Dessert\" ........","InitGL::InitEngineObject");
-    skybox = new SkyBox(projection->GetPerspective());
+
+
+    /*
     std::vector<std::string> faces;
 
-    faces.push_back("../SpaceEngine/skybox/desert/desert_lf.tga");
-    faces.push_back("../SpaceEngine/skybox/desert/desert_rt.tga");
-    faces.push_back("../SpaceEngine/skybox/desert/desert_up.tga");
-    faces.push_back("../SpaceEngine/skybox/desert/desert_dn.tga");
-    faces.push_back("../SpaceEngine/skybox/desert/desert_ft.tga");
-    faces.push_back("../SpaceEngine/skybox/desert/desert_bk.tga");
+    faces.push_back(PATH::ROOT + "skybox/desert/desert_lf.tga");
+    faces.push_back(PATH::ROOT + "skybox/desert/desert_rt.tga");
+    faces.push_back(PATH::ROOT + "skybox/desert/desert_up.tga");
+    faces.push_back(PATH::ROOT + "skybox/desert/desert_dn.tga");
+    faces.push_back(PATH::ROOT + "skybox/desert/desert_ft.tga");
+    faces.push_back(PATH::ROOT + "skybox/desert/desert_bk.tga");
+
+
+    skybox = new SkyBox(projection->GetPerspective());
     skybox -> Load(faces);
     loginfo("Erstelle Skybox ........Done","InitGL::InitEngineObject");
 
@@ -511,20 +521,20 @@ void InitGL::InitEngineObject() {
     // Init 2D Objects
     // ===============================
 
+    */
     logimage("Erstelle Text Renderer.....");
     sPoint p;
     p.x =   100;
     p.y =   400;
-
+/*
     MousePositions = new TextRender(_ResX, _ResY, p,PATH_HEADLINE, PATH_TEXTFIELD,getShaderPtr());
 
     MousePositions->SetGlyphShader(shader->getGlyphShader());
     MousePositions->SetTextureShader(shader->getTexture2DShader());
-    MousePositions->SetColorShader(shader->getColor3DShader());
+    MousePositions->SetColorShader(shader->getColor2DShader());
 
-    MousePositions->AddString("Das ist die 1. Zeile");
-    MousePositions->AddString("Das ist die 2. Zeile");
-    MousePositions->AddString("Das ist die 3. Zeile");
+    MousePositions->AddString("X: ");
+    MousePositions->AddString("Y: ");
 
     MousePositions->SetHasBottom(false);
     MousePositions->SetHasHeader(true);
@@ -533,7 +543,7 @@ void InitGL::InitEngineObject() {
     MousePositions->SetAlignRight(false);
 
     textfields.push_back(MousePositions);
-
+*/
     //========================================
     // Init 3D Objects
     //========================================
@@ -552,13 +562,13 @@ void InitGL::InitEngineObject() {
     loginfo("=============================");
     loginfo("Erstelle Sphere .........done");
     loginfo("=============================");
-
+/*
     cubeimages.clear();
-    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
+    texturesok =  fu.readLine("config/cube2textures.cfg",cubeimages);
     sphere1  = new CSphere(glm::vec3(6.0,5.0,-12.0),glm::vec4(1.0,0.0,0.0,0.2), projection->GetPerspective(),24,(GLfloat)4.0,shader);
     sphere1->addTexture(cubeimages,"InitGL::Sphere");
     cubeimages.clear();
-
+*/
     //-----------------------------------------
     // Lightsource as a spere
     //-----------------------------------------
@@ -567,14 +577,14 @@ void InitGL::InitEngineObject() {
     lightSource->SetFrontFace(GL_CW);
     //Texture loading
     cubeimages.clear();
-    texturesok =  fu.readLine("../SpaceEngine/config/cube2textures.cfg",cubeimages);
+    texturesok =  fu.readLine("config/cube2textures.cfg",cubeimages);
     if (texturesok)
         lightSource->addTexture(cubeimages,"Ad glob to lightsource");
     else
         logwarn("Init::Sphere1 konnte Textures nicht laden ! ","InitGL::Init::cube2::addTexture");
     cubeimages.clear();
 
-
+/*
     sphere1->initShader(COLOR_SHADER,shader->getColor3DShader());
     sphere1->initShader(TEXTURE_SHADER,shader->getTexture3DShader());
     sphere1->initShader(LIGHT_SHADER, shader->getLightShader());   //cubeshaderprog_normals);
@@ -583,7 +593,7 @@ void InitGL::InitEngineObject() {
     sphere1->setActiveShader(LIGHT_SHADER);
     //phere1->setGlasShader(true);
     sphere1->addLight(ambientLight);
-
+*/
     lightSource->initShader(COLOR_SHADER,shader->getColor3DShader());//cubeshaderprog_color);
     lightSource->initShader(TEXTURE_SHADER, shader->getTexture3DShader());//cubeshaderprog_tex);
     lightSource->initShader(LIGHT_SHADER,shader->getLightShader());  //cubeshaderprog_normals);
@@ -596,7 +606,7 @@ void InitGL::InitEngineObject() {
     loginfo("Erstelle Cokpit ","InitGL::InitEngineObjects");
     loginfo("--------------------------------------------");
 
-    cockpit = new Cockpit(projection->GetPerspective(),camera->GetPos());
+    //cockpit = new Cockpit(projection->GetPerspective(),camera->GetPos());
 
     logwarn("Cokpit angelegt, Mesh wird in CEngine zugewiesen  !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
@@ -604,6 +614,7 @@ void InitGL::InitEngineObject() {
     logwarn("Partikelengine mit 100 Elementen !!", "IniEngineObjects");
     loginfo("Done 3D Objects .............");
 }
+
 
 // --------------------------------------------
 // Adding's
@@ -828,6 +839,11 @@ bool InitGL::HandleMessage() {
                     break;
 
             }  // case Keyup
+
+            _Mouse.x = _Event.motion.x;
+            _Mouse.y = _Event.motion.y;
+            _MouseButtons = SDL_GetMouseState(&_Event.motion.x, &_Event.motion.y);
+            OnMouseMove(_Event.motion.x, _Event.motion.y, _MouseButtons);
         }
 
         //------------------------------------------------------------------------------
@@ -862,13 +878,12 @@ bool InitGL::HandleMessage() {
     return true;
 }
 
-
 void InitGL::Run() {
 
     bool quit = false;
     // Diese transformations vectoren enthalten die "steps" für die Animation
 
-    sphere1->Translate(vec3(0.0,-4.0,0.0));
+    //sphere1->Translate(vec3(0.0,-4.0,0.0));
 
     //--------------------------------------------------
     // framerate berechene
@@ -888,24 +903,12 @@ void InitGL::Run() {
     //      if (_HasSound)
     //          _Sound = soundengine->play2D("/home/paul/workspace/SpaceEngine/sounds/bell.wav");
 
-    BaseCad2D * cad2 = new BaseCad2D(_ResX,_ResY,projection->GetPerspective(),projection->GetOrtho());
-    sPoint p0{100,100};
-    sPoint p1{600,800};
-    cad2->setPoint0(p0);
-    cad2->setPoint1(p1);
-
-
-    cad2->addPoint(Point(900.0,200.0));
-    cad2->addPoint(200.0,300.0);
-    cad2->addPoint(Point(500.0,100.0));
-    cad2->addPoint(Point(200.0,900.0));
-
     _Elapsed = 0;
     auto start = Clock::now();
     auto end = Clock::now();
 
 /*
-    if (load3DS->Load3DS("../SpaceEngine/models/32-sting-sword-lowpoly.3ds"))
+    if (load3DS->Load3DS("models/32-sting-sword-lowpoly.3ds"))
         loginfo("Modell geladen");
     else
         logwarn("Modell nicht geladen");
@@ -923,32 +926,42 @@ void InitGL::Run() {
             _FramerateOut = frames;
             frames = 0;
             ms = 0;
-         }
-        ShowFramesPerSec();
-        ShowCameraPos();
+        }
 
-        MousePositions->SetText(0,"Mouse X " + IntToString(_Mouse.x) );
-        MousePositions->SetText(1,"Mouse Y " + IntToString(_Mouse.y) );
+        if (_ShowFramesPerSecond )
+            ShowFramesPerSec();
+
+        if (_ShowCameraPos)
+            ShowCameraPos();
+
+
+        if (_ShowMousePositions && MousePositions != nullptr)  {
+            MousePositions->SetText(0,"Mouse X " + IntToString(_Mouse.x) );
+            MousePositions->SetText(1,"Mouse Y " + IntToString(_Mouse.y) );
+        }
 
        glDepthFunc(GL_LEQUAL);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
        if ( ! _ShowPanel) {
 
-           if (_UseBlend)
-               lightSource->SetUseBlending(true);
-              // glDisable(GL_DEPTH_TEST);
-           else
-               //glEnable(GL_DEPTH_TEST);
-               lightSource->SetUseBlending(false);
+           if (lightSource != nullptr) {
 
-           lightSource->SetColor(glm::vec4(0.5,0.5,0.5,0.3));
-           lightSource->SetProjection(projection->GetPerspective());
-           lightSource->SetFirstTranslate(true);
-           if (_Animate && lightSource->HasAnimation() )
-               lightSource ->AnimateRotate(_Elapsed);
+               if (_UseBlend)
+                   lightSource->SetUseBlending(true);
+                  // glDisable(GL_DEPTH_TEST);
+               else
+                   //glEnable(GL_DEPTH_TEST);
+                   lightSource->SetUseBlending(false);
 
-           lightSource->Draw(camera);
+               lightSource->SetColor(glm::vec4(0.5,0.5,0.5,0.3));
+               lightSource->SetProjection(projection->GetPerspective());
+               lightSource->SetFirstTranslate(true);
+               if (_Animate && lightSource->HasAnimation() )
+                   lightSource ->AnimateRotate(_Elapsed);
+
+               lightSource->Draw(camera);
+           }
 
             // ===================================
             // Engine Objekte
@@ -959,11 +972,18 @@ void InitGL::Run() {
                         list3D[i]->setActiveShader(_CurrentShader);
                 }
 
-                lightSource->setActiveShader(_CurrentShader);
-                sphere1-> setActiveShader(_CurrentShader);
+                if (lightSource != nullptr)
+                    lightSource->setActiveShader(_CurrentShader);
 
-                if (cockpit->HasMesh())
-                    cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+               // if (sphere1 != nullptr)
+               //     sphere1-> setActiveShader(_CurrentShader);
+
+
+                if (cockpit != nullptr) {
+
+                    if (cockpit->HasMesh())
+                        cockpit->getCockpitMesch()->setActiveShader(_CurrentShader);
+                }
 
             }
 
@@ -999,8 +1019,10 @@ void InitGL::Run() {
 
             Render(camera->GetView());
 
-            sphere1->setGlasShader(true);
-            sphere1->SetColor(glm::vec4(0.0,1.0,0.0,0.5));
+
+
+//            sphere1->setGlasShader(true);
+    //        sphere1->SetColor(glm::vec4(0.0,1.0,0.0,0.5));
             //sphere1->AnimateTranslate(_Elapsed);
 
 //            sphere1->SetProjection(projection->GetPerspective());
@@ -1014,15 +1036,18 @@ void InitGL::Run() {
 //            sphere1->Draw(camera);
 
 
-            if (cockpit->HasMesh()  && _ShowCockpit) {
+            if (cockpit != nullptr) {
 
-                cockpit->getCockpitMesch()->SetUseBlending(true);
-                cockpit->getCockpitMesch()->setGlasShader(true);
-                cockpit->setProjectionMatrix(projection->GetPerspective());
-                cockpit->Translate(camera->GetPos());
-                cockpit->Rotate(camera->MoveDirectionDEG());
-                cockpit->Draw(camera);
-                cockpit->getCockpitMesch()->setGlasShader(true);
+                if (cockpit->HasMesh()  && _ShowCockpit) {
+
+                    cockpit->getCockpitMesch()->SetUseBlending(true);
+                    cockpit->getCockpitMesch()->setGlasShader(true);
+                    cockpit->setProjectionMatrix(projection->GetPerspective());
+                    cockpit->Translate(camera->GetPos());
+                    cockpit->Rotate(camera->MoveDirectionDEG());
+                    cockpit->Draw(camera);
+                    cockpit->getCockpitMesch()->setGlasShader(true);
+                }
             }
         }
 
@@ -1056,16 +1081,6 @@ void InitGL::Run() {
             }
         }
 
-
-        /*
-        cad2->useShader(line2DShader);
-        cad2->setColor(glm::vec4(0.4,1.0,0.8,1.0));
-        sPoint p0{300,100};
-        sPoint p1{1500,500};
-        cad2->setPoint0(p0);
-        cad2->setPoint1(p1);
-        cad2->Render();
-*/
         Restore3D();
 
         SDL_GL_SwapWindow(window);
@@ -1148,13 +1163,16 @@ void InitGL::OnLeftMouseButtonDown(int &x, int &y) {
 
                     }
                 }
-             //if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
-             //   for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
-             //       if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect( x, y) ) {
-             //           MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
-             //       }
-             //   }
-             //}
+             // Checkbox, ....
+             if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
+
+                _LockClick = true;
+                for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
+                    if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect( x, y) ) {
+                        MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
+                    }
+                }
+             }
           }
        }
     }
@@ -1175,11 +1193,16 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
             }
 
             if ( ! MainMenu->containerList.at(i)->controlls2D.empty() ) {
-                for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
-                    if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(x, y) ) {
-                        MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
+
+                if ( ! _LockClick) {
+                    for (uint j=0; j< MainMenu->containerList.at(i)->controlls2D.size(); j ++) {
+                        if (MainMenu->containerList.at(i)->controlls2D.at(j)->intersect(x, y) ) {
+                            MainMenu->containerList.at(i)->controlls2D.at(j)->OnClick();
+                        }
                     }
                 }
+                else
+                    _LockClick = false;
             }
         }
     }
@@ -1203,8 +1226,6 @@ void InitGL::OnLeftMouseButtonUp(int &x, int &y) {
         }
     }
 }
-
-
 
 void InitGL::sdl_die( std::string msg)
 {

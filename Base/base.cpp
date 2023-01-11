@@ -54,7 +54,7 @@ void Base::calcDragBar() {
     interSectHeadline.x  = _Pos.x;
     interSectHeadline.x1 = _Pos.x + _Size.w;
     interSectHeadline.y  = _Pos.y;
-    interSectHeadline.y1 = _Pos.y + 40;
+    interSectHeadline.y1 = _Pos.y + _Size.h;
 }
 
 sPoint Base::Pos() {
@@ -81,7 +81,6 @@ void Base::enable(){
     _Enable = true;
 }
 
-
 //------------------------------------------------------------------------
 //Draging
 //------------------------------------------------------------------------
@@ -96,15 +95,16 @@ void Base::OnStartDrag(int mx, int my) {
 }
 
 void Base::OnDrag(int mx, int my) {
-    _Pos.x = mx - distX;
-    _Pos.y = my + distY;
+
+    if (_Dragging ) {
+        _Pos.x = mx - distX;
+        _Pos.y = my + distY;
+    }
 }
 
 void Base::OnEndDrag(int mx, int my) {
-
-    _Pos.x = mx - distX;
-    _Pos.y = my + distY;
     _Dragging = false;
+    setPos(_Pos.x,_Pos.y);
 }
 bool Base::IsDragging() {
     return  _Dragging;

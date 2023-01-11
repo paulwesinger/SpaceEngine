@@ -24,58 +24,6 @@
 const int RECT_WIDTH = 200;
 const int RECT_HEIGHT = 50;
 
-/*
-
-static const GLchar * vs2D_src = {
-    "#version 440 core                                              \n"
-    "layout (location = 0) in vec2 vertex;                          \n"
-    "layout (location = 1) in vec2 tex;                             \n"
-
-    "uniform mat4 projection;                                       \n"
-    "out VS_OUT {                                                   \n"
-    "   vec2 uv;                                                    \n"
-    "} vs_out;                                                      \n"
-
-    "void main()                                                    \n"
-    "{                                                              \n"
-    "   gl_Position = projection * vec4(vertex,0.0,1.0);            \n"
-    "   vs_out.uv =  tex;                                           \n"
-   "}                                                               \n"
-};
-
-static const GLchar * fs2D_src = {
-    "#version 440 core                                              \n"
-
-    "in VS_OUT {                                                    \n"
-    "   vec2 uv;                                                    \n"
-    "} fs_in;                                                       \n"
-
-    "out vec4 fragcolor;                                            \n"
-    "uniform sampler2D text;                                        \n"
-    "uniform vec4 col2D;                                            \n"
-
-    "void main()                                                    \n"
-    "{                                                              \n"
-    "   vec4 texel = texture(text,fs_in.uv);                        \n"
-    "   if(texel.a == 0.0)                                          \n"
-    "       discard;                                                \n"
-    "   fragcolor =   col2D * texel ;                               \n"
-    "}                                                                "
-};
-
-static const GLchar * fs2D_ColorSrc = {
-    "#version 440 core                                              \n"
-
-    "out vec4 fragcolor;                                            \n"
-    "uniform vec4 col2D;                                            \n"
-
-    "void main()                                                    \n"
-    "{                                                              \n"
-    "   fragcolor =   col2D;                                        \n"
-    "}                                                                "
-};
-
-*/
 
 static const GLushort vertex_indices[] =
 {
@@ -90,17 +38,6 @@ Base2D::Base2D(int resx, int resy, Shader * sh) {
     shader = sh;
     Init(resx, resy);
 }
-
-/*
-Base2D::Base2D(int resx, int resy, std::string path){
-    setImage(path);
-    shader = nullptr;
-    _Size.w = RECT_WIDTH;
-    _Size.h = RECT_HEIGHT;
-
-    Init(resx,resy);
-}
-*/
 
 Base2D::Base2D(int resx, int resy, std::string path, Shader * sh){
 
@@ -142,36 +79,6 @@ void Base2D::useShader(int type) {
     }
 }
 
-/*
-
-void Base2D::setColorShader(GLuint sh, bool current) {
-    _ColorShader = sh;
-    _CurrentShader = (current) ? _ColorShader : 0;
-}
-
-void Base2D::setTextureShader(GLuint sh, bool current) {
-    _TextureShader = sh;
-    _CurrentShader = (current) ? _GlyphShader : 0;
-}
-
-void Base2D::setGlyphShader(GLuint sh, bool current) {
-    _GlyphShader = sh;
-    _CurrentShader = (current) ? _TextureShader : 0;
-}
-
-GLuint Base2D::getColorShader() {
-    return _ColorShader;
-}
-
-GLuint Base2D::getTextureShader() {
-    return _TextureShader;
-}
-
-GLuint Base2D::getGlyphShader() {
-    return _GlyphShader;
-}
-
-*/
 bool Base2D::Init(int resx, int resy) {
 
     // ---------------------------
@@ -187,50 +94,12 @@ bool Base2D::Init(int resx, int resy) {
     _ResX = resx;
     _ResY = resy;
 
-    /*
-    shader = new Shader();
-
-    int vs;
-    int fs;
-
-    if (shader ) {
-        vs = shader -> compileVertexShader(vs2D_src);
-        fs = shader -> compileFragmentShader(fs2D_src);
-        _TextureShader = shader -> CreateProgram(vs,fs);
-
-        if ( _TextureShader == 0 )
-            logwarn("Fehler in den Shadern !!!","Base2D" );
-        else
-            loginfo( "Shader erstellt ID = " + IntToString(_TextureShader),"Base2D::Init");
-    }
-    else
-        logwarn("Konnte shader nicht erzeurgen","Base2D");
-
-
-    // -------------------------------
-    // Color Shader init
-    //--------------------------------
-
-    if (shader) {
-        // vs existiert schon;
-        fs = shader->compileFragmentShader(fs2D_ColorSrc);
-        _ColorShader = shader->CreateProgram(vs,fs);
-        if (_ColorShader == 0 )
-            logwarn("Fehler beim erstellen des ColorShader !","Base2D::Init");
-        else
-            loginfo("Erstelle Colorshader ................. done","Base2D::Init");
-    }
-    else
-        logwarn("Klasse Shader konnte nicht initialisiert werden ","Base2D::Init");
-    */
-
     if ( _ImagePath != "") {
 
         SDL_Surface * surface = CLoadImage::getSurface( _ImagePath,"Base2D");
 
         char * data = nullptr;
         if ( surface ) {
-
 
             data = static_cast<char*>( surface ->pixels);
             _Size.w  = surface-> w;

@@ -40,9 +40,9 @@ public:
     glm::vec2 Pos1();
 
     void setDisablecolor(glm::vec4 disCol);
-    void setColor(glm::vec4 col);
-    void disable();
-    void enable();
+    void setColor(glm::vec4 col) override;
+    void disable() override;
+    void enable() override;
     void useShader(GLuint s);
 
     bool Init(int resx,int resy);

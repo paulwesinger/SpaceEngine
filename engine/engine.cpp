@@ -116,6 +116,10 @@ bool CEngine::HandleMessage() {
     return InitGL::HandleMessage();
 }
 
+void CEngine::InitUserObjects() {
+    InitGL::InitUserObjects();
+}
+
 // ---------------------------------------------------------------
 // Place here Functons for button handler..
 // ---------------------------------------------------------------
@@ -169,7 +173,7 @@ void CEngine::initMenu(){
                                   MainMenu->Pos().y,
                                   MainMenu->Width(), 0);
 
-    butn0 = new CTextButton(_ResX, _ResY,"../SpaceEngine/images/ButtonReleased.png", "2D-Panel",
+    butn0 = new CTextButton(_ResX, _ResY,PATH::ROOT + "images/ButtonReleased.png", "2D-Panel",
                             con1->NextControllPos(), InitGL::getShaderPtr());
 
 //    butn0->setGlyphShader(shader->getGlyphShader(),true);
@@ -184,7 +188,7 @@ void CEngine::initMenu(){
     con1->addButton(butn0);
 
     butn1 = new CImageButton(_ResX, _ResY,
-            "../SpaceEngine/images/ButtonReleased.png", "../SpaceEngine/images/ShowSkyBox.png",
+            PATH::ROOT + "images/ButtonReleased.png", PATH::ROOT + "images/ShowSkyBox.png",
                              con1->NextControllPos(),InitGL::getShaderPtr());
 
   //  butn1->setGlyphShader(shader->getGlyphShader());
@@ -198,8 +202,8 @@ void CEngine::initMenu(){
     butn1->AddHandler(DisableButton1);
     con1->addButton(butn1);
 
-    butn2 = new CImageButton(_ResX, _ResY,"../SpaceEngine/images/ButtonReleased.png",
-                             "../SpaceEngine/images/NewCube.png", con1->NextControllPos(),InitGL::getShaderPtr());
+    butn2 = new CImageButton(_ResX, _ResY,PATH::ROOT + "images/ButtonReleased.png",
+                             PATH::ROOT + "images/NewCube.png", con1->NextControllPos(),InitGL::getShaderPtr());
     //butn2->setGlyphShader(shader->getGlyphShader());
     //butn2->setColorShader(shader->getColor2DShader());
     //butn2->setTextureShader(shader->getTexture2DShader(),true);
@@ -222,8 +226,8 @@ void CEngine::initMenu(){
                                   MainMenu->Width(),0);
 
     con2->addSpacer();
-    toogleSkyBoxBtn = new CImageButton(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png",
-                           "../SpaceEngine/images/ToogleSkybox.png",con2->NextControllPos(),InitGL::getShaderPtr());
+    toogleSkyBoxBtn = new CImageButton(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png",
+                           PATH::ROOT + "images/ToogleSkybox.png",con2->NextControllPos(),InitGL::getShaderPtr());
 
     //toogleSkyBoxBtn->setGlyphShader(shader->getGlyphShader());
     //toogleSkyBoxBtn->setColorShader(shader->getColor2DShader());
@@ -246,7 +250,7 @@ void CEngine::initMenu(){
     s.h = CONTROLL::HEIGHT;
 
     p = con2->NextControllPos();
-    txtFrameperSec = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    txtFrameperSec = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                                   glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
     txtFrameperSec->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -259,7 +263,7 @@ void CEngine::initMenu(){
     //----------------------------------------------------
     p = con2->NextControllPos();
 
-    checkBoxAnimation = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s ,
+    checkBoxAnimation = new CheckBox(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s ,
                                      glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr() );
 
     checkBoxAnimation->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -274,7 +278,7 @@ void CEngine::initMenu(){
     //----------------------------------------------------
     p = con2->NextControllPos();
 
-    checkBoxBlending = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    checkBoxBlending = new CheckBox(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                                     glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr() );
 
     checkBoxBlending->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -289,7 +293,7 @@ void CEngine::initMenu(){
     //----------------------------------------------------
     p = con2->NextControllPos();
 
-    checkBoxCockpit = new CheckBox(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    checkBoxCockpit = new CheckBox(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                                    glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr() );
 
     checkBoxCockpit->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -303,7 +307,7 @@ void CEngine::initMenu(){
     // Statusfenster(pos) von Camera:
     //----------------------------------------------------
     p = con2->NextControllPos();
-    cameraX = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    cameraX = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                   glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr());
 
     cameraX->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -312,7 +316,7 @@ void CEngine::initMenu(){
     cameraX->setLabel("Cam X");
 
     p = con2->NextControllPos();
-    cameraY = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s
+    cameraY = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s
                   ,glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
     cameraY->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -321,7 +325,7 @@ void CEngine::initMenu(){
     cameraY->setLabel("Cam Y");
 
     p = con2->NextControllPos();
-    cameraZ = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    cameraZ = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                            glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
     cameraZ->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -330,7 +334,7 @@ void CEngine::initMenu(){
     cameraZ->setLabel("Cam Z");
 
     p = con2->NextControllPos();
-    camerayaw = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    camerayaw = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                              glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr());
 
     camerayaw->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -339,7 +343,7 @@ void CEngine::initMenu(){
     camerayaw->setLabel("Cam Yaw");
 
     p = con2->NextControllPos();
-    cameradirZ = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    cameradirZ = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                               glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0), InitGL::getShaderPtr());
 
     cameradirZ->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -348,7 +352,7 @@ void CEngine::initMenu(){
     cameradirZ->setLabel("CamDir.Z");
 
     p = con2->NextControllPos();
-    cameradirX = new TextEdit(_ResX, _ResY, "../SpaceEngine/images/ButtonReleased.png", p,s,
+    cameradirX = new TextEdit(_ResX, _ResY, PATH::ROOT + "images/ButtonReleased.png", p,s,
                               glm::vec4(0.79, 0.99, 1.0, 1.0) , glm::vec4(0.79, 0.99, 1.0, 1.0),InitGL::getShaderPtr());
 
     cameradirX->setColor(glm::vec4(0.79, 0.99, 1.0, 1.0));
@@ -430,11 +434,11 @@ void CEngine::Init2D() {
     loginfo("Erstelle 2D Objekte.........");
     loginfo("============================");
     logimage("Erstelle TestIcon..........");
-    base2d = new Base2D(_ResX, _ResY,"../SpaceEngine/icons/ibus-setup-hangul.png",getShaderPtr());
+    base2d = new Base2D(_ResX, _ResY,PATH::ROOT + "icons/ibus-setup-hangul.png",getShaderPtr());
     base2d->setPos(500,400);
 
 
-    testToolBox = new Window(_ResX, _ResY, getShaderPtr());
+    testToolBox = new Window(_ResX, _ResY,getShaderPtr());
    // testToolBox->setWidth(400);
    // testToolBox->setHeight(80);
     testToolBox-> setPos(1000,800);
@@ -846,7 +850,7 @@ bool CEngine::loadCockpits() {
                  obj->setActiveShader(TEXTURE_SHADER);
                  obj->SetFrontFace(GL_CW);
 
-                 cockpit->setMesh(obj);
+                 //cockpit->setMesh(obj);
                  //add2List(obj,LIGHT_SHADER); //LIGHT_SHADER)
 
              }

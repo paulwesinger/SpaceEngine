@@ -85,8 +85,9 @@ void CheckBox::Render() {
 }
 
 void CheckBox::OnClick(){
-  setChecked();
-  clickFunc(_Checked);
+
+    setChecked();
+    clickFunc(_Checked);
 }
 
 TextRender* CheckBox::getLabelPtr(){
@@ -107,7 +108,7 @@ void CheckBox::setChecked() {
     _Checked = ! _Checked;
     if (_Checked )
         _X-> SetText(0,"X");
-    else
+     else
         _X->SetText(0," ");
 }
 

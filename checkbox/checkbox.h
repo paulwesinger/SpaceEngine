@@ -54,7 +54,6 @@ private:
 
     int resX;
     int resY;
-
 };
 
 #endif // CHECKBOX_H
